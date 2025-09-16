@@ -1,0 +1,3 @@
+C:/Users/Suspr/Desktop/Curso25-26/1_Cuatrimestre/Graficas2/PAG/cmake-build-debug/CMakeFiles/PAG.dir
+C:/Users/Suspr/Desktop/Curso25-26/1_Cuatrimestre/Graficas2/PAG/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Suspr/Desktop/Curso25-26/1_Cuatrimestre/Graficas2/PAG/cmake-build-debug/CMakeFiles/rebuild_cache.dir
