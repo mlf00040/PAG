@@ -3,31 +3,45 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include <vector>
+#include <string>
+
+#include "Renderer.h"
+
 float red = 0.1;
 float green = 0.1;
 float blue = 0.1;
 
+std::vector<std::string> mensajes;
+
+void anadirMensaje(const std::string& texto) {
+    mensajes.push_back(texto);
+}
+
 // - Esta función callback será llamada cuando GLFW produzca algún error
 void error_callback ( int errno, const char* desc )
 { std::string aux (desc);
-    std::cout << "Error de GLFW número " << errno << ": " << aux << std::endl;
+    std::string texto = "Error de GLFW número " + std::to_string(errno) + ": " + std::string(desc);
+    anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que el área de dibujo
 // OpenGL deba ser redibujada.
-void window_refresh_callback ( GLFWwindow *window )
-{ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-// - GLFW usa un doble buffer para que no haya parpadeo. Esta orden
-// intercambia el buffer back (que se ha estado dibujando) por el
-// que se mostraba hasta ahora front. Debe ser la última orden de
-// este callback
-    glfwSwapBuffers ( window );
-    std::cout << "Refresh callback called" << std::endl;
+void callbackRefrescoVentana ( GLFWwindow* ventana )
+{  PAG::Renderer::getInstancia().refrescar();
+    glfwSwapBuffers (ventana);
+    std::string texto = "Finaliza el callback de refresco" ;
+    anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que se cambie el tamaño
 // del área de dibujo OpenGL.
 void framebuffer_size_callback ( GLFWwindow *window, int width, int height )
 { glViewport ( 0, 0, width, height );
-    std::cout << "Resize callback called" << std::endl;
+    std::string texto = "Resize callback called";
+    anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que se pulse una tecla
 // dirigida al área de dibujo OpenGL.
@@ -35,24 +49,34 @@ void key_callback ( GLFWwindow *window, int key, int scancode, int action, int m
 { if ( key == GLFW_KEY_ESCAPE && action == GLFW_PRESS )
     { glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
-    std::cout << "Key callback called" << std::endl;
+    std::string texto = "Key callback called";
+    anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que se pulse algún botón
 // del ratón sobre el área de dibujo OpenGL.
 void mouse_button_callback ( GLFWwindow *window, int button, int action, int mods )
 { if ( action == GLFW_PRESS )
-    { std::cout << "Pulsado el botón: " << button << std::endl;
+    {   std::string texto = "Pulsado el botón: " + std::to_string(button) ;
+        anadirMensaje(texto);
+        //comunicar al evento del raton de imGui
+        ImGuiIO& io = ImGui::GetIO ();
+        io.AddMouseButtonEvent ( button, true );
     }
     else if ( action == GLFW_RELEASE )
-    { std::cout << "Soltado el botón: " << button << std::endl;
+    {   std::string texto = "Soltado el botón: " + std::to_string(button);
+        anadirMensaje(texto);
+        //comunicar al evento del raton de imGui
+        ImGuiIO& io = ImGui::GetIO ();
+        io.AddMouseButtonEvent ( button, false );
     }
 }
 // - Esta función callback será llamada cada vez que se mueva la rueda
 // del ratón sobre el área de dibujo OpenGL.
 void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
-{ std::cout << "Movida la rueda del ratón " << xoffset
-            << " Unidades en horizontal y " << yoffset
-                << " unidades en vertical" << std::endl;
+{ std::string texto = "Movida la rueda del ratón "+ std::to_string(xoffset)
+            +" Unidades en horizontal y " + std::to_string(yoffset)
+                +" unidades en vertical";
+    anadirMensaje(texto);
 
     if(yoffset==1){
         if(red<1 ){
@@ -82,11 +106,11 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 }
 
 
-int main()
-{ std::cout << "Starting Application PAG - Prueba 01" << std::endl;
+    int main()
+{   anadirMensaje("Starting Application PAG - Prueba 01" );
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
     if ( glfwInit () != GLFW_TRUE )
-    { std::cout << "Failed to initialize GLFW" << std::endl;
+    { anadirMensaje("Failed to initialize GLFW");
         return -1;
     }
     // - Definimos las características que queremos que tenga el contexto gráfico
@@ -104,7 +128,7 @@ int main()
     window = glfwCreateWindow ( 1024, 576, "PAG Introduction", nullptr, nullptr );
     // - Comprobamos si la creación de la ventana ha tenido éxito.
     if ( window == nullptr )
-    { std::cout << "Failed to open GLFW window" << std::endl;
+    {anadirMensaje("Failed to open GLFW window");
         glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
         return -2;
     }
@@ -114,7 +138,7 @@ int main()
 
     // - Ahora inicializamos GLAD.
     if ( !gladLoadGLLoader ( (GLADloadproc) glfwGetProcAddress ) )
-    { std::cout << "GLAD initialization failed" << std::endl;
+    {anadirMensaje("GLAD initialization failed");
         glfwDestroyWindow ( window ); // - Liberamos los recursos que ocupaba GLFW.
         window = nullptr;
         glfwTerminate ();
@@ -129,16 +153,23 @@ int main()
               << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
 
     // - Registramos los callbacks que responderán a los eventos principales
-    glfwSetWindowRefreshCallback ( window, window_refresh_callback );
+    glfwSetWindowRefreshCallback ( window, callbackRefrescoVentana );
     glfwSetFramebufferSizeCallback ( window, framebuffer_size_callback );
     glfwSetKeyCallback ( window, key_callback );
     glfwSetMouseButtonCallback ( window, mouse_button_callback );
     glfwSetScrollCallback ( window, scroll_callback );
 
-    // - Establecemos un gris medio como color con el que se borrará el
-    // frame buffer.
-    // No tiene por qué ejecutarse en cada paso por el ciclo de eventos.
-    glClearColor ( red, green, blue, 1.0 );
+    /**
+     * Inicializa IMGUI
+     */
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext ();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    // Aquí w es el puntero a la ventana GLFW (GLFWwindow*)
+    ImGui_ImplGlfw_InitForOpenGL ( window, true );
+    ImGui_ImplOpenGL3_Init ();
 
     // - Le decimos a OpenGL que tenga en cuenta la profundidad a la hora de
     // dibujar.
@@ -150,22 +181,76 @@ int main()
     // botón de cerrar la ventana (la X).
     while ( !glfwWindowShouldClose ( window ) )
     {
-        // - Borra los buffers (color y profundidad)
-        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    // - GLFW usa un doble buffer para que no haya parpadeo. Esta orden
-    // intercambia el buffer back (en el que se ha estado dibujando) por el
-    // que se mostraba hasta ahora (front).
-        glfwSwapBuffers ( window );
-
     // - Obtiene y organiza los eventos pendientes, tales como pulsaciones de
     // teclas o de ratón, etc. Siempre al final de cada iteración del ciclo
     // de eventos y después de glfwSwapBuffers(window);
         glfwPollEvents ();
+
+        //Refresco del frame del IMGUI
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // - Borra los buffers (color y profundidad)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        PAG::Renderer::getInstancia().refrescar();
+
+
+        ImGui::SetNextWindowPos ( ImVec2 (10, 10), ImGuiCond_Once );
+
+        if( ImGui::Begin("Mensajes"))
+        { // La ventana está desplegada
+            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            // Pintamos los controles
+            ImGui::Text("Aplicación PAG");
+
+            for (std::vector<std::string>::const_iterator it = mensajes.begin(); it != mensajes.end(); ++it) {
+                ImGui::TextWrapped("%s", it->c_str());
+            }
+
+            //selector de color
+        }
+        // Si la ventana no está desplegada, Begin devuelve false
+        ImGui::End ();
+
+        ImGui::SetNextWindowPos ( ImVec2 (10, 10), ImGuiCond_Once );
+
+        if( ImGui::Begin("Selector Color"))
+        { // La ventana está desplegada
+            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            //selector de color
+            static ImVec4 clear_color = ImVec4(red, green, blue, 1.0f);
+            ImGui::ColorEdit3("Color de fondo", (float*)&clear_color);
+
+            glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+
+        }
+        // Si la ventana no está desplegada, Begin devuelve false
+        ImGui::End ();
+
+        // Se dibujan los controles de Dear ImGui
+        // Aquí va el dibujado de la escena con instrucciones OpenGL
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData ( ImGui::GetDrawData() );
+
+
+        // - GLFW usa un doble buffer para que no haya parpadeo. Esta orden
+        // intercambia el buffer back (en el que se ha estado dibujando) por el
+        // que se mostraba hasta ahora (front).
+        glfwSwapBuffers ( window );
     }
 
+    //Liberacion de recursos de ImGui
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext ();
+
+
     // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
-    std::cout << "Finishing application pag prueba" << std::endl;
+    anadirMensaje("Finishing application pag prueba");
     glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
     window = nullptr;
     glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
+
+
 }
