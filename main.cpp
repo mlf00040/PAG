@@ -12,9 +12,13 @@
 
 #include "Renderer.h"
 
-float red = 0.1;
-float green = 0.1;
-float blue = 0.1;
+
+/**
+ * 
+ * todo terminar de quitar todas las llamadas de gl del main y meterlas al renderer lo del enable y lo del gl color
+ * todo crear una clase con lo del imgui y quitarlo del main
+ * todo terminar de mandar todos los mensajes por consola
+ */
 
 std::vector<std::string> mensajes;
 
@@ -77,7 +81,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
             +" Unidades en horizontal y " + std::to_string(yoffset)
                 +" unidades en vertical";
     anadirMensaje(texto);
-
+/*
     if(yoffset==1){
         if(red<1 ){
             red=red+0.1;
@@ -101,8 +105,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 
         }
     }
-
-    glClearColor ( red, green, blue, 1.0 );
+*/
 }
 
 
@@ -192,7 +195,6 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
         ImGui::NewFrame();
 
         // - Borra los buffers (color y profundidad)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         PAG::Renderer::getInstancia().refrescar();
 
 
@@ -208,25 +210,30 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
                 ImGui::TextWrapped("%s", it->c_str());
             }
 
-            //selector de color
         }
         // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();
 
-        ImGui::SetNextWindowPos ( ImVec2 (10, 10), ImGuiCond_Once );
+        ImGui::SetNextWindowPos ( ImVec2 (200, 100), ImGuiCond_Once );
 
         if( ImGui::Begin("Selector Color"))
         { // La ventana está desplegada
             ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
             //selector de color
-            static ImVec4 clear_color = ImVec4(red, green, blue, 1.0f);
-            ImGui::ColorEdit3("Color de fondo", (float*)&clear_color);
+            static ImVec4 clear_color = ImVec4(PAG::Renderer::getInstancia().getRed(), PAG::Renderer::getInstancia().getGreen(), PAG::Renderer::getInstancia().getBlue(), 1.0f);
+            ImGui::ColorPicker3("Color de fondo", (float*)&clear_color);
 
-            glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+            PAG::Renderer::getInstancia().setRed(clear_color.x);
+            PAG::Renderer::getInstancia().setGreen(clear_color.y);
+            PAG::Renderer::getInstancia().setBlue(clear_color.z);
+
+            PAG::Renderer::getInstancia().pintarColores();
 
         }
         // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();
+
+        //glClearColor(red,green,blue,1.0);
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

@@ -37,4 +37,37 @@ namespace PAG {
     void Renderer::refrescar ()
     {  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+
+    void Renderer::pintarColores() {
+
+        glClearColor(red, green, blue, 1);
+    }
+
+    /**
+     * Getters and setters de los colores
+     * @return
+     */
+    float Renderer::getGreen() const {
+        return green;
+    }
+
+    void Renderer::setGreen(float green) {
+        Renderer::green = green;
+    }
+
+    float Renderer::getRed() const {
+        return red;
+    }
+
+    void Renderer::setRed(float red) {
+        Renderer::red = red;
+    }
+
+    float Renderer::getBlue() const {
+        return blue;
+    }
+
+    void Renderer::setBlue(float blue) {
+        Renderer::blue = blue;
+    }
 }

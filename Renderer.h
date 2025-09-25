@@ -14,11 +14,27 @@ namespace PAG {
     class Renderer {
     private:
         static  Renderer* instancia;
+        float red=0;
+        float green=0;
+        float blue=0;
         Renderer();
     public:
         static Renderer& getInstancia ();
         virtual ~Renderer ();
         void refrescar ();
+        void pintarColores();
+
+        float getGreen() const;
+
+        void setGreen(float green);
+
+        float getRed() const;
+
+        void setRed(float red);
+
+        float getBlue() const;
+
+        void setBlue(float blue);
     };
 
 } // PAG
