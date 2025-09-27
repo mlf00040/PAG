@@ -3,7 +3,10 @@
 //
 
 #include "Renderer.h"
+#include "glad/glad.h"
 #include <GL/gl.h>
+#include <string>
+
 
 namespace PAG {
 
@@ -38,9 +41,25 @@ namespace PAG {
     {  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    /**
+     * Cambia el color de fondo pro los valores actuales de rgb
+     */
     void Renderer::pintarColores() {
 
         glClearColor(red, green, blue, 1);
+    }
+
+    /**
+    * Método para inicializar los parámetros globales de OpenGL
+    */
+    void PAG::Renderer::inicializaOpenGL ( )
+    {  glClearColor ( red, green, blue, 1 );
+        glEnable ( GL_DEPTH_TEST );
+        glEnable ( GL_MULTISAMPLE );
+    }
+
+    void PAG::Renderer::resizeViewPort(int w,int h) {
+        glViewport ( 0, 0, w, h );
     }
 
     /**

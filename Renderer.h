@@ -23,6 +23,8 @@ namespace PAG {
         virtual ~Renderer ();
         void refrescar ();
         void pintarColores();
+        void inicializaOpenGL ();
+        void resizeViewPort(int w,int h);
 
         float getGreen() const;
 
