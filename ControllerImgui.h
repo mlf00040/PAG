@@ -5,6 +5,7 @@
 #ifndef PAG_CONTROLLERIMGUI_H
 #define PAG_CONTROLLERIMGUI_H
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>

@@ -16,10 +16,7 @@
 
 
 /**
- *
- *
- *
- * todo terminar de mandar todos los mensajes por consola
+ * todo hacer  que lo lean de un archivo externo, esta en las diapositivas
  */
 
 std::vector<std::string> mensajes;
@@ -175,6 +172,15 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 
     //Llamamamos al iniciador de opgengl del renderer
     PAG::Renderer::getInstancia().inicializaOpenGL();
+
+    //Llamamos a crear y cargar los shaders y al modelo
+    try {
+        PAG::Renderer::getInstancia().creaShaderProgram();
+        PAG::Renderer::getInstancia().creaModelo();
+    }catch (const std::exception& e) {
+        anadirMensaje(std::string(e.what()));
+    }
+
 
     // - Ciclo de eventos de la aplicación. La condición de parada es que la
     // ventana principal deba cerrarse. Por ejemplo, si el usuario pulsa el
