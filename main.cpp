@@ -36,8 +36,8 @@ void error_callback ( int errno, const char* desc )
 void callbackRefrescoVentana ( GLFWwindow* ventana )
 {  PAG::Renderer::getInstancia().refrescar();
     glfwSwapBuffers (ventana);
-    std::string texto = "Finaliza el callback de refresco" ;
-    anadirMensaje(texto);
+    //std::string texto = "Finaliza el callback de refresco" ;
+    //anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que se cambie el tamaño
 // del área de dibujo OpenGL.
@@ -173,9 +173,10 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
     //Llamamamos al iniciador de opgengl del renderer
     PAG::Renderer::getInstancia().inicializaOpenGL();
 
+    std::string ruta="pag03";
     //Llamamos a crear y cargar los shaders y al modelo
     try {
-        PAG::Renderer::getInstancia().creaShaderProgram();
+        PAG::Renderer::getInstancia().creaShaderProgram(ruta);
         PAG::Renderer::getInstancia().creaModelo();
     }catch (const std::exception& e) {
         anadirMensaje(std::string(e.what()));

@@ -7,6 +7,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string>
 
 /**
  * Espacio de nombres para las prácticas de Programación de Aplicaciones
@@ -37,7 +38,7 @@ namespace PAG {
         void inicializaOpenGL ();
         void resizeViewPort(int w,int h);
 
-        void creaShaderProgram();
+        void creaShaderProgram(std::string ruta);
 
         void creaModelo();
 

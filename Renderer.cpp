@@ -5,6 +5,8 @@
 
 #include "Renderer.h"
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <stdexcept>
 
 
@@ -96,9 +98,9 @@ namespace PAG {
      * Método para crear, compilar y enlazar el shader program
      * @note No se incluye ninguna comprobación de errores
      */
-    void PAG::Renderer::creaShaderProgram(){
+    void PAG::Renderer::creaShaderProgram(std::string ruta){
 
-
+/*
         std::string miVertexShader =
                 "#version 410\n"
                 "layout (location = 0) in vec3 posicion;\n"
@@ -112,13 +114,30 @@ namespace PAG {
                 "void main ()\n"
                 "{  colorFragmento = vec4 ( 1.0, .4, .2, 1.0 );\n"
                 "}\n";
-
+*/
         idVS = glCreateShader ( GL_VERTEX_SHADER );
 
         //por si falla al crear el vertex shader
         if (idVS == 0) {
             throw std::runtime_error("Error: No se pudo crear el vertex shader (glCreateShader(Vertex) devolvió 0)  :(  ");
         }
+
+        //Cargamos el archivo de lectura del VertexShader
+
+        std::ifstream archivoShaderV;
+        archivoShaderV.open ( ruta+"-vs.glsl" );
+
+        if ( !archivoShaderV.is_open () )
+        {
+            throw std::runtime_error("Error: No se pudo abrir el archivo del vertex shader  :(  ");
+        }
+
+        std::stringstream streamShaderV;
+        streamShaderV << archivoShaderV.rdbuf ();
+        std::string miVertexShader = streamShaderV.str ();
+
+        archivoShaderV.close ();
+
 
         const GLchar* fuenteVS = miVertexShader.c_str ();
         glShaderSource ( idVS, 1, &fuenteVS, nullptr );
@@ -157,6 +176,22 @@ namespace PAG {
         if (idFS == 0) {
             throw std::runtime_error("Error: No se pudo crear el programa de shaders (glCreateShader (Fragment) devolvió 0)  :(  ");
         }
+
+        //Cargamos el archivo de lectura del fragment shader
+
+        std::ifstream archivoShaderF;
+        archivoShaderF.open ( ruta+"-fs.glsl" );
+
+        if ( !archivoShaderF.is_open () )
+        {
+            throw std::runtime_error("Error: No se pudo abrir el archivo del fragment shader  :(  ");
+        }
+
+        std::stringstream streamShaderF;
+        streamShaderF << archivoShaderF.rdbuf ();
+        std::string miFragmentShader = streamShaderF.str ();
+
+        archivoShaderF.close ();
 
         const GLchar* fuenteFS = miFragmentShader.c_str ();
         glShaderSource ( idFS, 1, &fuenteFS, nullptr );
