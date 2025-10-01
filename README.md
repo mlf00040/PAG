@@ -7,3 +7,9 @@ Proyecto de la asigantura de Programacion de aplicaciones graficas. 4º año Ing
 yo creo que la clase renderer se deberia de implementar como una clase normal, que tenga un atributo que sea un puntuero a si mismo. Asi si se llama desde cualquier metodo, al invocarlo ya tendriamos acceso a la clase completa y al propio metodo para recargar el renderer desde los callbacks.
 
 ![Eje1](ImagenesReadme/Eje1.png)
+
+# Ejercicio 5 Sesion 3
+
+### Si redimensionas la ventana de la aplicación, verás que el triángulo no permanece igual, sino que se deforma al mismo tiempo que la ventana. ¿A qué crees que se debe este comportamiento? 
+
+Creo que este comportamiento se debe al proceso de pipeline que estamos haciendo, ya que se llama al view port para rescalado al mover el tamaño pero en el codigo, no se vuelve a aplicar la transformacion de visualizacion ni la transformación de proyección, deformando asi el triangulo
