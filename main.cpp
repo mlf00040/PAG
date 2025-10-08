@@ -13,10 +13,11 @@
 
 #include "Renderer.h"
 #include "ControllerImgui.h"
+#include "ControllerShaders.h"
 
 
 /**
- * todo hacer  que lo lean de un archivo externo, esta en las diapositivas
+ * todo cambiar al renderer que pida los datos de opengl.
  */
 
 std::vector<std::string> mensajes;
@@ -174,14 +175,16 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
     PAG::Renderer::getInstancia().inicializaOpenGL();
 
     std::string ruta="pag03";
+
     //Llamamos a crear y cargar los shaders y al modelo
     try {
-        PAG::Renderer::getInstancia().creaShaderProgram(ruta);
+        anadirMensaje(ControllerShaders::getInstancia().crearPrograma("PAG03",ruta,ruta));
+        anadirMensaje(ControllerShaders::getInstancia().usarPrograma("PAG03"));
         PAG::Renderer::getInstancia().creaModelo();
     }catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
         anadirMensaje(std::string(e.what()));
     }
-
 
     // - Ciclo de eventos de la aplicación. La condición de parada es que la
     // ventana principal deba cerrarse. Por ejemplo, si el usuario pulsa el
