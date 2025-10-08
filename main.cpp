@@ -18,6 +18,7 @@
 
 /**
  * todo cambiar al renderer que pida los datos de opengl.
+ * todo crear la clase global con la gestion de los errores y que lo muestre por consola y no pete.
  */
 
 std::vector<std::string> mensajes;
@@ -175,7 +176,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
     PAG::Renderer::getInstancia().inicializaOpenGL();
 
     std::string ruta="pag03";
-
+/*
     //Llamamos a crear y cargar los shaders y al modelo
     try {
         anadirMensaje(ControllerShaders::getInstancia().crearPrograma("PAG03",ruta,ruta));
@@ -185,7 +186,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
         std::cout << e.what() << std::endl;
         anadirMensaje(std::string(e.what()));
     }
-
+*/
     // - Ciclo de eventos de la aplicación. La condición de parada es que la
     // ventana principal deba cerrarse. Por ejemplo, si el usuario pulsa el
     // botón de cerrar la ventana (la X).
@@ -207,7 +208,12 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 
         //Creamos la ventana del selector de color
         GUI::ControllerImgui::getInstancia().ventanaSelecColor();
-
+        try {
+            //creamos la ventana del gestor de shaders
+            GUI::ControllerImgui::getInstancia().ventanaGestionShaders();
+        }catch (const std::exception& e) {
+            anadirMensaje(e.what());
+        }
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL
         GUI::ControllerImgui::getInstancia().dibujaControladores();

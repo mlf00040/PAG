@@ -21,6 +21,8 @@ namespace GUI {
     private:
         static ControllerImgui *instancia;
 
+        std::string shaderProgramName;
+
         ControllerImgui();
 
     public:
@@ -39,6 +41,8 @@ namespace GUI {
         void ventanaMensajes (std::vector<std::string> &mensajes);
 
         void ventanaSelecColor();
+
+        void ventanaGestionShaders();
     };
 }
 

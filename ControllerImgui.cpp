@@ -3,12 +3,15 @@
 //
 
 #include "ControllerImgui.h"
+#include "ControllerShaders.h"
 
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <imgui_stdlib.h>
+
 
 
 
@@ -19,7 +22,8 @@ namespace GUI {
     /**
     * Constructor por defecto
     */
-    ControllerImgui::ControllerImgui() {}
+    ControllerImgui::ControllerImgui()
+            : shaderProgramName("pag03"){}
 
     /**
      * Destructor
@@ -126,4 +130,33 @@ namespace GUI {
         // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();
     }
+
+    void ControllerImgui::ventanaGestionShaders(){
+        ImGui::SetNextWindowPos ( ImVec2 (300, 100), ImGuiCond_Once );
+
+        if( ImGui::Begin("GestorShaders"))
+        { // La ventana está desplegada
+            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            //selector de color
+            ImGui::InputText ("##", &shaderProgramName, ImGuiInputTextFlags_AutoSelectAll );
+
+            if (ImGui::Button("Load")) {
+                if (shaderProgramName.empty()) {
+                    //throw std::runtime_error("Nombre vacío. No se puede cargar.");
+                } else {
+                    // Usamos ControllerShaders para cargar el programa
+                    try {
+                        ControllerShaders::getInstancia().crearPrograma("PAG03",shaderProgramName,shaderProgramName);
+                        ControllerShaders::getInstancia().usarPrograma("PAG03");
+                        PAG::Renderer::getInstancia().creaModelo();
+                    }catch (const std::exception& e) {
+                        throw std::runtime_error(e.what());
+                    }
+
+                }
+            }
+        }
+        // Si la ventana no está desplegada, Begin devuelve false
+        ImGui::End ();
+    };
 }
