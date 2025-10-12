@@ -142,7 +142,7 @@ namespace GUI {
 
             if (ImGui::Button("Load")) {
                 if (shaderProgramName.empty()) {
-                    //throw std::runtime_error("Nombre vacío. No se puede cargar.");
+                    ControllerMensajes::getInstancia().anadirMensaje("Nombre vacío. No se puede cargar.");
                 } else {
                     // Usamos ControllerShaders para cargar el programa
                     try {
@@ -150,7 +150,7 @@ namespace GUI {
                         ControllerShaders::getInstancia().usarPrograma("PAG03");
                         PAG::Renderer::getInstancia().creaModelo();
                     }catch (const std::exception& e) {
-                        throw std::runtime_error(e.what());
+                        ControllerMensajes::getInstancia().anadirMensaje(e.what());
                     }
 
                 }

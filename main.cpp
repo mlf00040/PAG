@@ -14,24 +14,21 @@
 #include "Renderer.h"
 #include "ControllerImgui.h"
 #include "ControllerShaders.h"
+#include "ControllerMensajes.h"
 
 
 /**
- * todo cambiar al renderer que pida los datos de opengl.
- * todo crear la clase global con la gestion de los errores y que lo muestre por consola y no pete.
+ * todo Hacer la camara y sus controladores de la practica 4
+ *
  */
 
-std::vector<std::string> mensajes;
 
-void anadirMensaje(const std::string& texto) {
-    mensajes.push_back(texto);
-}
 
 // - Esta función callback será llamada cuando GLFW produzca algún error
 void error_callback ( int errno, const char* desc )
 { std::string aux (desc);
     std::string texto = "Error de GLFW número " + std::to_string(errno) + ": " + std::string(desc);
-    anadirMensaje(texto);
+    ControllerMensajes::getInstancia().anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que el área de dibujo
 // OpenGL deba ser redibujada.
@@ -46,7 +43,7 @@ void callbackRefrescoVentana ( GLFWwindow* ventana )
 void framebuffer_size_callback ( GLFWwindow *window, int width, int height )
 { PAG::Renderer::getInstancia().resizeViewPort(width,height);
     std::string texto = "Resize callback called";
-    anadirMensaje(texto);
+    ControllerMensajes::getInstancia().anadirMensaje(texto);
 }
 // - Esta función callback será llamada cada vez que se pulse una tecla
 // dirigida al área de dibujo OpenGL.
@@ -113,10 +110,10 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 
 
     int main()
-{   anadirMensaje("Starting Application PAG - Prueba 01" );
+{   ControllerMensajes::getInstancia().anadirMensaje("Starting Application PAG - Prueba 01" );
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
     if ( glfwInit () != GLFW_TRUE )
-    { anadirMensaje("Failed to initialize GLFW");
+    { ControllerMensajes::getInstancia().anadirMensaje("Failed to initialize GLFW");
         return -1;
     }
     // - Definimos las características que queremos que tenga el contexto gráfico
@@ -134,7 +131,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
     window = glfwCreateWindow ( 1024, 576, "PAG Introduction", nullptr, nullptr );
     // - Comprobamos si la creación de la ventana ha tenido éxito.
     if ( window == nullptr )
-    {anadirMensaje("Failed to open GLFW window");
+    {ControllerMensajes::getInstancia().anadirMensaje("Failed to open GLFW window");
         glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
         return -2;
     }
@@ -144,7 +141,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 
     // - Ahora inicializamos GLAD.
     if ( !gladLoadGLLoader ( (GLADloadproc) glfwGetProcAddress ) )
-    {anadirMensaje("GLAD initialization failed");
+    {ControllerMensajes::getInstancia().anadirMensaje("GLAD initialization failed");
         glfwDestroyWindow ( window ); // - Liberamos los recursos que ocupaba GLFW.
         window = nullptr;
         glfwTerminate ();
@@ -153,13 +150,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
 
     // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
     // 3D construido.
-    std::ostringstream oss;
-    oss << glGetString(GL_RENDERER) << "\n"
-        << glGetString(GL_VENDOR) << "\n"
-        << glGetString(GL_VERSION) << "\n"
-        << glGetString(GL_SHADING_LANGUAGE_VERSION);
-    std::string info = oss.str();
-    anadirMensaje(info);
+    PAG::Renderer::getInstancia().obtenerDatosContexto();
 
     // - Registramos los callbacks que responderán a los eventos principales
     glfwSetWindowRefreshCallback ( window, callbackRefrescoVentana );
@@ -204,16 +195,15 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
         PAG::Renderer::getInstancia().refrescar();
 
         //Creamos la ventana de la consola de imgui
-        GUI::ControllerImgui::getInstancia().ventanaMensajes(mensajes);
+        std::vector<std::string> todosMensajes = ControllerMensajes::getInstancia().getMensajes();
+        GUI::ControllerImgui::getInstancia().ventanaMensajes(todosMensajes);
 
         //Creamos la ventana del selector de color
         GUI::ControllerImgui::getInstancia().ventanaSelecColor();
-        try {
-            //creamos la ventana del gestor de shaders
-            GUI::ControllerImgui::getInstancia().ventanaGestionShaders();
-        }catch (const std::exception& e) {
-            anadirMensaje(e.what());
-        }
+
+        //creamos la ventana del gestor de shaders
+        GUI::ControllerImgui::getInstancia().ventanaGestionShaders();
+
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL
         GUI::ControllerImgui::getInstancia().dibujaControladores();
@@ -228,7 +218,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
     GUI::ControllerImgui::getInstancia().liberaRecursos();
 
     // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
-    anadirMensaje("Finishing application pag prueba");
+    ControllerMensajes::getInstancia().anadirMensaje("Finishing application pag prueba");
     glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
     window = nullptr;
     glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.

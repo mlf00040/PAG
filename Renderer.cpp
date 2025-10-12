@@ -158,5 +158,15 @@ namespace PAG {
         Renderer::blue = blue;
     }
 
-
+    void Renderer::obtenerDatosContexto() {
+        // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
+        // 3D construido.
+        std::ostringstream oss;
+        oss << glGetString(GL_RENDERER) << "\n"
+            << glGetString(GL_VENDOR) << "\n"
+            << glGetString(GL_VERSION) << "\n"
+            << glGetString(GL_SHADING_LANGUAGE_VERSION);
+        std::string info = oss.str();
+        ControllerMensajes::getInstancia().anadirMensaje(info);
+    }
 }

@@ -15,6 +15,7 @@
 #include "vector"
 #include "string"
 #include "Renderer.h"
+#include "ControllerMensajes.h"
 
 namespace GUI {
     class ControllerImgui {

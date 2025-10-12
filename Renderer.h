@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include "ControllerMensajes.h"
 
 /**
  * Espacio de nombres para las prácticas de Programación de Aplicaciones
@@ -48,6 +49,8 @@ namespace PAG {
         float getBlue() const;
 
         void setBlue(float blue);
+
+        void obtenerDatosContexto ();
     };
 
 } // PAG
