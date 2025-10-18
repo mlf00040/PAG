@@ -40,6 +40,8 @@ public:
     std::string usarPrograma (const std::string &nombre);
     std::string eliminarPrograma(const std::string &nombre);
 
+    GLuint getProgramId(const std::string& nombre);
+
     std::vector<std::string > listaShadersPrograms();
 
     void limpiar();

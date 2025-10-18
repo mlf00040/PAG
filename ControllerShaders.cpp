@@ -196,6 +196,17 @@ std::string ControllerShaders::eliminarPrograma(const std::string &nombre) {
     return ("No se ha encontrado ese shaderProgram ");
 }
 
+GLuint ControllerShaders::getProgramId(const std::string& nombre) {
+    std::vector<shaderProgram>::iterator it = Programas.begin();
+    while(it != Programas.end()){
+        if (it->nombre == nombre) {
+            return it->id;
+        }
+        ++it;
+    }
+    throw std::runtime_error("Programa no encontrado: " + nombre);
+}
+
 /**
  * Devuelve una lista con todos los shaderPrograms
  * @return

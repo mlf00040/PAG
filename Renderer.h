@@ -9,6 +9,11 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include "ControllerMensajes.h"
+#include "Camara.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 /**
  * Espacio de nombres para las prácticas de Programación de Aplicaciones
@@ -19,6 +24,7 @@ namespace PAG {
     class Renderer {
     private:
         static  Renderer* instancia;
+        Camara camara;
         float red=0;
         float green=0;
         float blue=0;
@@ -27,6 +33,8 @@ namespace PAG {
         GLuint idVAO = 0;   // Identificador del vertex array object
         GLuint idVBO = 0;   // Identificador del vertex buffer object
         GLuint idIBO = 0;   // Identificador del index buffer object
+
+        GLuint programIDActivo =0;
 
     public:
         static Renderer& getInstancia ();
@@ -49,6 +57,14 @@ namespace PAG {
         float getBlue() const;
 
         void setBlue(float blue);
+
+        Camara &getCamara() ;
+
+        void setCamara(const Camara &camara);
+
+        GLuint getProgramIdActivo() const;
+
+        void setProgramIdActivo(GLuint programIdActivo);
 
         void obtenerDatosContexto ();
     };

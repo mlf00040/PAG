@@ -16,6 +16,7 @@
 #include "string"
 #include "Renderer.h"
 #include "ControllerMensajes.h"
+#include "Camara.h"
 
 namespace GUI {
     class ControllerImgui {
@@ -23,6 +24,7 @@ namespace GUI {
         static ControllerImgui *instancia;
 
         std::string shaderProgramName;
+        MovCamara movimientoCamaraActual = MovCamara::NO;
 
         ControllerImgui();
 
@@ -44,6 +46,8 @@ namespace GUI {
         void ventanaSelecColor();
 
         void ventanaGestionShaders();
+
+        void ventanaMovimientosCamara();
     };
 }
 

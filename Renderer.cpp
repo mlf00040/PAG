@@ -60,6 +60,14 @@ namespace PAG {
         glBindVertexArray ( idVAO );
         glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, idIBO );
         glDrawElements ( GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr );
+
+        //Obtenemos los uniforms
+        GLint mVision = glGetUniformLocation(programIDActivo, "mVision");
+        GLint mProjeccion = glGetUniformLocation(programIDActivo, "mProjeccion");
+
+        // Enviar matrices al shader
+        glUniformMatrix4fv(mVision, 1, GL_FALSE, glm::value_ptr(camara.matrizVision()));
+        glUniformMatrix4fv(mProjeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
     }
 
     /**
@@ -168,5 +176,21 @@ namespace PAG {
             << glGetString(GL_SHADING_LANGUAGE_VERSION);
         std::string info = oss.str();
         ControllerMensajes::getInstancia().anadirMensaje(info);
+    }
+
+    GLuint Renderer::getProgramIdActivo() const {
+        return programIDActivo;
+    }
+
+    void Renderer::setProgramIdActivo(GLuint programIdActivo) {
+        programIDActivo = programIdActivo;
+    }
+
+    Camara &Renderer::getCamara()  {
+        return camara;
+    }
+
+    void Renderer::setCamara(const Camara &camara) {
+        Renderer::camara = camara;
     }
 }

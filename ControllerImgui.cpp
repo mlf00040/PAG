@@ -146,8 +146,12 @@ namespace GUI {
                 } else {
                     // Usamos ControllerShaders para cargar el programa
                     try {
-                        ControllerShaders::getInstancia().crearPrograma("PAG03",shaderProgramName,shaderProgramName);
-                        ControllerShaders::getInstancia().usarPrograma("PAG03");
+                        //Creamos el programa y lo usamos
+                        ControllerShaders::getInstancia().crearPrograma(shaderProgramName,shaderProgramName,shaderProgramName);
+                        ControllerShaders::getInstancia().usarPrograma(shaderProgramName);
+                        // mandamos al renderer cual es el id del programa que estamos usando
+                        PAG::Renderer::getInstancia().setProgramIdActivo(ControllerShaders::getInstancia().getProgramId(shaderProgramName));
+                        // creamos el modelo
                         PAG::Renderer::getInstancia().creaModelo();
                     }catch (const std::exception& e) {
                         ControllerMensajes::getInstancia().anadirMensaje(e.what());
@@ -159,4 +163,59 @@ namespace GUI {
         // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();
     };
+
+    void ControllerImgui::ventanaMovimientosCamara(){
+
+        ImGui::SetNextWindowPos ( ImVec2 (300, 100), ImGuiCond_Once );
+
+        if( ImGui::Begin("Movimientos Camara"))
+        { // La ventana está desplegada
+            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            //selector de color
+            const char* items[] = {
+                        "NO", "PAN", "TILT", "DOLLY", "CRANE", "ORBIT", "ZOOM"
+            };
+            int itemCurrent = static_cast<int>(movimientoCamaraActual);
+
+            if (ImGui::Combo("##movement", &itemCurrent, items, IM_ARRAYSIZE(items))) {
+                movimientoCamaraActual = static_cast<MovCamara>(itemCurrent);
+            }
+
+            switch (movimientoCamaraActual) {
+                case MovCamara::NO:
+                    break;
+
+                case MovCamara::PAN:
+                    break;
+
+                case MovCamara::TILT:
+                    break;
+
+                case MovCamara::DOLLY:
+                    break;
+
+                case MovCamara::CRANE:
+                    break;
+
+                case MovCamara::ORBIT:
+                    break;
+
+                case MovCamara::ZOOM:
+                    break;
+
+                default:
+                    ImGui::Text("Select a movement to control the camera.");
+                    break;
+            }
+
+            if (ImGui::Button("Reset Camera")) {
+                PAG::Renderer::getInstancia().getCamara().reset();
+                ControllerMensajes::getInstancia().anadirMensaje("Cámara reseteada.");
+            }
+        }
+        // Si la ventana no está desplegada, Begin devuelve false
+        ImGui::End ();
+    }
 }
+
+

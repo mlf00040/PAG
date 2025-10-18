@@ -204,6 +204,9 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
         //creamos la ventana del gestor de shaders
         GUI::ControllerImgui::getInstancia().ventanaGestionShaders();
 
+        // Dibujamos los controladores de la camara
+        GUI::ControllerImgui::getInstancia().ventanaMovimientosCamara();
+
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL
         GUI::ControllerImgui::getInstancia().dibujaControladores();
