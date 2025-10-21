@@ -24,7 +24,13 @@ namespace GUI {
         static ControllerImgui *instancia;
 
         std::string shaderProgramName;
+
         MovCamara movimientoCamaraActual = MovCamara::NO;
+        bool pulsado = false;
+        double lastx =0;
+        double lasty =0;
+        float sensibilidad = 0.3;
+
 
         ControllerImgui();
 
@@ -47,7 +53,11 @@ namespace GUI {
 
         void ventanaGestionShaders();
 
+        void pulsarMouse(bool sePulsa, double x, double y);
+
         void ventanaMovimientosCamara();
+
+        void procesaMovimiento(double x, double y);
     };
 }
 

@@ -5,9 +5,13 @@
 #ifndef PAG_CAMARA_H
 #define PAG_CAMARA_H
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/transform.hpp>
+
 
 
 
@@ -40,6 +44,10 @@ public:
 
     void pan(float angulo);
     void tilt(float angulo);
+    void dolly(float posX, float posY);
+    void crane(float posY);
+    void orbit(float longitud, float latitud);
+    void zoom(float nuevofov);
     void reset();
 
 

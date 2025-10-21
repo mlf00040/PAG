@@ -17,8 +17,11 @@
 #include "ControllerMensajes.h"
 
 
+
 /**
- * todo Hacer la camara y sus controladores de la practica 4
+ * todo falta el orbit.
+ * todo faltan las comprobaciones del eje y del orbit y del tilt para que no de 360 grados
+ * tod falta añadir en el readme la explicacion y generar ya si un diagrama del programa
  *
  */
 
@@ -57,19 +60,19 @@ void key_callback ( GLFWwindow *window, int key, int scancode, int action, int m
 // - Esta función callback será llamada cada vez que se pulse algún botón
 // del ratón sobre el área de dibujo OpenGL.
 void mouse_button_callback ( GLFWwindow *window, int button, int action, int mods )
-{ if ( action == GLFW_PRESS )
-    {   //std::string texto = "Pulsado el botón: " + std::to_string(button) ;
-        //anadirMensaje(texto);
-        //comunicar al evento del raton de imGui
-        ImGuiIO& io = ImGui::GetIO ();
-        io.AddMouseButtonEvent ( button, true );
+{
+    ImGuiIO& io = ImGui::GetIO ();
+    io.AddMouseButtonEvent ( button, true );
+
+    if (io.WantCaptureMouse) {
+        return;
     }
-    else if ( action == GLFW_RELEASE )
-    {   //std::string texto = "Soltado el botón: " + std::to_string(button);
-        //anadirMensaje(texto);
-        //comunicar al evento del raton de imGui
-        ImGuiIO& io = ImGui::GetIO ();
-        io.AddMouseButtonEvent ( button, false );
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+
+        // Notifica a ControllerImgui
+        GUI::ControllerImgui::getInstancia().pulsarMouse(action == GLFW_PRESS, x, y);
     }
 }
 // - Esta función callback será llamada cada vez que se mueva la rueda
@@ -106,6 +109,13 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
         }
     }
 */
+}
+// - Esta función callback será llamada cada vez que se mueva el raton sobre el area de dibujo de opengl
+void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
+    ImGuiIO& io = ImGui::GetIO();
+    glfwGetCursorPos(window, &posx, &posy);
+    GUI::ControllerImgui::getInstancia().procesaMovimiento(posx, posy);
+
 }
 
 
@@ -158,6 +168,7 @@ void scroll_callback ( GLFWwindow *window, double xoffset, double yoffset )
     glfwSetKeyCallback ( window, key_callback );
     glfwSetMouseButtonCallback ( window, mouse_button_callback );
     glfwSetScrollCallback ( window, scroll_callback );
+    glfwSetCursorPosCallback(window,mouse_pos_callback);
 
 
     //Inicializa IMGUI

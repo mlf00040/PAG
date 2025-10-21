@@ -15,6 +15,8 @@
 
 
 
+
+
 namespace GUI {
 
     ControllerImgui *GUI::ControllerImgui::instancia = nullptr;
@@ -164,6 +166,14 @@ namespace GUI {
         ImGui::End ();
     };
 
+    void ControllerImgui::pulsarMouse(bool sePulsa, double x, double y) {
+        pulsado=sePulsa;
+        if(pulsado){
+            lastx=x;
+            lasty=y;
+        }
+    }
+
     void ControllerImgui::ventanaMovimientosCamara(){
 
         ImGui::SetNextWindowPos ( ImVec2 (300, 100), ImGuiCond_Once );
@@ -181,41 +191,62 @@ namespace GUI {
                 movimientoCamaraActual = static_cast<MovCamara>(itemCurrent);
             }
 
-            switch (movimientoCamaraActual) {
-                case MovCamara::NO:
-                    break;
-
-                case MovCamara::PAN:
-                    break;
-
-                case MovCamara::TILT:
-                    break;
-
-                case MovCamara::DOLLY:
-                    break;
-
-                case MovCamara::CRANE:
-                    break;
-
-                case MovCamara::ORBIT:
-                    break;
-
-                case MovCamara::ZOOM:
-                    break;
-
-                default:
-                    ImGui::Text("Select a movement to control the camera.");
-                    break;
-            }
-
             if (ImGui::Button("Reset Camera")) {
                 PAG::Renderer::getInstancia().getCamara().reset();
                 ControllerMensajes::getInstancia().anadirMensaje("Cámara reseteada.");
+            }
+            ImGui::Text("Sensibilidad: ");
+            ImGui::Text(std::to_string(sensibilidad).c_str());
+
+            if (ImGui::Button("+ 0.1")) {
+                sensibilidad+=0.1;
+            }
+            if (ImGui::Button("- 0.1")) {
+                sensibilidad-=0.1;
             }
         }
         // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();
     }
+
+    void ControllerImgui::procesaMovimiento(double x, double y) {
+
+        if(!pulsado || movimientoCamaraActual==MovCamara::NO){
+            return;
+        }
+
+        float dx = static_cast<float>(x - lastx);
+        float dy = static_cast<float>(y - lasty);
+        lastx = x;
+        lasty = y;
+
+        switch (movimientoCamaraActual) {
+            case MovCamara::NO:
+                break;
+
+            case MovCamara::PAN:
+                PAG::Renderer::getInstancia().getCamara().pan(dx * sensibilidad);
+                break;
+
+            case MovCamara::TILT:
+                PAG::Renderer::getInstancia().getCamara().tilt(-dy * sensibilidad);
+                break;
+
+            case MovCamara::DOLLY:
+                PAG::Renderer::getInstancia().getCamara().dolly(dx * sensibilidad * 0.1,dy * sensibilidad * 0.1);
+                break;
+
+            case MovCamara::CRANE:
+                PAG::Renderer::getInstancia().getCamara().crane(dy * sensibilidad * 0.1);
+                break;
+
+            case MovCamara::ORBIT:
+                break;
+
+            case MovCamara::ZOOM:
+                PAG::Renderer::getInstancia().getCamara().zoom(-dx * sensibilidad);
+                break;
+
+        }
+    }
 }
-
-
