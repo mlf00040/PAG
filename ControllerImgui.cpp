@@ -241,10 +241,11 @@ namespace GUI {
                 break;
 
             case MovCamara::ORBIT:
+                PAG::Renderer::getInstancia().getCamara().orbit(dx * sensibilidad,-dy * sensibilidad);
                 break;
 
             case MovCamara::ZOOM:
-                PAG::Renderer::getInstancia().getCamara().zoom(-dx * sensibilidad);
+                PAG::Renderer::getInstancia().getCamara().zoom(-dy * sensibilidad);
                 break;
 
         }

@@ -19,9 +19,8 @@
 
 
 /**
- * todo falta el orbit.
+ *
  * todo faltan las comprobaciones del eje y del orbit y del tilt para que no de 360 grados
- * tod falta añadir en el readme la explicacion y generar ya si un diagrama del programa
  *
  */
 

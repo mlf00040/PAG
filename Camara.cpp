@@ -88,6 +88,31 @@ void Camara::crane(float posY) {
     posicion += desplazamiento;
     punto += desplazamiento;
 }
+/**
+ * movmiento enorbital alrededor del punto de vision
+ * @param longitud
+ * @param latitud
+ */
+void Camara::orbit(float longitud, float latitud) {
+    //es el pan mas el tilt pero aplicado a la posicion de la camara y teniendo encuenta el punto  :D
+
+    //creas la matriz de rotacion
+    glm::mat4 rotacion = glm::rotate((glm::mat4(1.0f)),glm::radians(longitud),y);
+    //aplica la matriz de rotacion al vector
+    glm::vec4 aplicadaRotacion = rotacion * glm::vec4(punto - posicion, 0.0f);
+    //aplicas la rotacion ya al punto.
+    posicion = punto + glm::vec3(aplicadaRotacion);
+
+
+    //calculamos el eje de rotacion
+    glm::vec3 eje = glm::cross(y,glm::normalize(punto-posicion));
+    //creas la matriz de rotacion
+    glm::mat4 rotacion2 = glm::rotate((glm::mat4(1.0f)),glm::radians(latitud),eje);
+    //aplica la matriz de rotacion al vector
+    glm::vec4 aplicadaRotacion2 = rotacion2 * glm::vec4(punto - posicion, 0.0f);
+    //aplicas la rotacion ya al punto.
+    posicion = punto + glm::vec3(aplicadaRotacion2);
+}
 
 /**
  * cambiar el fov
