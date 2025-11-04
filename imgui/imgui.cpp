@@ -350,7 +350,7 @@ IMPLEMENTING SUPPORT for ImGuiBackendFlags_RendererHasTextures:
         io.DeltaTime = 1.0f/60.0f;              // set the time elapsed since the previous frame (in seconds)
         io.DisplaySize.x = 1920.0f;             // set the current display width
         io.DisplaySize.y = 1280.0f;             // set the current display height here
-        io.AddMousePosEvent(mouse_x, mouse_y);  // update mouse position
+        io.AddMousePosEvent(mouse_x, mouse_y);  // update mouse posicion
         io.AddMouseButtonEvent(0, mouse_b[0]);  // update mouse button states
         io.AddMouseButtonEvent(1, mouse_b[1]);  // update mouse button states
 
@@ -681,7 +681,7 @@ IMPLEMENTING SUPPORT for ImGuiBackendFlags_RendererHasTextures:
                          - SliderScalar(), SliderScalarN(), SliderFloat(), SliderFloat2(), SliderFloat3(), SliderFloat4(): For old signatures ending with (..., const char* format, float power = 1.0f) -> use (..., format ImGuiSliderFlags_Logarithmic) if power != 1.0f.
                          - BeginPopupContextWindow(const char*, ImGuiMouseButton, bool) -> use BeginPopupContextWindow(const char*, ImGuiPopupFlags)
  - 2022/09/02 (1.89) - obsoleted using SetCursorPos()/SetCursorScreenPos() to extend parent window/cell boundaries.
-                       this relates to when moving the cursor position beyond current boundaries WITHOUT submitting an item.
+                       this relates to when moving the cursor posicion beyond current boundaries WITHOUT submitting an item.
                          - previously this would make the window content size ~200x200:
                               Begin(...) + SetCursorScreenPos(GetCursorScreenPos() + ImVec2(200,200)) + End();
                          - instead, please submit an item:
@@ -962,8 +962,8 @@ IMPLEMENTING SUPPORT for ImGuiBackendFlags_RendererHasTextures:
  - 2016/01/23 (1.48) - fixed not honoring exact width passed to PushItemWidth(), previously it would add extra FramePadding.x*2 over that width. if you had manual pixel-perfect alignment in place it might affect you.
  - 2015/12/27 (1.48) - fixed ImDrawList::AddRect() which used to render a rectangle 1 px too large on each axis.
  - 2015/12/04 (1.47) - renamed Color() helpers to ValueColor() - dangerously named, rarely used and probably to be made obsolete.
- - 2015/08/29 (1.45) - with the addition of horizontal scrollbar we made various fixes to inconsistencies with dealing with cursor position.
-                       GetCursorPos()/SetCursorPos() functions now include the scrolled amount. It shouldn't affect the majority of users, but take note that SetCursorPosX(100.0f) puts you at +100 from the starting x position which may include scrolling, not at +100 from the window left side.
+ - 2015/08/29 (1.45) - with the addition of horizontal scrollbar we made various fixes to inconsistencies with dealing with cursor posicion.
+                       GetCursorPos()/SetCursorPos() functions now include the scrolled amount. It shouldn't affect the majority of users, but take note that SetCursorPosX(100.0f) puts you at +100 from the starting x posicion which may include scrolling, not at +100 from the window left side.
                        GetContentRegionMax()/GetWindowContentRegionMin()/GetWindowContentRegionMax() functions allow include the scrolled amount. Typically those were used in cases where no scrolling would happen so it may not be a problem, but watch out!
  - 2015/08/29 (1.45) - renamed style.ScrollbarWidth to style.ScrollbarSize
  - 2015/08/05 (1.44) - split imgui.cpp into extra files: imgui_demo.cpp imgui_draw.cpp imgui_internal.h that you need to add to your project.
@@ -984,7 +984,7 @@ IMPLEMENTING SUPPORT for ImGuiBackendFlags_RendererHasTextures:
                      - refer to code in the examples/ folder or ask on the GitHub if you are unsure of how to upgrade. please upgrade!
  - 2015/07/10 (1.43) - changed SameLine() parameters from int to float.
  - 2015/07/02 (1.42) - renamed SetScrollPosHere() to SetScrollFromCursorPos(). Kept inline redirection function (will obsolete).
- - 2015/07/02 (1.42) - renamed GetScrollPosY() to GetScrollY(). Necessary to reduce confusion along with other scrolling functions, because positions (e.g. cursor position) are not equivalent to scrolling amount.
+ - 2015/07/02 (1.42) - renamed GetScrollPosY() to GetScrollY(). Necessary to reduce confusion along with other scrolling functions, because positions (e.g. cursor posicion) are not equivalent to scrolling amount.
  - 2015/06/14 (1.41) - changed ImageButton() default bg_col parameter from (0,0,0,1) (black) to (0,0,0,0) (transparent) - makes a difference when texture have transparence
  - 2015/06/14 (1.41) - changed Selectable() API from (label, selected, size) to (label, selected, flags, size). Size override should have been rarely used. Sorry!
  - 2015/05/31 (1.40) - renamed GetWindowCollapsed() to IsWindowCollapsed() for consistency. Kept inline redirection function (will obsolete).
@@ -1408,7 +1408,7 @@ ImGuiStyle::ImGuiStyle()
     ItemSpacing                 = ImVec2(8,4);      // Horizontal and vertical spacing between widgets/lines
     ItemInnerSpacing            = ImVec2(4,4);      // Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label)
     CellPadding                 = ImVec2(4,2);      // Padding within a table cell. Cellpadding.x is locked for entire table. CellPadding.y may be altered between different rows.
-    TouchExtraPadding           = ImVec2(0,0);      // Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
+    TouchExtraPadding           = ImVec2(0,0);      // Expand reactive bounding box for touch-based system where touch posicion is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
     IndentSpacing               = 21.0f;            // Horizontal spacing when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
     ColumnsMinSpacing           = 6.0f;             // Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).
     ScrollbarSize               = 14.0f;            // Width of the vertical scrollbar, Height of the horizontal scrollbar
@@ -1437,7 +1437,7 @@ ImGuiStyle::ImGuiStyle()
     SeparatorTextBorderSize     = 3.0f;             // Thickness of border in SeparatorText()
     SeparatorTextAlign          = ImVec2(0.0f,0.5f);// Alignment of text within the separator. Defaults to (0.0f, 0.5f) (left aligned, center).
     SeparatorTextPadding        = ImVec2(20.0f,3.f);// Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.
-    DisplayWindowPadding        = ImVec2(19,19);    // Window position are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.
+    DisplayWindowPadding        = ImVec2(19,19);    // Window posicion are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.
     DisplaySafeAreaPadding      = ImVec2(3,3);      // If you cannot see the edge of your screen (e.g. on a TV) increase the safe area padding. Covers popups/tooltips as well regular windows.
     MouseCursorScale            = 1.0f;             // Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). May be removed later.
     AntiAliasedLines            = true;             // Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU.
@@ -2148,7 +2148,7 @@ const char* ImStristr(const char* haystack, const char* haystack_end, const char
     return NULL;
 }
 
-// Trim str by offsetting contents when there's leading data + writing a \0 at the trailing position. We use this in situation where the cost is negligible.
+// Trim str by offsetting contents when there's leading data + writing a \0 at the trailing posicion. We use this in situation where the cost is negligible.
 void ImStrTrimBlanks(char* buf)
 {
     char* p = buf;
@@ -3128,7 +3128,7 @@ static void ImGuiListClipper_SortAndFuseRanges(ImVector<ImGuiListClipperRange>& 
 
 static void ImGuiListClipper_SeekCursorAndSetupPrevLine(ImGuiListClipper* clipper, float pos_y, float line_height)
 {
-    // Set cursor position and a few other things so that SetScrollHereY() and Columns() can work when seeking cursor.
+    // Set cursor posicion and a few other things so that SetScrollHereY() and Columns() can work when seeking cursor.
     // FIXME: It is problematic that we have to do that here, because custom/equivalent end-user code would stumble on the same issue.
     // The clipper should probably have a final step to display the last item in a regular manner, maybe with an opt-out flag for data sets which may have costly seek?
     ImGuiContext& g = *GImGui;
@@ -3139,7 +3139,7 @@ static void ImGuiListClipper_SeekCursorAndSetupPrevLine(ImGuiListClipper* clippe
     window->DC.CursorPosPrevLine.y = window->DC.CursorPos.y - line_height;  // Setting those fields so that SetScrollHereY() can properly function after the end of our clipper usage.
     window->DC.PrevLineSize.y = (line_height - g.Style.ItemSpacing.y);      // If we end up needing more accurate data (to e.g. use SameLine) we may as well make the clipper have a fourth step to let user process and display the last item in their list.
     if (ImGuiOldColumns* columns = window->DC.CurrentColumns)
-        columns->LineMinY = window->DC.CursorPos.y;                         // Setting this so that cell Y position are set properly
+        columns->LineMinY = window->DC.CursorPos.y;                         // Setting this so that cell Y posicion are set properly
     if (ImGuiTable* table = g.CurrentTable)
     {
         if (table->IsInsideRow)
@@ -3197,7 +3197,7 @@ void ImGuiListClipper::End()
 {
     if (ImGuiListClipperData* data = (ImGuiListClipperData*)TempData)
     {
-        // In theory here we should assert that we are already at the right position, but it seems saner to just seek at the end and not assert/crash the user.
+        // In theory here we should assert that we are already at the right posicion, but it seems saner to just seek at the end and not assert/crash the user.
         ImGuiContext& g = *Ctx;
         IMGUI_DEBUG_LOG_CLIPPER("Clipper: End() in '%s'\n", g.CurrentWindow->Name);
         if (ItemsCount >= 0 && ItemsCount < INT_MAX && DisplayStart >= 0)
@@ -3356,8 +3356,8 @@ static bool ImGuiListClipper_StepInternal(ImGuiListClipper* clipper)
             data->Ranges.push_back(ImGuiListClipperRange::FromPositions(min_y, max_y, off_min, off_max));
         }
 
-        // Convert position ranges to item index ranges
-        // - Very important: when a starting position is after our maximum item, we set Min to (ItemsCount - 1). This allows us to handle most forms of wrapping.
+        // Convert posicion ranges to item index ranges
+        // - Very important: when a starting posicion is after our maximum item, we set Min to (ItemsCount - 1). This allows us to handle most forms of wrapping.
         // - Due to how Selectable extra padding they tend to be "unaligned" with exact unit in the item list,
         //   which with the flooring/ceiling tend to lead to 2 items instead of one being submitted.
         for (ImGuiListClipperRange& range : data->Ranges)
@@ -3385,7 +3385,7 @@ static bool ImGuiListClipper_StepInternal(ImGuiListClipper* clipper)
         return true;
     }
 
-    // After the last step: Let the clipper validate that we have reached the expected Y position (corresponding to element DisplayEnd),
+    // After the last step: Let the clipper validate that we have reached the expected Y posicion (corresponding to element DisplayEnd),
     // Advance the cursor to the end of the list and then returns 'false' to end the loop.
     if (clipper->ItemsCount < INT_MAX)
         clipper->SeekCursorForItem(clipper->ItemsCount);
@@ -5743,7 +5743,7 @@ static void ImGui::RenderDimmedBackgroundBehindWindow(ImGuiWindow* window, ImU32
     {
         // We've already called AddWindowToDrawData() which called DrawList->ChannelsMerge() on DockNodeHost windows,
         // and draw list have been trimmed already, hence the explicit recreation of a draw command if missing.
-        // FIXME: This is creating complication, might be simpler if we could inject a drawlist in drawdata at a given position and not attempt to manipulate ImDrawCmd order.
+        // FIXME: This is creating complication, might be simpler if we could inject a drawlist in drawdata at a given posicion and not attempt to manipulate ImDrawCmd order.
         ImDrawList* draw_list = window->RootWindow->DrawList;
         if (draw_list->CmdBuffer.Size == 0)
             draw_list->AddDrawCmd();
@@ -6019,7 +6019,7 @@ ImVec2 ImGui::CalcTextSize(const char* text, const char* text_end, bool hide_tex
     return text_size;
 }
 
-// Find window given position, search front-to-back
+// Find window given posicion, search front-to-back
 // - Typically write output back to g.HoveredWindow and g.HoveredWindowUnderMovingWindow.
 // - FIXME: Note that we have an inconsequential lag here: OuterRectClipped is updated in Begin(), so windows moved programmatically
 //   with SetWindowPos() and not SetNextWindowPos() will have that rectangle lagging by a frame at the time FindHoveredWindow() is
@@ -6121,7 +6121,7 @@ bool ImGui::IsItemFocused()
 }
 
 // Important: this can be useful but it is NOT equivalent to the behavior of e.g.Button()!
-// Most widgets have specific reactions based on mouse-up/down state, mouse position etc.
+// Most widgets have specific reactions based on mouse-up/down state, mouse posicion etc.
 bool ImGui::IsItemClicked(ImGuiMouseButton mouse_button)
 {
     return IsMouseClicked(mouse_button) && IsItemHovered(ImGuiHoveredFlags_None);
@@ -6458,8 +6458,8 @@ static void ApplyWindowSettings(ImGuiWindow* window, ImGuiWindowSettings* settin
 
 static void InitOrLoadWindowSettings(ImGuiWindow* window, ImGuiWindowSettings* settings)
 {
-    // Initial window state with e.g. default/arbitrary window position
-    // Use SetNextWindowPos() with the appropriate condition flag to change the initial position of a window.
+    // Initial window state with e.g. default/arbitrary window posicion
+    // Use SetNextWindowPos() with the appropriate condition flag to change the initial posicion of a window.
     const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
     window->Pos = main_viewport->Pos + ImVec2(60, 60);
     window->Size = window->SizeFull = ImVec2(0, 0);
@@ -6796,7 +6796,7 @@ static int ImGui::UpdateWindowManualResize(ImGuiWindow* window, const ImVec2& si
         else if (held)
         {
             // Resize from any of the four corners
-            // We don't use an incremental MouseDelta but rather compute an absolute target size based on mouse position
+            // We don't use an incremental MouseDelta but rather compute an absolute target size based on mouse posicion
             ImVec2 clamp_min = ImVec2(def.CornerPosN.x == 1.0f ? clamp_rect.Min.x : -FLT_MAX, (def.CornerPosN.y == 1.0f || (def.CornerPosN.y == 0.0f && window_move_from_title_bar)) ? clamp_rect.Min.y : -FLT_MAX);
             ImVec2 clamp_max = ImVec2(def.CornerPosN.x == 0.0f ? clamp_rect.Max.x : +FLT_MAX, def.CornerPosN.y == 0.0f ? clamp_rect.Max.y : +FLT_MAX);
             ImVec2 corner_target = g.IO.MousePos - g.ActiveIdClickOffset + ImLerp(def.InnerDir * grip_hover_outer_size, def.InnerDir * -grip_hover_inner_size, def.CornerPosN); // Corner of the window corresponding to our corner grip
@@ -6841,7 +6841,7 @@ static int ImGui::UpdateWindowManualResize(ImGuiWindow* window, const ImVec2& si
             {
                 size_target[axis] = CalcWindowSizeAfterConstraint(window, size_auto_fit)[axis];
                 ret_auto_fit_mask |= (1 << axis);
-                hovered = held = false; // So border doesn't show highlighted at new position
+                hovered = held = false; // So border doesn't show highlighted at new posicion
             }
             ClearActiveID();
         }
@@ -6863,11 +6863,11 @@ static int ImGui::UpdateWindowManualResize(ImGuiWindow* window, const ImVec2& si
             const float border_target_rel_mode_for_axis = border_curr[axis] + g.IO.MouseDelta[axis];
             const float border_target_abs_mode_for_axis = g.IO.MousePos[axis] - g.ActiveIdClickOffset[axis] + g.WindowsBorderHoverPadding; // Match ButtonBehavior() padding above.
 
-            // Use absolute mode position
+            // Use absolute mode posicion
             ImVec2 border_target = window->Pos;
             border_target[axis] = border_target_abs_mode_for_axis;
 
-            // Use relative mode target for child window, ignore resize when moving back toward the ideal absolute position.
+            // Use relative mode target for child window, ignore resize when moving back toward the ideal absolute posicion.
             bool ignore_resize = false;
             if (g.WindowResizeRelativeMode)
             {
@@ -6923,7 +6923,7 @@ static int ImGui::UpdateWindowManualResize(ImGuiWindow* window, const ImVec2& si
         }
     }
 
-    // Apply back modified position/size to window
+    // Apply back modified posicion/size to window
     const ImVec2 curr_pos = window->Pos;
     const ImVec2 curr_size = window->SizeFull;
     if (size_target.x != FLT_MAX && (window->Size.x != size_target.x || window->SizeFull.x != size_target.x))
@@ -7574,7 +7574,7 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 
         // POSITION
 
-        // Popup latch its initial position, will position itself when it appears next frame
+        // Popup latch its initial posicion, will posicion itself when it appears next frame
         if (window_just_activated_by_user)
         {
             window->AutoPosLastDirection = ImGuiDir_None;
@@ -7602,14 +7602,14 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
         else if ((flags & ImGuiWindowFlags_Tooltip) != 0 && !window_pos_set_by_api && !window_is_child_tooltip)
             window->Pos = FindBestWindowPosForPopup(window);
 
-        // Calculate the range of allowed position for that window (to be movable and visible past safe area padding)
+        // Calculate the range of allowed posicion for that window (to be movable and visible past safe area padding)
         // When clamping to stay visible, we will enforce that window->Pos stays inside of visibility_rect.
         ImRect viewport_rect(viewport->GetMainRect());
         ImRect viewport_work_rect(viewport->GetWorkRect());
         ImVec2 visibility_padding = ImMax(style.DisplayWindowPadding, style.DisplaySafeAreaPadding);
         ImRect visibility_rect(viewport_work_rect.Min + visibility_padding, viewport_work_rect.Max - visibility_padding);
 
-        // Clamp position/size so window stays visible within its viewport or monitor
+        // Clamp posicion/size so window stays visible within its viewport or monitor
         // Ignore zero-sized display explicitly to avoid losing positions if a window manager reports zero-sized window when initializing or minimizing.
         if (!window_pos_set_by_api && !(flags & ImGuiWindowFlags_ChildWindow))
             if (viewport_rect.GetWidth() > 0.0f && viewport_rect.GetHeight() > 0.0f)
@@ -9837,7 +9837,7 @@ ImVec2 ImGui::GetMousePosOnOpeningCurrentPopup()
     return g.IO.MousePos;
 }
 
-// We typically use ImVec2(-FLT_MAX,-FLT_MAX) to denote an invalid mouse position.
+// We typically use ImVec2(-FLT_MAX,-FLT_MAX) to denote an invalid mouse posicion.
 bool ImGui::IsMousePosValid(const ImVec2* mouse_pos)
 {
     // The assert is only to silence a false-positive in XCode Static Analysis.
@@ -9858,9 +9858,9 @@ bool ImGui::IsAnyMouseDown()
     return false;
 }
 
-// Return the delta from the initial clicking position while the mouse button is clicked or was just released.
+// Return the delta from the initial clicking posicion while the mouse button is clicked or was just released.
 // This is locked and return 0.0f until the mouse moves past a distance threshold at least once.
-// NB: This is only valid if IsMousePosValid(). backends in theory should always keep mouse position valid when dragging even outside the client window.
+// NB: This is only valid if IsMousePosValid(). backends in theory should always keep mouse posicion valid when dragging even outside the client window.
 ImVec2 ImGui::GetMouseDragDelta(ImGuiMouseButton button, float lock_threshold)
 {
     ImGuiContext& g = *GImGui;
@@ -9999,7 +9999,7 @@ static void ImGui::UpdateMouseInputs()
     // - FIXME: When we can distinguish e.g. touchpad scroll events from mouse ones, we'll set this accordingly based on input source.
     io.MouseWheelRequestAxisSwap = io.KeyShift && !io.ConfigMacOSXBehaviors;
 
-    // Round mouse position to avoid spreading non-rounded position (e.g. UpdateManualResize doesn't support them well)
+    // Round mouse posicion to avoid spreading non-rounded posicion (e.g. UpdateManualResize doesn't support them well)
     if (IsMousePosValid(&io.MousePos))
         io.MousePos = g.MouseLastValidPos = ImFloor(io.MousePos);
 
@@ -10049,7 +10049,7 @@ static void ImGui::UpdateMouseInputs()
         }
         else if (io.MouseDown[i])
         {
-            // Maintain the maximum distance we reaching from the initial click position, which is used with dragging threshold
+            // Maintain the maximum distance we reaching from the initial click posicion, which is used with dragging threshold
             float delta_sqr_click_pos = IsMousePosValid(&io.MousePos) ? ImLengthSqr(io.MousePos - io.MouseClickedPos[i]) : 0.0f;
             io.MouseDragMaxDistanceSqr[i] = ImMax(io.MouseDragMaxDistanceSqr[i], delta_sqr_click_pos);
         }
@@ -10644,7 +10644,7 @@ bool ImGui::DebugCheckVersionAndDataLayout(const char* version, size_t sz_io, si
 //    Begin(...) + Dummy(ImVec2(200,200)) + End(); // OK
 //
 // The assert below detects when the _last_ call in a window was a SetCursorPos() not followed by an Item,
-// and with a position that would grow the parent contents size.
+// and with a posicion that would grow the parent contents size.
 //
 // Advanced:
 // - For reference, old logic was causing issues because it meant that SetCursorScreenPos(GetCursorScreenPos())
@@ -10990,7 +10990,7 @@ void ImGui::ErrorCheckEndFrameFinalizeErrorTooltip()
 #endif
 }
 
-// Pseudo-tooltip. Follow mouse until CTRL is held. When CTRL is held we lock position, allowing to click it.
+// Pseudo-tooltip. Follow mouse until CTRL is held. When CTRL is held we lock posicion, allowing to click it.
 bool ImGui::BeginErrorTooltip()
 {
     ImGuiContext& g = *GImGui;
@@ -11188,7 +11188,7 @@ void ImGui::ItemSize(const ImVec2& size, float text_baseline_y)
         return;
 
     // We increase the height in this function to accommodate for baseline offset.
-    // In theory we should be offsetting the starting position (window->DC.CursorPos), that will be the topic of a larger refactor,
+    // In theory we should be offsetting the starting posicion (window->DC.CursorPos), that will be the topic of a larger refactor,
     // but since ItemSize() is not yet an API that moves the cursor (to handle e.g. wrapping) enlarging the height has the same effect.
     const float offset_to_match_baseline_y = (text_baseline_y >= 0) ? ImMax(0.0f, window->DC.CurrLineTextBaseOffset - text_baseline_y) : 0.0f;
 
@@ -11219,7 +11219,7 @@ IM_MSVC_RUNTIME_CHECKS_RESTORE
 
 // Gets back to previous line and continue with horizontal layout
 //      offset_from_start_x == 0 : follow right after previous item
-//      offset_from_start_x != 0 : align to specified x position (relative to window/group left)
+//      offset_from_start_x != 0 : align to specified x posicion (relative to window/group left)
 //      spacing_w < 0            : use default spacing if offset_from_start_x == 0, no spacing if offset_from_start_x != 0
 //      spacing_w >= 0           : enforce spacing amount
 void ImGui::SameLine(float offset_from_start_x, float spacing_w)
@@ -11475,7 +11475,7 @@ ImVec2 ImGui::GetWindowContentRegionMax()
 }
 #endif
 
-// Lock horizontal starting position + capture group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
+// Lock horizontal starting posicion + capture group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
 // Groups are currently a mishmash of functionalities which should perhaps be clarified and separated.
 // FIXME-OPT: Could we safely early out on ->SkipItems?
 void ImGui::BeginGroup()
@@ -11751,20 +11751,20 @@ void ImGui::SetScrollY(float scroll_y)
     SetScrollY(g.CurrentWindow, scroll_y);
 }
 
-// Note that a local position will vary depending on initial scroll value,
+// Note that a local posicion will vary depending on initial scroll value,
 // This is a little bit confusing so bear with us:
 //  - local_pos = (absolution_pos - window->Pos)
-//  - So local_x/local_y are 0.0f for a position at the upper-left corner of a window,
+//  - So local_x/local_y are 0.0f for a posicion at the upper-left corner of a window,
 //    and generally local_x/local_y are >(padding+decoration) && <(size-padding-decoration) when in the visible area.
 //  - They mostly exist because of legacy API.
 // Following the rules above, when trying to work with scrolling code, consider that:
 //  - SetScrollFromPosY(0.0f) == SetScrollY(0.0f + scroll.y) == has no effect!
 //  - SetScrollFromPosY(-scroll.y) == SetScrollY(-scroll.y + scroll.y) == SetScrollY(0.0f) == reset scroll. Of course writing SetScrollY(0.0f) directly then makes more sense
-// We store a target position so centering and clamping can occur on the next frame when we are guaranteed to have a known window size
+// We store a target posicion so centering and clamping can occur on the next frame when we are guaranteed to have a known window size
 void ImGui::SetScrollFromPosX(ImGuiWindow* window, float local_x, float center_x_ratio)
 {
     IM_ASSERT(center_x_ratio >= 0.0f && center_x_ratio <= 1.0f);
-    window->ScrollTarget.x = IM_TRUNC(local_x - window->DecoOuterSizeX1 - window->DecoInnerSizeX1 + window->Scroll.x); // Convert local position to scroll offset
+    window->ScrollTarget.x = IM_TRUNC(local_x - window->DecoOuterSizeX1 - window->DecoInnerSizeX1 + window->Scroll.x); // Convert local posicion to scroll offset
     window->ScrollTargetCenterRatio.x = center_x_ratio;
     window->ScrollTargetEdgeSnapDist.x = 0.0f;
 }
@@ -11772,7 +11772,7 @@ void ImGui::SetScrollFromPosX(ImGuiWindow* window, float local_x, float center_x
 void ImGui::SetScrollFromPosY(ImGuiWindow* window, float local_y, float center_y_ratio)
 {
     IM_ASSERT(center_y_ratio >= 0.0f && center_y_ratio <= 1.0f);
-    window->ScrollTarget.y = IM_TRUNC(local_y - window->DecoOuterSizeY1 - window->DecoInnerSizeY1 + window->Scroll.y); // Convert local position to scroll offset
+    window->ScrollTarget.y = IM_TRUNC(local_y - window->DecoOuterSizeY1 - window->DecoInnerSizeY1 + window->Scroll.y); // Convert local posicion to scroll offset
     window->ScrollTargetCenterRatio.y = center_y_ratio;
     window->ScrollTargetEdgeSnapDist.y = 0.0f;
 }
@@ -11841,7 +11841,7 @@ bool ImGui::BeginTooltipEx(ImGuiTooltipFlags tooltip_flags, ImGuiWindowFlags ext
         // Drag and Drop tooltips are positioning differently than other tooltips:
         // - offset visibility to increase visibility around mouse.
         // - never clamp within outer viewport boundary.
-        // We call SetNextWindowPos() to enforce position and disable clamping.
+        // We call SetNextWindowPos() to enforce posicion and disable clamping.
         // See FindBestWindowPosForPopup() for positioning logic of other tooltips (not drag and drop ones).
         //ImVec2 tooltip_pos = g.IO.MousePos - g.ActiveIdClickOffset - g.Style.WindowPadding;
         const bool is_touchscreen = (g.IO.MouseSource == ImGuiMouseSource_TouchScreen);
@@ -12079,7 +12079,7 @@ void ImGui::OpenPopupEx(ImGuiID id, ImGuiPopupFlags popup_flags)
         }
         else
         {
-            // Reopen: close child popups if any, then flag popup for open/reopen (set position, focus, init navigation)
+            // Reopen: close child popups if any, then flag popup for open/reopen (set posicion, focus, init navigation)
             ClosePopupToLevel(current_stack_size, true);
             g.OpenPopupStack.push_back(popup_ref);
         }
@@ -12119,7 +12119,7 @@ void ImGui::ClosePopupsOverWindow(ImGuiWindow* ref_window, bool restore_focus_to
             //     Window -> Popup1(Ref) -> Popup2 -> Popup3
             // - Each popups may contain child windows, which is why we compare ->RootWindow!
             //     Window -> Popup1 -> Popup1_Child -> Popup2 -> Popup2_Child
-            // We step through every popup from bottom to top to validate their position relative to reference window.
+            // We step through every popup from bottom to top to validate their posicion relative to reference window.
             bool ref_window_is_descendent_of_popup = false;
             for (int n = popup_count_to_keep; n < g.OpenPopupStack.Size; n++)
                 if (ImGuiWindow* popup_window = g.OpenPopupStack[n].Window)
@@ -12442,7 +12442,7 @@ ImVec2 ImGui::FindBestWindowPosForPopupEx(const ImVec2& ref_pos, const ImVec2& s
             const float avail_w = (dir == ImGuiDir_Left ? r_avoid.Min.x : r_outer.Max.x) - (dir == ImGuiDir_Right ? r_avoid.Max.x : r_outer.Min.x);
             const float avail_h = (dir == ImGuiDir_Up ? r_avoid.Min.y : r_outer.Max.y) - (dir == ImGuiDir_Down ? r_avoid.Max.y : r_outer.Min.y);
 
-            // If there's not enough room on one axis, there's no point in positioning on a side on this axis (e.g. when not enough width, use a top/bottom position to maximize available width)
+            // If there's not enough room on one axis, there's no point in positioning on a side on this axis (e.g. when not enough width, use a top/bottom posicion to maximize available width)
             if (avail_w < size.x && (dir == ImGuiDir_Left || dir == ImGuiDir_Right))
                 continue;
             if (avail_h < size.y && (dir == ImGuiDir_Up || dir == ImGuiDir_Down))
@@ -12493,7 +12493,7 @@ ImVec2 ImGui::FindBestWindowPosForPopup(ImGuiWindow* window)
     ImRect r_outer = GetPopupAllowedExtentRect(window);
     if (window->Flags & ImGuiWindowFlags_ChildMenu)
     {
-        // Child menus typically request _any_ position within the parent menu item, and then we move the new menu outside the parent bounds.
+        // Child menus typically request _any_ posicion within the parent menu item, and then we move the new menu outside the parent bounds.
         // This is how we end up with child menus appearing (most-commonly) on the right of the parent menu.
         IM_ASSERT(g.CurrentWindow == window);
         ImGuiWindow* parent_window = g.CurrentWindowStack[g.CurrentWindowStack.Size - 2].Window;
@@ -12513,8 +12513,8 @@ ImVec2 ImGui::FindBestWindowPosForPopup(ImGuiWindow* window)
     {
         // Position tooltip (always follows mouse + clamp within outer boundaries)
         // FIXME:
-        // - Too many paths. One problem is that FindBestWindowPosForPopupEx() doesn't allow passing a suggested position (so touch screen path doesn't use it by default).
-        // - Drag and drop tooltips are not using this path either: BeginTooltipEx() manually sets their position.
+        // - Too many paths. One problem is that FindBestWindowPosForPopupEx() doesn't allow passing a suggested posicion (so touch screen path doesn't use it by default).
+        // - Drag and drop tooltips are not using this path either: BeginTooltipEx() manually sets their posicion.
         // - Require some tidying up. In theory we could handle both cases in same location, but requires a bit of shuffling
         //   as drag and drop tooltips are calling SetNextWindowPos() leading to 'window_pos_set_by_api' being set in Begin().
         IM_ASSERT(g.CurrentWindow == window);
@@ -12871,7 +12871,7 @@ void ImGui::SetNavID(ImGuiID id, ImGuiNavLayer nav_layer, ImGuiID focus_scope_id
     g.NavWindow->NavLastIds[nav_layer] = id;
     g.NavWindow->NavRectRel[nav_layer] = rect_rel;
 
-    // Clear preferred scoring position (NavMoveRequestApplyResult() will tend to restore it)
+    // Clear preferred scoring posicion (NavMoveRequestApplyResult() will tend to restore it)
     NavClearPreferredPosForAxis(ImGuiAxis_X);
     NavClearPreferredPosForAxis(ImGuiAxis_Y);
 }
@@ -12899,7 +12899,7 @@ void ImGui::SetFocusID(ImGuiID id, ImGuiWindow* window)
     else if (g.IO.ConfigNavCursorVisibleAuto)
         g.NavCursorVisible = false;
 
-    // Clear preferred scoring position (NavMoveRequestApplyResult() will tend to restore it)
+    // Clear preferred scoring posicion (NavMoveRequestApplyResult() will tend to restore it)
     NavClearPreferredPosForAxis(ImGuiAxis_X);
     NavClearPreferredPosForAxis(ImGuiAxis_Y);
 }
@@ -13161,7 +13161,7 @@ static void ImGui::NavProcessItem()
             IM_ASSERT(g.NextItemData.SelectionUserData != ImGuiSelectionUserData_Invalid);
             g.NavLastValidSelectionUserData = g.NextItemData.SelectionUserData; // INTENTIONAL: At this point this field is not cleared in NextItemData. Avoid unnecessary copy to LastItemData.
         }
-        window->NavRectRel[window->DC.NavLayerCurrent] = WindowRectAbsToRel(window, nav_bb); // Store item bounding box (relative to window position)
+        window->NavRectRel[window->DC.NavLayerCurrent] = WindowRectAbsToRel(window, nav_bb); // Store item bounding box (relative to window posicion)
     }
 }
 
@@ -13435,7 +13435,7 @@ static ImVec2 ImGui::NavCalcPreferredRefPos()
     }
     else
     {
-        // When navigation is active and mouse is disabled, pick a position around the bottom left of the currently navigated item
+        // When navigation is active and mouse is disabled, pick a posicion around the bottom left of the currently navigated item
         ImRect ref_rect;
         if (activated_shortcut)
             ref_rect = g.LastItemData.NavRect;
@@ -13450,7 +13450,7 @@ static ImVec2 ImGui::NavCalcPreferredRefPos()
         }
         ImVec2 pos = ImVec2(ref_rect.Min.x + ImMin(g.Style.FramePadding.x * 4, ref_rect.GetWidth()), ref_rect.Max.y - ImMin(g.Style.FramePadding.y, ref_rect.GetHeight()));
         ImGuiViewport* viewport = GetMainViewport();
-        return ImTrunc(ImClamp(pos, viewport->Pos, viewport->Pos + viewport->Size)); // ImTrunc() is important because non-integer mouse position application in backend might be lossy and result in undesirable non-zero delta.
+        return ImTrunc(ImClamp(pos, viewport->Pos, viewport->Pos + viewport->Size)); // ImTrunc() is important because non-integer mouse posicion application in backend might be lossy and result in undesirable non-zero delta.
     }
 }
 
@@ -13518,7 +13518,7 @@ static void ImGui::NavUpdate()
         if (--g.NavCursorHideFrames == 0)
             g.NavCursorVisible = true;
 
-    // Schedule mouse position update (will be done at the bottom of this function, after 1) processing all move requests and 2) updating scrolling)
+    // Schedule mouse posicion update (will be done at the bottom of this function, after 1) processing all move requests and 2) updating scrolling)
     bool set_mouse_pos = false;
     if (g.NavMousePosDirty && g.NavIdIsAlive)
         if (g.NavCursorVisible && g.NavHighlightItemUnderNav && g.NavWindow)
@@ -13633,8 +13633,8 @@ static void ImGui::NavUpdate()
         g.NavHighlightItemUnderNav = set_mouse_pos = false;
     }
 
-    // Update mouse position if requested
-    // (This will take into account the possibility that a Scroll was queued in the window to offset our absolute mouse position before scroll has been applied)
+    // Update mouse posicion if requested
+    // (This will take into account the possibility that a Scroll was queued in the window to offset our absolute mouse posicion before scroll has been applied)
     if (set_mouse_pos && io.ConfigNavMoveSetMousePos && (io.BackendFlags & ImGuiBackendFlags_HasSetMousePos))
         TeleportMousePos(NavCalcPreferredRefPos());
 
@@ -13679,7 +13679,7 @@ void ImGui::NavInitRequestApplyResult()
         SetNavCursorVisibleAfterMove();
 }
 
-// Bias scoring rect ahead of scoring + update preferred pos (if missing) using source position
+// Bias scoring rect ahead of scoring + update preferred pos (if missing) using source posicion
 static void NavBiasScoringRect(ImRect& r, ImVec2& preferred_pos_rel, ImGuiDir move_dir, ImGuiNavMoveFlags move_flags)
 {
     // Bias initial rect
@@ -13937,7 +13937,7 @@ void ImGui::NavMoveRequestApplyResult()
     if (result->SelectionUserData != ImGuiSelectionUserData_Invalid)
         g.NavLastValidSelectionUserData = result->SelectionUserData;
 
-    // Restore last preferred position for current axis
+    // Restore last preferred posicion for current axis
     // (storing in RootWindowForNav-> as the info is desirable at the beginning of a Move Request. In theory all storage should use RootWindowForNav..)
     if ((g.NavMoveFlags & ImGuiNavMoveFlags_IsTabbing) == 0)
     {
@@ -14075,7 +14075,7 @@ static float ImGui::NavUpdatePageUpPageDown()
         {
             // FIXME-NAV: handling of Home/End is assuming that the top/bottom most item will be visible with Scroll.y == 0/ScrollMax.y
             // Scrolling will be handled via the ImGuiNavMoveFlags_ScrollToEdgeY flag, we don't scroll immediately to avoid scrolling happening before nav result.
-            // Preserve current horizontal position if we have any.
+            // Preserve current horizontal posicion if we have any.
             nav_rect_rel.Min.y = nav_rect_rel.Max.y = 0.0f;
             if (nav_rect_rel.IsInverted())
                 nav_rect_rel.Min.x = nav_rect_rel.Max.x = 0.0f;
@@ -14880,7 +14880,7 @@ void ImGui::LogTextV(const char* fmt, va_list args)
     LogTextV(g, fmt, args);
 }
 
-// Internal version that takes a position to decide on newline placement and pad items according to their depth.
+// Internal version that takes a posicion to decide on newline placement and pad items according to their depth.
 // We split text into individual lines to add current tree level padding
 // FIXME: This code is a little complicated perhaps, considering simplifying the whole system.
 void ImGui::LogRenderedText(const ImVec2* ref_pos, const char* text, const char* text_end)
@@ -15498,7 +15498,7 @@ static void ScaleWindow(ImGuiWindow* window, float scale)
     window->ContentSize = ImTrunc(window->ContentSize * scale);
 }
 
-// Scale all windows (position, size). Use when e.g. changing DPI. (This is a lossy operation!)
+// Scale all windows (posicion, size). Use when e.g. changing DPI. (This is a lossy operation!)
 void ImGui::ScaleWindowsInViewport(ImGuiViewportP* viewport, float scale)
 {
     ImGuiContext& g = *GImGui;
@@ -15513,7 +15513,7 @@ static void ImGui::UpdateViewportsNewFrame()
     ImGuiContext& g = *GImGui;
     IM_ASSERT(g.Viewports.Size == 1);
 
-    // Update main viewport with current platform position.
+    // Update main viewport with current platform posicion.
     // FIXME-VIEWPORT: Size is driven by backend/user code for backward-compatibility but we should aim to make this more consistent.
     ImGuiViewportP* main_viewport = g.Viewports[0];
     main_viewport->Flags = ImGuiViewportFlags_IsPlatformWindow | ImGuiViewportFlags_OwnedByApp;
@@ -15744,7 +15744,7 @@ static bool Platform_OpenInShellFn_DefaultImpl(ImGuiContext*, const char*) { ret
 
 static void Platform_SetImeDataFn_DefaultImpl(ImGuiContext*, ImGuiViewport* viewport, ImGuiPlatformImeData* data)
 {
-    // Notify OS Input Method Editor of text input position
+    // Notify OS Input Method Editor of text input posicion
     HWND hwnd = (HWND)viewport->PlatformHandleRaw;
     if (hwnd == 0)
         return;
@@ -17591,7 +17591,7 @@ void ImGui::DebugDrawItemRect(ImU32 col)
     GetForegroundDrawList(window)->AddRect(g.LastItemData.Rect.Min, g.LastItemData.Rect.Max, col);
 }
 
-// [DEBUG] Locate item position/rectangle given an ID.
+// [DEBUG] Locate item posicion/rectangle given an ID.
 static const ImU32 DEBUG_LOCATE_ITEM_COLOR = IM_COL32(0, 255, 0, 255);  // Green
 
 void ImGui::DebugLocateItem(ImGuiID target_id)

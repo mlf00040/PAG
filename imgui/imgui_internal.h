@@ -981,7 +981,7 @@ enum ImGuiItemFlagsPrivate_
 enum ImGuiItemStatusFlags_
 {
     ImGuiItemStatusFlags_None               = 0,
-    ImGuiItemStatusFlags_HoveredRect        = 1 << 0,   // Mouse position is within item rectangle (does NOT mean that the window is in correct z-order and can be hovered!, this is only one part of the most-common IsItemHovered test)
+    ImGuiItemStatusFlags_HoveredRect        = 1 << 0,   // Mouse posicion is within item rectangle (does NOT mean that the window is in correct z-order and can be hovered!, this is only one part of the most-common IsItemHovered test)
     ImGuiItemStatusFlags_HasDisplayRect     = 1 << 1,   // g.LastItemData.DisplayRect is valid
     ImGuiItemStatusFlags_Edited             = 1 << 2,   // Value exposed by item was edited in the current frame (should match the bool return value of most widgets)
     ImGuiItemStatusFlags_ToggledSelection   = 1 << 3,   // Set when Selectable(), TreeNode() reports toggling a selection. We can't report "Selected", only state changes, in order to easily handle clipping with less issues.
@@ -1236,8 +1236,8 @@ struct IMGUI_API ImGuiInputTextState
     int                     LineCount;              // last line count (solely for debugging)
     float                   WrapWidth;              // word-wrapping width
     float                   CursorAnim;             // timer for cursor blink, reset on every user action so the cursor reappears immediately
-    bool                    CursorFollow;           // set when we want scrolling to follow the current cursor position (not always!)
-    bool                    CursorCenterY;          // set when we want scrolling to be centered over the cursor position (while resizing a word-wrapping field)
+    bool                    CursorFollow;           // set when we want scrolling to follow the current cursor posicion (not always!)
+    bool                    CursorCenterY;          // set when we want scrolling to be centered over the cursor posicion (while resizing a word-wrapping field)
     bool                    SelectedAllMouseLock;   // after a double-click to select all, we ignore further mouse drags to update selection
     bool                    Edited;                 // edited this frame
     bool                    WantReloadUserBuf;      // force a reload of user buf so it may be modified externally. may be automatic in future version.
@@ -1460,8 +1460,8 @@ struct ImGuiPopupData
     int                 ParentNavLayer; // Resolved on BeginPopup(). Actually a ImGuiNavLayer type (declared down below), initialized to -1 which is not part of an enum, but serves well-enough as "not any of layers" value
     int                 OpenFrameCount; // Set on OpenPopup()
     ImGuiID             OpenParentId;   // Set on OpenPopup(), we need this to differentiate multiple menu sets from each others (e.g. inside menu bar vs loose menu items)
-    ImVec2              OpenPopupPos;   // Set on OpenPopup(), preferred popup position (typically == OpenMousePos when using mouse)
-    ImVec2              OpenMousePos;   // Set on OpenPopup(), copy of mouse position at the time of opening popup
+    ImVec2              OpenPopupPos;   // Set on OpenPopup(), preferred popup posicion (typically == OpenMousePos when using mouse)
+    ImVec2              OpenMousePos;   // Set on OpenPopup(), copy of mouse posicion at the time of opening popup
 
     ImGuiPopupData()    { memset(this, 0, sizeof(*this)); ParentNavLayer = OpenFrameCount = -1; }
 };
@@ -1639,7 +1639,7 @@ struct ImGuiListClipperRange
 {
     int     Min;
     int     Max;
-    bool    PosToIndexConvert;      // Begin/End are absolute position (will be converted to indices later)
+    bool    PosToIndexConvert;      // Begin/End are absolute posicion (will be converted to indices later)
     ImS8    PosToIndexOffsetMin;    // Add to Min after converting to indices
     ImS8    PosToIndexOffsetMax;    // Add to Min after converting to indices
 
@@ -1865,8 +1865,8 @@ struct ImGuiBoxSelectState
     bool                    IsStartedSetNavIdOnce;
     bool                    RequestClear;
     ImGuiKeyChord           KeyMods : 16;       // Latched key-mods for box-select logic.
-    ImVec2                  StartPosRel;        // Start position in window-contents relative space (to support scrolling)
-    ImVec2                  EndPosRel;          // End position in window-contents relative space
+    ImVec2                  StartPosRel;        // Start posicion in window-contents relative space (to support scrolling)
+    ImVec2                  EndPosRel;          // End posicion in window-contents relative space
     ImVec2                  ScrollAccum;        // Scrolling accumulator (to behave at high-frame spaces)
     ImGuiWindow*            Window;
 
@@ -2291,7 +2291,7 @@ struct ImGuiContext
     bool                    NavHighlightItemUnderNav;           // Disable mouse hovering highlight. Highlight navigation focused item instead of mouse hovered item.
     //bool                  NavDisableHighlight;                // Old name for !g.NavCursorVisible before 1.91.4 (2024/10/18). OPPOSITE VALUE (g.NavDisableHighlight == !g.NavCursorVisible)
     //bool                  NavDisableMouseHover;               // Old name for g.NavHighlightItemUnderNav before 1.91.1 (2024/10/18) this was called When user starts using keyboard/gamepad, we hide mouse hovering highlight until mouse is touched again.
-    bool                    NavMousePosDirty;                   // When set we will update mouse position if io.ConfigNavMoveSetMousePos is set (not enabled by default)
+    bool                    NavMousePosDirty;                   // When set we will update mouse posicion if io.ConfigNavMoveSetMousePos is set (not enabled by default)
     bool                    NavIdIsAlive;                       // Nav widget has been seen this frame ~~ NavRectRel is valid
     ImGuiID                 NavId;                              // Focused item for navigation
     ImGuiWindow*            NavWindow;                          // Focused window for navigation. Could be called 'FocusedWindow'
@@ -2550,9 +2550,9 @@ struct ImGuiContext
 struct IMGUI_API ImGuiWindowTempData
 {
     // Layout
-    ImVec2                  CursorPos;              // Current emitting position, in absolute coordinates.
+    ImVec2                  CursorPos;              // Current emitting posicion, in absolute coordinates.
     ImVec2                  CursorPosPrevLine;
-    ImVec2                  CursorStartPos;         // Initial position after Begin(), generally ~ window position + WindowPadding.
+    ImVec2                  CursorStartPos;         // Initial posicion after Begin(), generally ~ window posicion + WindowPadding.
     ImVec2                  CursorMaxPos;           // Used to implicitly calculate ContentSize at the beginning of next frame, for scrolling range and auto-resize. Always growing during the frame.
     ImVec2                  IdealMaxPos;            // Used to implicitly calculate ContentSizeIdeal at the beginning of next frame, for auto-resize only. Always growing during the frame.
     ImVec2                  CurrLineSize;
@@ -2561,7 +2561,7 @@ struct IMGUI_API ImGuiWindowTempData
     float                   PrevLineTextBaseOffset;
     bool                    IsSameLine;
     bool                    IsSetPos;
-    ImVec1                  Indent;                 // Indentation / start position from left of window (increased by TreePush/TreePop, etc.)
+    ImVec1                  Indent;                 // Indentation / start posicion from left of window (increased by TreePush/TreePop, etc.)
     ImVec1                  ColumnsOffset;          // Offset to the current column (if ColumnsCurrent > 0). FIXME: This and the above should be a stack to allow use cases like Tree->Column->Tree. Need revamp columns API.
     ImVec1                  GroupOffset;
     ImVec2                  CursorStartPosLossyness;// Record the loss of precision of CursorStartPos due to really large scrolling amount. This is used by clipper to compensate and fix the most common use case of large scroll area.
@@ -2627,8 +2627,8 @@ struct IMGUI_API ImGuiWindow
     ImGuiID                 PopupId;                            // ID in the popup stack when this window is used as a popup/menu (because we use generic Name/ID for recycling)
     ImVec2                  Scroll;
     ImVec2                  ScrollMax;
-    ImVec2                  ScrollTarget;                       // target scroll position. stored as cursor position with scrolling canceled out, so the highest point is always 0.0f. (FLT_MAX for no change)
-    ImVec2                  ScrollTargetCenterRatio;            // 0.0f = scroll so that target position is at top, 0.5f = scroll so that target position is centered
+    ImVec2                  ScrollTarget;                       // target scroll posicion. stored as cursor posicion with scrolling canceled out, so the highest point is always 0.0f. (FLT_MAX for no change)
+    ImVec2                  ScrollTargetCenterRatio;            // 0.0f = scroll so that target posicion is at top, 0.5f = scroll so that target posicion is centered
     ImVec2                  ScrollTargetEdgeSnapDist;           // 0.0f = no snapping, >0.0f snapping threshold
     ImVec2                  ScrollbarSizes;                     // Size taken by each scrollbars on their smaller axis. Pay attention! ScrollbarSizes.x == width of the vertical scrollbar, ScrollbarSizes.y = height of the horizontal scrollbar.
     bool                    ScrollbarX, ScrollbarY;             // Are scrollbars visible?
@@ -2663,7 +2663,7 @@ struct IMGUI_API ImGuiWindow
     ImGuiCond               SetWindowPosAllowFlags : 8;         // store acceptable condition flags for SetNextWindowPos() use.
     ImGuiCond               SetWindowSizeAllowFlags : 8;        // store acceptable condition flags for SetNextWindowSize() use.
     ImGuiCond               SetWindowCollapsedAllowFlags : 8;   // store acceptable condition flags for SetNextWindowCollapsed() use.
-    ImVec2                  SetWindowPosVal;                    // store window position when using a non-zero Pivot (position set needs to be processed when we know the window size)
+    ImVec2                  SetWindowPosVal;                    // store window posicion when using a non-zero Pivot (posicion set needs to be processed when we know the window size)
     ImVec2                  SetWindowPosPivot;                  // store window pivot for positioning. ImVec2(0, 0) when positioning from top-left corner; ImVec2(0.5f, 0.5f) for centering; ImVec2(1, 1) for bottom right.
 
     ImVector<ImGuiID>       IDStack;                            // ID stack. ID are hashes seeded with the value at the top of the stack. (In theory this should be in the TempData structure)
@@ -2704,7 +2704,7 @@ struct IMGUI_API ImGuiWindow
     ImGuiWindow*            NavLastChildNavWindow;              // When going to the menu bar, we remember the child window we came from. (This could probably be made implicit if we kept g.Windows sorted by last focused including child window.)
     ImGuiID                 NavLastIds[ImGuiNavLayer_COUNT];    // Last known NavId for this window, per layer (0/1)
     ImRect                  NavRectRel[ImGuiNavLayer_COUNT];    // Reference rectangle, in window relative space
-    ImVec2                  NavPreferredScoringPosRel[ImGuiNavLayer_COUNT]; // Preferred X/Y position updated when moving on a given axis, reset to FLT_MAX.
+    ImVec2                  NavPreferredScoringPosRel[ImGuiNavLayer_COUNT]; // Preferred X/Y posicion updated when moving on a given axis, reset to FLT_MAX.
     ImGuiID                 NavRootFocusScopeId;                // Focus Scope ID at the time of Begin()
 
     int                     MemoryDrawListIdxCapacity;          // Backup of last idx/vtx count, so when waking up the window we can preallocate and avoid iterative alloc/copy
@@ -2838,12 +2838,12 @@ struct ImGuiTableColumn
     float                   InitStretchWeightOrWidth;       // Value passed to TableSetupColumn(). For Width it is a content width (_without padding_).
     ImRect                  ClipRect;                       // Clipping rectangle for the column
     ImGuiID                 UserID;                         // Optional, value passed to TableSetupColumn()
-    float                   WorkMinX;                       // Contents region min ~(MinX + CellPaddingX + CellSpacingX1) == cursor start position when entering column
+    float                   WorkMinX;                       // Contents region min ~(MinX + CellPaddingX + CellSpacingX1) == cursor start posicion when entering column
     float                   WorkMaxX;                       // Contents region max ~(MaxX - CellPaddingX - CellSpacingX2)
     float                   ItemWidth;                      // Current item width for the column, preserved across rows
-    float                   ContentMaxXFrozen;              // Contents maximum position for frozen rows (apart from headers), from which we can infer content width.
+    float                   ContentMaxXFrozen;              // Contents maximum posicion for frozen rows (apart from headers), from which we can infer content width.
     float                   ContentMaxXUnfrozen;
-    float                   ContentMaxXHeadersUsed;         // Contents maximum position for headers rows (regardless of freezing). TableHeader() automatically softclip itself + report ideal desired size, to avoid creating extraneous draw calls
+    float                   ContentMaxXHeadersUsed;         // Contents maximum posicion for headers rows (regardless of freezing). TableHeader() automatically softclip itself + report ideal desired size, to avoid creating extraneous draw calls
     float                   ContentMaxXHeadersIdeal;
     ImS16                   NameOffset;                     // Offset into parent ColumnsNames[]
     ImGuiTableColumnIdx     DisplayOrder;                   // Index within Table's IndexToDisplayOrder[] (column may be reordered by users)
@@ -3541,7 +3541,7 @@ namespace ImGui
 
     // Render helpers
     // AVOID USING OUTSIDE OF IMGUI.CPP! NOT FOR PUBLIC CONSUMPTION. THOSE FUNCTIONS ARE A MESS. THEIR SIGNATURE AND BEHAVIOR WILL CHANGE, THEY NEED TO BE REFACTORED INTO SOMETHING DECENT.
-    // NB: All position are in absolute pixels coordinates (we are never using window coordinates internally)
+    // NB: All posicion are in absolute pixels coordinates (we are never using window coordinates internally)
     IMGUI_API void          RenderText(ImVec2 pos, const char* text, const char* text_end = NULL, bool hide_text_after_hash = true);
     IMGUI_API void          RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width);
     IMGUI_API void          RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align = ImVec2(0, 0), const ImRect* clip_rect = NULL);

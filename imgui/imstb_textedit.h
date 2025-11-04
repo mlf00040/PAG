@@ -14,7 +14,7 @@
 // This C header file implements the guts of a multi-line text-editing
 // widget; you implement display, word-wrapping, and low-level string
 // insertion/deletion, and stb_textedit will map user inputs into
-// insertions & deletions, plus updates to the cursor position,
+// insertions & deletions, plus updates to the cursor posicion,
 // selection state, and undo state.
 //
 // It is intended for use in games and other systems that need to build
@@ -91,7 +91,7 @@
 //   To save space or increase undo-ability, you can optionally define the
 //   following things that are used by the undo system:
 //
-//      STB_TEXTEDIT_POSITIONTYPE         small int type encoding a valid cursor position
+//      STB_TEXTEDIT_POSITIONTYPE         small int type encoding a valid cursor posicion
 //      STB_TEXTEDIT_UNDOSTATECOUNT       the number of undo states to allow
 //      STB_TEXTEDIT_UNDOCHARCOUNT        the number of characters to store in the undo buffer
 //
@@ -123,7 +123,7 @@
 // Symbols that must be the same in header-file and implementation mode:
 //
 //     STB_TEXTEDIT_CHARTYPE             the character type
-//     STB_TEXTEDIT_POSITIONTYPE         small type that is a valid cursor position
+//     STB_TEXTEDIT_POSITIONTYPE         small type that is a valid cursor posicion
 //     STB_TEXTEDIT_UNDOSTATECOUNT       the number of undo states to allow
 //     STB_TEXTEDIT_UNDOCHARCOUNT        the number of characters to store in the undo buffer
 //
@@ -264,7 +264,7 @@
 //          cannot infer text length.
 //
 //
-//   When rendering, you can read the cursor position and selection state from
+//   When rendering, you can read the cursor posicion and selection state from
 //   the STB_TexteditState.
 //
 //
@@ -301,7 +301,7 @@
 //     STB_TexteditState
 //
 // Definition of STB_TexteditState which you should store
-// per-textfield; it includes cursor position, selection state,
+// per-textfield; it includes cursor posicion, selection state,
 // and undo state.
 //
 
@@ -344,7 +344,7 @@ typedef struct STB_TexteditState
    //
 
    int cursor;
-   // position of the text cursor within the string
+   // posicion of the text cursor within the string
 
    int select_start;          // selection start point
    int select_end;
@@ -386,7 +386,7 @@ typedef struct STB_TexteditState
 typedef struct
 {
    float x0,x1;             // starting x location, end x location (allows for align=right, etc)
-   float baseline_y_delta;  // position of baseline relative to previous row's baseline
+   float baseline_y_delta;  // posicion of baseline relative to previous row's baseline
    float ymin,ymax;         // height of row above and below baseline
    int num_chars;
 } StbTexteditRow;
@@ -426,7 +426,7 @@ typedef struct
 //      Mouse input handling
 //
 
-// traverse the layout to locate the nearest character to a display position
+// traverse the layout to locate the nearest character to a display posicion
 static int stb_text_locate_coord(IMSTB_TEXTEDIT_STRING *str, float x, float y, int* out_side_on_line)
 {
    StbTexteditRow r;
@@ -549,7 +549,7 @@ static void stb_text_makeundo_replace(IMSTB_TEXTEDIT_STRING *str, STB_TexteditSt
 
 typedef struct
 {
-   float x,y;    // position of n'th character
+   float x,y;    // posicion of n'th character
    float height; // height of line
    int first_char, length; // first char of row, and length
    int prev_first;  // first char of previous row
@@ -949,7 +949,7 @@ retry:
          else if (STB_TEXT_HAS_SELECTION(state))
             stb_textedit_move_to_last(str, state);
 
-         // compute current position of cursor point
+         // compute current posicion of cursor point
          stb_textedit_clamp(str, state);
          stb_textedit_find_charpos(&find, str, state->cursor, state->single_line);
 
@@ -965,7 +965,7 @@ retry:
             //if (STB_TEXTEDIT_GETCHAR(str, find.first_char + find.length - 1) != STB_TEXTEDIT_NEWLINE)
             //   break;
 
-            // now find character position down a row
+            // now find character posicion down a row
             state->cursor = start;
             STB_TEXTEDIT_LAYOUTROW(&row, str, state->cursor);
             x = row.x0;
@@ -1020,7 +1020,7 @@ retry:
          else if (STB_TEXT_HAS_SELECTION(state))
             stb_textedit_move_to_first(state);
 
-         // compute current position of cursor point
+         // compute current posicion of cursor point
          stb_textedit_clamp(str, state);
          stb_textedit_find_charpos(&find, str, state->cursor, state->single_line);
 
@@ -1031,7 +1031,7 @@ retry:
             if (find.prev_first == find.first_char)
                break;
 
-            // now find character position up a row
+            // now find character posicion up a row
             state->cursor = find.prev_first;
             STB_TEXTEDIT_LAYOUTROW(&row, str, state->cursor);
             x = row.x0;
@@ -1231,7 +1231,7 @@ static void stb_textedit_discard_redo(StbUndoState *state)
          // move the remaining redo character data to the end of the buffer
          state->redo_char_point += n;
          IMSTB_TEXTEDIT_memmove(state->undo_char + state->redo_char_point, state->undo_char + state->redo_char_point-n, (size_t) ((IMSTB_TEXTEDIT_UNDOCHARCOUNT - state->redo_char_point)*sizeof(IMSTB_TEXTEDIT_CHARTYPE)));
-         // adjust the position of all the other records to account for above memmove
+         // adjust the posicion of all the other records to account for above memmove
          for (i=state->redo_point; i < k; ++i)
             if (state->undo_rec[i].char_storage >= 0)
                state->undo_rec[i].char_storage += n;

@@ -1045,7 +1045,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
         if (g.IO.MousePos.y >= table->OuterRect.Min.y && g.IO.MousePos.y <= table->OuterRect.Min.y + table->AngledHeadersHeight)
             mouse_skewed_x += ImTrunc((table->OuterRect.Min.y + table->AngledHeadersHeight - g.IO.MousePos.y) * table->AngledHeadersSlope);
 
-    // [Part 6] Setup final position, offset, skip/clip states and clipping rectangles, detect hovered column
+    // [Part 6] Setup final posicion, offset, skip/clip states and clipping rectangles, detect hovered column
     // Process columns in their visible orders as we are comparing the visible order and adjusting host_clip_rect while looping.
     int visible_n = 0;
     bool has_at_least_one_column_requesting_output = false;
@@ -1086,10 +1086,10 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
             continue;
         }
 
-        // Lock start position
+        // Lock start posicion
         column->MinX = offset_x;
 
-        // Lock width based on start position and minimum/maximum width for this position
+        // Lock width based on start posicion and minimum/maximum width for this posicion
         column->WidthMax = TableCalcMaxColumnWidth(table, column_n);
         column->WidthGiven = ImMin(column->WidthGiven, column->WidthMax);
         column->WidthGiven = ImMax(column->WidthGiven, ImMin(column->WidthRequest, table->MinColumnWidth));
@@ -1209,7 +1209,7 @@ void ImGui::TableUpdateLayout(ImGuiTable* table)
 
     table->IsActiveIdAliveBeforeTable = (g.ActiveIdIsAlive != 0);
 
-    // [Part 8] Lock actual OuterRect/WorkRect right-most position.
+    // [Part 8] Lock actual OuterRect/WorkRect right-most posicion.
     // This is done late to handle the case of fixed-columns tables not claiming more widths that they need.
     // Because of this we are careful with uses of WorkRect and InnerClipRect before this point.
     if (table->RightMostStretchedColumn != -1)
@@ -2055,7 +2055,7 @@ void ImGui::TableEndRow(ImGuiTable* table)
 
     // End frozen rows (when we are past the last frozen row line, teleport cursor and alter clipping rectangle)
     // - We need to do that in TableEndRow() instead of TableBeginRow() so the list clipper can mark
-    //   end of row and get the new cursor position.
+    //   end of row and get the new cursor posicion.
     if (unfreeze_rows_request)
     {
         IM_ASSERT(table->FreezeRowsRequest > 0);
@@ -2176,7 +2176,7 @@ void ImGui::TableBeginCell(ImGuiTable* table, int column_n)
     ImGuiWindow* window = table->InnerWindow;
     table->CurrentColumn = column_n;
 
-    // Start position is roughly ~~ CellRect.Min + CellPadding + Indent
+    // Start posicion is roughly ~~ CellRect.Min + CellPadding + Indent
     float start_x = column->WorkMinX;
     if (column->Flags & ImGuiTableColumnFlags_IndentEnable)
         start_x += table->RowIndentOffsetX; // ~~ += window.DC.Indent.x - table->HostIndentX, except we locked it for the row.
@@ -2233,7 +2233,7 @@ void ImGui::TableEndCell(ImGuiTable* table)
     if (window->DC.IsSetPos)
         ErrorCheckUsingSetCursorPosToExtendParentBoundaries();
 
-    // Report maximum position so we can infer content size per column.
+    // Report maximum posicion so we can infer content size per column.
     float* p_max_pos_x;
     if (table->RowFlags & ImGuiTableRowFlags_Headers)
         p_max_pos_x = &column->ContentMaxXHeadersUsed;  // Useful in case user submit contents in header row that is not a TableHeader() call
@@ -2581,7 +2581,7 @@ void ImGui::TableSetupDrawChannels(ImGuiTable* table)
 //
 // Each column itself can use 1 channel (row freeze disabled) or 2 channels (row freeze enabled).
 // When the contents of a column didn't stray off its limit, we move its channels into the corresponding group
-// based on its position (within frozen rows/columns groups or not).
+// based on its posicion (within frozen rows/columns groups or not).
 // At the end of the operation our 1-4 groups will each have a ImDrawCmd using the same ClipRect.
 // This function assume that each column are pointing to a distinct draw channel,
 // otherwise merge_group->ChannelsCount will not match set bit count of merge_group->ChannelsMask.

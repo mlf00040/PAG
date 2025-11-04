@@ -260,7 +260,7 @@ namespace GUI {
             ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
             //selector de color
             if (ImGui::Button("Añadir modelo")) {
-                std::string Prueba = "sfsssfs";
+                std::string Prueba = "ModelosPruebas/vaca.obj";
                 PAG::Renderer::getInstancia().creaModelo(Prueba);
             }
         }

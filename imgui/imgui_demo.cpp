@@ -396,7 +396,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
     if (unsaved_document)   window_flags |= ImGuiWindowFlags_UnsavedDocument;
     if (no_close)           p_open = NULL; // Don't pass our bool* to Begin
 
-    // We specify a default position/size in case there's no data in the .ini file.
+    // We specify a default posicion/size in case there's no data in the .ini file.
     // We only do it to make the demo applications a little more welcoming, but typically this isn't required.
     const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 650, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
@@ -1156,7 +1156,7 @@ static void DemoWindowWidgetsColorAndPickers()
             ImGui::ColorPicker4("##picker", (float*)&color, base_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview);
             ImGui::SameLine();
 
-            ImGui::BeginGroup(); // Lock X position
+            ImGui::BeginGroup(); // Lock X posicion
             ImGui::Text("Current");
             ImGui::ColorButton("##current", color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
             ImGui::Text("Previous");
@@ -4083,7 +4083,7 @@ static void DemoWindowWidgetsTreeNodes()
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_DrawLinesFull", &base_flags, ImGuiTreeNodeFlags_DrawLinesFull);
             ImGui::CheckboxFlags("ImGuiTreeNodeFlags_DrawLinesToNodes", &base_flags, ImGuiTreeNodeFlags_DrawLinesToNodes);
 
-            ImGui::Checkbox("Align label with current X position", &align_label_with_current_x_position);
+            ImGui::Checkbox("Align label with current X posicion", &align_label_with_current_x_position);
             ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
             ImGui::Text("Hello!");
             if (align_label_with_current_x_position)
@@ -4389,9 +4389,9 @@ static void DemoWindowLayout()
 
         // Demonstrate a few extra things
         // - Changing ImGuiCol_ChildBg (which is transparent black in default styles)
-        // - Using SetCursorPos() to position child window (the child window is an item from the POV of parent window)
-        //   You can also call SetNextWindowPos() to position the child window. The parent window will effectively
-        //   layout from this position.
+        // - Using SetCursorPos() to posicion child window (the child window is an item from the POV of parent window)
+        //   You can also call SetNextWindowPos() to posicion the child window. The parent window will effectively
+        //   layout from this posicion.
         // - Using ImGui::GetItemRectMin/Max() to query the "item" state (because the child window is an item from
         //   the POV of the parent window). See 'Demo->Querying Status (Edited/Active/Hovered etc.)' for details.
         {
@@ -4544,7 +4544,7 @@ static void DemoWindowLayout()
         ImGui::SmallButton("Like this one"); ImGui::SameLine();
         ImGui::Text("can fit within a text block.");
 
-        // Aligned to arbitrary position. Easy/cheap column.
+        // Aligned to arbitrary posicion. Easy/cheap column.
         IMGUI_DEMO_MARKER("Layout/Basic Horizontal Layout/SameLine (with offset)");
         ImGui::Text("Aligned");
         ImGui::SameLine(150); ImGui::Text("x=150");
@@ -4604,7 +4604,7 @@ static void DemoWindowLayout()
             ImGui::PushID(n);
             ImGui::Button("Box", button_sz);
             float last_button_x2 = ImGui::GetItemRectMax().x;
-            float next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x; // Expected position if next button was on same line
+            float next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x; // Expected posicion if next button was on same line
             if (n + 1 < buttons_count && next_button_x2 < window_visible_x2)
                 ImGui::SameLine();
             ImGui::PopID();
@@ -4617,7 +4617,7 @@ static void DemoWindowLayout()
     if (ImGui::TreeNode("Groups"))
     {
         HelpMarker(
-            "BeginGroup() basically locks the horizontal position for new line. "
+            "BeginGroup() basically locks the horizontal posicion for new line. "
             "EndGroup() bundles the whole group so that you can use \"item\" functions such as "
             "IsItemHovered()/IsItemActive() or SameLine() etc. on the whole group.");
         ImGui::BeginGroup();
@@ -4785,7 +4785,7 @@ static void DemoWindowLayout()
     {
         // Vertical scroll functions
         IMGUI_DEMO_MARKER("Layout/Scrolling/Vertical");
-        HelpMarker("Use SetScrollHereY() or SetScrollFromPosY() to scroll to a given vertical position.");
+        HelpMarker("Use SetScrollHereY() or SetScrollFromPosY() to scroll to a given vertical posicion.");
 
         static int track_item = 50;
         static bool enable_track = true;
@@ -4860,7 +4860,7 @@ static void DemoWindowLayout()
         IMGUI_DEMO_MARKER("Layout/Scrolling/Horizontal");
         ImGui::Spacing();
         HelpMarker(
-            "Use SetScrollHereX() or SetScrollFromPosX() to scroll to a given horizontal position.\n\n"
+            "Use SetScrollHereX() or SetScrollFromPosX() to scroll to a given horizontal posicion.\n\n"
             "Because the clipping rectangle of most window hides half worth of WindowPadding on the "
             "left/right, using SetScrollFromPosX(+1) will usually result in clipped text whereas the "
             "equivalent SetScrollFromPosY(+1) wouldn't.");
@@ -4917,7 +4917,7 @@ static void DemoWindowLayout()
         {
             // Display random stuff. For the sake of this trivial demo we are using basic Button() + SameLine()
             // If you want to create your own time line for a real application you may be better off manipulating
-            // the cursor position yourself, aka using SetCursorPos/SetCursorScreenPos to position the widgets
+            // the cursor posicion yourself, aka using SetCursorPos/SetCursorScreenPos to posicion the widgets
             // yourself. You may also want to use the lower-level ImDrawList API.
             int num_buttons = 10 + ((line & 1) ? line * 9 : line * 3);
             for (int n = 0; n < num_buttons; n++)
@@ -6872,7 +6872,7 @@ static void DemoWindowTables()
             // (A different approach is also possible:
             //    - Specify ImGuiTableColumnFlags_NoHeaderLabel in some TableSetupColumn() call.
             //    - Call TableHeadersRow() normally. This will submit TableHeader() with no name.
-            //    - Then call TableSetColumnIndex() to position yourself in the column and submit your stuff e.g. Checkbox().)
+            //    - Then call TableSetColumnIndex() to posicion yourself in the column and submit your stuff e.g. Checkbox().)
             ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
             for (int column = 0; column < COLUMNS_COUNT; column++)
             {
@@ -9097,7 +9097,7 @@ struct ExampleAppConsole
                             HistoryPos = -1;
                 }
 
-                // A better implementation would preserve the data on the current input line along with cursor position.
+                // A better implementation would preserve the data on the current input line along with cursor posicion.
                 if (prev_history_pos != HistoryPos)
                 {
                     const char* history_str = (HistoryPos >= 0) ? History[HistoryPos] : "";
@@ -9384,7 +9384,7 @@ struct ExampleAppPropertyEditor
         // Right side: draw properties
         ImGui::SameLine();
 
-        ImGui::BeginGroup(); // Lock X position
+        ImGui::BeginGroup(); // Lock X posicion
         if (ExampleTreeNode* node = VisibleNode)
         {
             ImGui::Text("%s", node->Name);
@@ -9720,7 +9720,7 @@ static void ShowExampleAppSimpleOverlay(bool* p_open)
     if (ImGui::Begin("Example: Simple overlay", p_open, window_flags))
     {
         IMGUI_DEMO_MARKER("Examples/Simple Overlay");
-        ImGui::Text("Simple overlay\n" "(right-click to change position)");
+        ImGui::Text("Simple overlay\n" "(right-click to change posicion)");
         ImGui::Separator();
         if (ImGui::IsMousePosValid())
             ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
@@ -10645,7 +10645,7 @@ struct ExampleAssetsBrowser
             const float avail_width = ImGui::GetContentRegionAvail().x;
             UpdateLayoutSizes(avail_width);
 
-            // Calculate and store start position.
+            // Calculate and store start posicion.
             ImVec2 start_pos = ImGui::GetCursorScreenPos();
             start_pos = ImVec2(start_pos.x + LayoutOuterPadding, start_pos.y + LayoutOuterPadding);
             ImGui::SetCursorScreenPos(start_pos);
@@ -10679,7 +10679,7 @@ struct ExampleAssetsBrowser
             RequestDelete = false;
 
             // Push LayoutSelectableSpacing (which is LayoutItemSpacing minus hit-spacing, if we decide to have hit gaps between items)
-            // Altering style ItemSpacing may seem unnecessary as we position every items using SetCursorScreenPos()...
+            // Altering style ItemSpacing may seem unnecessary as we posicion every items using SetCursorScreenPos()...
             // But it is necessary for two reasons:
             // - Selectables uses it by default to visually fill the space between two items.
             // - The vertical spacing would be measured by Clipper to calculate line height if we didn't provide it explicitly (here we do).
@@ -10819,8 +10819,8 @@ struct ExampleAssetsBrowser
                     UpdateLayoutSizes(avail_width);
 
                     // Manipulate scroll to that we will land at the same Y location of currently hovered item.
-                    // - Calculate next frame position of item under mouse
-                    // - Set new scroll position to be used in next ImGui::BeginChild() call.
+                    // - Calculate next frame posicion of item under mouse
+                    // - Set new scroll posicion to be used in next ImGui::BeginChild() call.
                     float hovered_item_rel_pos_y = ((float)(hovered_item_idx / LayoutColumnCount) + fmodf(hovered_item_ny, 1.0f)) * LayoutItemStep.y;
                     hovered_item_rel_pos_y += ImGui::GetStyle().WindowPadding.y;
                     float mouse_local_y = io.MousePos.y - ImGui::GetWindowPos().y;

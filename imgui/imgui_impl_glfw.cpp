@@ -57,7 +57,7 @@
 //  2022-10-18: Perform a dummy glfwGetError() read to cancel missing mouse cursors errors. Using GLFW_VERSION_COMBINED directly. (#5785)
 //  2022-10-11: Using 'nullptr' instead of 'NULL' as per our switch to C++11.
 //  2022-09-26: Inputs: Renamed ImGuiKey_ModXXX introduced in 1.87 to ImGuiMod_XXX (old names still supported).
-//  2022-09-01: Inputs: Honor GLFW_CURSOR_DISABLED by not setting mouse position *EDIT* Reverted 2023-07-18.
+//  2022-09-01: Inputs: Honor GLFW_CURSOR_DISABLED by not setting mouse posicion *EDIT* Reverted 2023-07-18.
 //  2022-04-30: Inputs: Fixed ImGui_ImplGlfw_TranslateUntranslatedKey() for lower case letters on OSX.
 //  2022-03-23: Inputs: Fixed a regression in 1.87 which resulted in keyboard modifiers events being reported incorrectly on Linux/X11.
 //  2022-02-07: Added ImGui_ImplGlfw_InstallCallbacks()/ImGui_ImplGlfw_RestoreCallbacks() helpers to facilitate user installing callbacks after initializing backend.
@@ -496,7 +496,7 @@ void ImGui_ImplGlfw_CursorPosCallback(GLFWwindow* window, double x, double y)
     bd->LastValidMousePos = ImVec2((float)x, (float)y);
 }
 
-// Workaround: X11 seems to send spurious Leave/Enter events which would make us lose our position,
+// Workaround: X11 seems to send spurious Leave/Enter events which would make us lose our posicion,
 // so we back it up and restore on Leave/Enter (see https://github.com/ocornut/imgui/issues/4984)
 void ImGui_ImplGlfw_CursorEnterCallback(GLFWwindow* window, int entered)
 {
@@ -813,11 +813,11 @@ static void ImGui_ImplGlfw_UpdateMouseData()
 #endif
         if (is_window_focused)
         {
-            // (Optional) Set OS mouse position from Dear ImGui if requested (rarely used, only when io.ConfigNavMoveSetMousePos is enabled by user)
+            // (Optional) Set OS mouse posicion from Dear ImGui if requested (rarely used, only when io.ConfigNavMoveSetMousePos is enabled by user)
             if (io.WantSetMousePos)
                 glfwSetCursorPos(window, (double)io.MousePos.x, (double)io.MousePos.y);
 
-            // (Optional) Fallback to provide mouse position when focused (ImGui_ImplGlfw_CursorPosCallback already provides this when hovered or captured)
+            // (Optional) Fallback to provide mouse posicion when focused (ImGui_ImplGlfw_CursorPosCallback already provides this when hovered or captured)
             if (bd->MouseWindow == nullptr)
             {
                 double mouse_x, mouse_y;

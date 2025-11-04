@@ -4659,7 +4659,7 @@ static bool ImGui_ImplStbTrueType_FontBakedLoadGlyph(ImFontAtlas* atlas, ImFontC
     out_glyph->Codepoint = codepoint;
     out_glyph->AdvanceX = advance * scale_for_layout;
 
-    // Pack and retrieve position inside texture atlas
+    // Pack and retrieve posicion inside texture atlas
     // (generally based on stbtt_PackFontRangesRenderIntoRects)
     const bool is_visible = (x0 != x1 && y0 != y1);
     if (is_visible)
@@ -4703,7 +4703,7 @@ static bool ImGui_ImplStbTrueType_FontBakedLoadGlyph(ImFontAtlas* atlas, ImFontC
 
         // Register glyph
         // r->x r->y are coordinates inside texture (in pixels)
-        // glyph.X0, glyph.Y0 are drawing coordinates from base text position, and accounting for oversampling.
+        // glyph.X0, glyph.Y0 are drawing coordinates from base text posicion, and accounting for oversampling.
         out_glyph->X0 = x0 * recip_h + font_off_x;
         out_glyph->Y0 = y0 * recip_v + font_off_y;
         out_glyph->X1 = (x0 + (int)r->w) * recip_h + font_off_x;
@@ -5103,7 +5103,7 @@ bool ImFont::IsGlyphRangeUnused(unsigned int c_begin, unsigned int c_last)
     return true;
 }
 
-// x0/y0/x1/y1 are offset from the character upper-left layout position, in pixels. Therefore x0/y0 are often fairly close to zero.
+// x0/y0/x1/y1 are offset from the character upper-left layout posicion, in pixels. Therefore x0/y0 are often fairly close to zero.
 // Not to be mistaken with texture coordinates, which are held by u0/v0/u1/v1 in normalized format (0.0..1.0 on each texture axis).
 // - 'src' is not necessarily == 'this->Sources' because multiple source fonts+configs can be used to build one target font.
 ImFontGlyph* ImFontAtlasBakedAddFontGlyph(ImFontAtlas* atlas, ImFontBaked* baked, ImFontConfig* src, const ImFontGlyph* in_glyph)
@@ -5819,7 +5819,7 @@ begin:
 // - RenderColorRectWithAlphaCheckerboard()
 //-----------------------------------------------------------------------------
 
-// Render an arrow aimed to be aligned with text (p_min is a position in the same space text would be positioned). To e.g. denote expanded/collapsed state
+// Render an arrow aimed to be aligned with text (p_min is a posicion in the same space text would be positioned). To e.g. denote expanded/collapsed state
 void ImGui::RenderArrow(ImDrawList* draw_list, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale)
 {
     const float h = draw_list->_Data->FontSize * 1.00f;
@@ -5873,7 +5873,7 @@ void ImGui::RenderCheckMark(ImDrawList* draw_list, ImVec2 pos, ImU32 col, float 
     draw_list->PathStroke(col, 0, thickness);
 }
 
-// Render an arrow. 'pos' is position of the arrow tip. half_sz.x is length from base to tip. half_sz.y is length on each side.
+// Render an arrow. 'pos' is posicion of the arrow tip. half_sz.x is length from base to tip. half_sz.y is length on each side.
 void ImGui::RenderArrowPointingAt(ImDrawList* draw_list, ImVec2 pos, ImVec2 half_sz, ImGuiDir direction, ImU32 col)
 {
     switch (direction)

@@ -15,9 +15,11 @@
 #include <string>
 #include <vector>
 
+
+
 //Clase auxiliar con cada componente de un vertice.
 struct Vertice {
-    glm::vec3 position;
+    glm::vec3 posicion;
     glm::vec3 normal;
 };
 
