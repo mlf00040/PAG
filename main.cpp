@@ -3,6 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -20,7 +23,11 @@
 
 /**
  *
- * todo faltan las comprobaciones del eje y del orbit y del tilt para que no de 360 grados
+ * todo quitar todo lo de la clase modelo del renderer, los atributos, el destructor y demas :D
+ *
+ * todo tener en cuenta que el modelo se crea en elmetodo del renderer crear modelo y se dibuja en el refrescar
+ *
+ * todo hay que hacer un metodo para borrar los modelos y para listar los que hay cargados y luego en la interfaz un selector y un boton para borrarlos
  *
  */
 
@@ -216,6 +223,9 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
         // Dibujamos los controladores de la camara
         GUI::ControllerImgui::getInstancia().ventanaMovimientosCamara();
+
+        //Dibujamos la gestion de los modelos
+        GUI::ControllerImgui::getInstancia().ventanaCargaModelo();
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

@@ -3,6 +3,8 @@ project(PAG)
 
 set(CMAKE_CXX_STANDARD 20)
 
+include_directories(${PROJECT_SOURCE_DIR}/tinyObj)
+
 # Define variables agrupando nombres de archivo
 file( GLOB MY_FILES *.cpp ) # Código fuente de tu proyecto
 file( GLOB GLAD_FILES GLAD/src/*.c ) # Código fuente de GLAD

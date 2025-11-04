@@ -154,7 +154,8 @@ namespace GUI {
                         // mandamos al renderer cual es el id del programa que estamos usando
                         PAG::Renderer::getInstancia().setProgramIdActivo(ControllerShaders::getInstancia().getProgramId(shaderProgramName));
                         // creamos el modelo
-                        PAG::Renderer::getInstancia().creaModelo();
+                        //std::string Prueba = "sfsssfs";
+                        //PAG::Renderer::getInstancia().creaModelo(Prueba);
                     }catch (const std::exception& e) {
                         ControllerMensajes::getInstancia().anadirMensaje(e.what());
                     }
@@ -249,5 +250,21 @@ namespace GUI {
                 break;
 
         }
+    }
+
+    void ControllerImgui::ventanaCargaModelo() {
+        ImGui::SetNextWindowPos ( ImVec2 (500, 100), ImGuiCond_Once );
+
+        if( ImGui::Begin("Carga de Modelos"))
+        { // La ventana está desplegada
+            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            //selector de color
+            if (ImGui::Button("Añadir modelo")) {
+                std::string Prueba = "sfsssfs";
+                PAG::Renderer::getInstancia().creaModelo(Prueba);
+            }
+        }
+        // Si la ventana no está desplegada, Begin devuelve false
+        ImGui::End ();
     }
 }

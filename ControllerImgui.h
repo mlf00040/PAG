@@ -58,6 +58,8 @@ namespace GUI {
         void ventanaMovimientosCamara();
 
         void procesaMovimiento(double x, double y);
+
+        void ventanaCargaModelo();
     };
 }
 

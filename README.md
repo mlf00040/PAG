@@ -46,3 +46,11 @@ classDiagram
     Renderer -->  Camara : tiene
     ControllerImgui  -->  Renderer : usa
     ControllerImgui  -->  ControllerMensajes : usa
+```
+
+# Sesion 6
+
+Para empezar el Assimp no me funciona con el conan y me esta dando muchos problemas asi que voy a usar la libreria tinyobjloader
+
+Vamos a tener en la clase del renderer un vector con punteros unicos a cada modelo cargado, de manera que podamos tener varios a la vez
+

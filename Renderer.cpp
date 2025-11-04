@@ -24,7 +24,7 @@ namespace PAG {
      */
     PAG::Renderer::~Renderer() {
 
-
+/*
         if ( idVBO != 0 )
         {  glDeleteBuffers ( 1, &idVBO );
         }
@@ -36,6 +36,7 @@ namespace PAG {
         if ( idVAO != 0 )
         {  glDeleteVertexArrays ( 1, &idVAO );
         }
+        */
     }
 
     /**
@@ -57,9 +58,22 @@ namespace PAG {
     {  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
         //glUseProgram ( idSP );
+
+        //Pinta todos los modelos que haya cargados en el vector en el momento de la escena
+        for (const auto& modelo : modelos) {
+            if (modelo && modelo->getIdVao()) {
+                glBindVertexArray(modelo->getIdVao());
+                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, modelo->getIdIbo() );
+                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(modelo->getIndices().size()), GL_UNSIGNED_INT, nullptr);
+                glBindVertexArray(0);
+            }
+        }
+
+        /*
         glBindVertexArray ( idVAO );
         glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, idIBO );
         glDrawElements ( GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr );
+        */
 
         //Obtenemos los uniforms
         GLint mVision = glGetUniformLocation(programIDActivo, "mVision");
@@ -91,11 +105,7 @@ namespace PAG {
         glViewport ( 0, 0, w, h );
     }
 
-
-    /**
-     * Método para crear el VAO para el modelo a renderizar
-     * @note No se incluye ninguna comprobación de errores
-     */
+ /*
     void PAG::Renderer::creaModelo ()
     {  GLfloat vertices[] = { -.5, -.5, 0,      1.0f, 0.0f, 0.0f,
                               .5, -.5, 0,       0.0f, 1.0f, 0.0f,
@@ -110,6 +120,7 @@ namespace PAG {
                 0.0f, 0.0f, 1.0f
         };
 */
+/*
         glGenVertexArrays ( 1, &idVAO );
         glBindVertexArray ( idVAO );
 
@@ -118,7 +129,7 @@ namespace PAG {
         glBufferData ( GL_ARRAY_BUFFER, 18*sizeof(GLfloat), vertices, GL_STATIC_DRAW );
         glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (void*)0 );
         glEnableVertexAttribArray ( 0 );
-
+*/
 /*
         //VBO de los colores
         glGenBuffers ( 1, &idVBOC );
@@ -127,7 +138,7 @@ namespace PAG {
         glVertexAttribPointer ( 1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), nullptr );
         glEnableVertexAttribArray ( 1 );
 */
-
+/*
         //VBO Entrelazado
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
@@ -137,6 +148,20 @@ namespace PAG {
         glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, idIBO );
         glBufferData ( GL_ELEMENT_ARRAY_BUFFER, 3*sizeof(GLuint), indices, GL_STATIC_DRAW );
     }
+*/
+
+/**
+  * Método que añade un modelo al vector de modelos y lo carga
+  * @note No se incluye ninguna comprobación de errores
+  */
+    void PAG::Renderer::creaModelo (std::string& ruta){
+        Modelo* modelo = new Modelo();
+        modelo->cargarModelo(ruta);
+        modelos.push_back(std::unique_ptr<Modelo>(modelo));
+        //delete modelo;
+    }
+
+
 
     /**
     * Getters and setters de los colores
