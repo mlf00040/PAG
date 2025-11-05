@@ -57,6 +57,8 @@ namespace PAG {
 
         void creaModelo(std::string& ruta);
 
+        void borrarModelo(size_t indice);
+
         float getGreen() const;
 
         void setGreen(float green);

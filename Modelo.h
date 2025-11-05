@@ -34,7 +34,7 @@ private:
 
     glm::mat4 matrizModelado = glm::mat4(1.0f);
 
-    bool cargarModeloObj(const std::string& ruta);
+    std::string nombre="";
 public:
     Modelo();
 
@@ -66,6 +66,10 @@ public:
     const std::vector<unsigned int> &getIndices() const;
 
     void setIndices(const std::vector<unsigned int> &indices);
+
+    const std::string &getNombre() const;
+
+    void setNombre(const std::string &nombre);
 };
 
 

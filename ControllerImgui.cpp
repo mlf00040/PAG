@@ -274,13 +274,39 @@ namespace GUI {
 
             ImGui::SameLine();
 
-            if (ImGui::Button("Eliminar modelo")) {
-                //funcion para borrar no creada aun
+            const auto& modelos = PAG::Renderer::getInstancia().getModelos();
+            if (modelos.empty()) {
+                ImGui::TextDisabled("No hay modelos cargados");
+            } else {
+
+                //generar los nombres para el selector
+                std::vector<std::string> nombres;
+                for (size_t i = 0; i < modelos.size(); ++i) {
+                    nombres.push_back("Modelo " + std::to_string(i));
+                }
+
+                //convertir a array de C-string
+                std::vector<const char*> items;
+                for (const auto& nombre : nombres) {
+                    items.push_back(nombre.c_str());
+                }
+
+                ImGui::Combo("Selecciona modelo", &indiceModeloActual, items.data(), (int)items.size());
+
+                if (ImGui::Button("Borrar modelo seleccionado")) {
+                    if (indiceModeloActual >= 0 && indiceModeloActual < (int)modelos.size()) {
+                        PAG::Renderer::getInstancia().borrarModelo(indiceModeloActual);
+                        //reiniciar el indice en caso de que se borre el ultimo
+                        if (indiceModeloActual >= (int)PAG::Renderer::getInstancia().getModelos().size()) {
+                            indiceModeloActual = (int)PAG::Renderer::getInstancia().getModelos().size() - 1;
+                        }
+                        ControllerMensajes::getInstancia().anadirMensaje("Modelo eliminado: " + std::to_string(indiceModeloActual));
+                    }
+                }
             }
 
 
         }
-        // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();
     }
 }

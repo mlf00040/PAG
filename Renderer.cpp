@@ -159,7 +159,12 @@ namespace PAG {
         Modelo* modelo = new Modelo();
         modelo->cargarModelo(ruta);
         modelos.push_back(std::unique_ptr<Modelo>(modelo));
-        //delete modelo;
+    }
+
+    void PAG::Renderer::borrarModelo(size_t indice) {
+        if (indice < modelos.size()) {
+            modelos.erase(modelos.begin() + indice);
+        }
     }
 
 

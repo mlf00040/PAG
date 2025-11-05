@@ -145,6 +145,7 @@ void Modelo::cargarModelo(const std::string &ruta) {
     glBufferData ( GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW );
 
     glBindVertexArray(0);
+
     ControllerMensajes::getInstancia().anadirMensaje("Modelo cargado correctamente");
 }
 
@@ -205,4 +206,12 @@ const std::vector<unsigned int> &Modelo::getIndices() const {
 
 void Modelo::setIndices(const std::vector<unsigned int> &indices) {
     Modelo::indices = indices;
+}
+
+const std::string &Modelo::getNombre() const {
+    return nombre;
+}
+
+void Modelo::setNombre(const std::string &nombre) {
+    Modelo::nombre = nombre;
 }
