@@ -144,7 +144,8 @@ void Modelo::cargarModelo(const std::string &ruta) {
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, idIBO );
     glBufferData ( GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW );
 
-    ControllerMensajes::getInstancia().anadirMensaje("    Modelo cargado correctamente");
+    glBindVertexArray(0);
+    ControllerMensajes::getInstancia().anadirMensaje("Modelo cargado correctamente");
 }
 
 void Modelo::dibuja() {
@@ -160,6 +161,18 @@ const glm::mat4 &Modelo::getMatrizModelado() {
 
 void Modelo::setMatrizModelado(glm::mat4 &mModelado) {
     matrizModelado=mModelado;
+}
+
+void Modelo::trasladar(glm::vec3 &pos) {
+    matrizModelado=glm::translate(matrizModelado,pos);
+}
+
+void Modelo::rotar(float angulo, glm::vec3 &eje) {
+    matrizModelado=glm::rotate(matrizModelado,glm::radians(angulo),glm::normalize(eje));
+}
+
+void Modelo::escalar(glm::vec3 &escala) {
+    matrizModelado=glm::scale(matrizModelado,escala);
 }
 
 GLuint Modelo::getIdVao() const {

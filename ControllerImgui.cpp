@@ -8,14 +8,10 @@
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>
+#include "imfilebrowser.h"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_stdlib.h>
-
-
-
-
-
 
 namespace GUI {
 
@@ -252,17 +248,37 @@ namespace GUI {
         }
     }
 
-    void ControllerImgui::ventanaCargaModelo() {
+    void ControllerImgui::ventanaCargaModelo(ImGui::FileBrowser &fileDialog, std::string &ruta) {
         ImGui::SetNextWindowPos ( ImVec2 (500, 100), ImGuiCond_Once );
 
-        if( ImGui::Begin("Carga de Modelos"))
-        { // La ventana está desplegada
-            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
-            //selector de color
-            if (ImGui::Button("Añadir modelo")) {
-                std::string Prueba = "ModelosPruebas/vaca.obj";
-                PAG::Renderer::getInstancia().creaModelo(Prueba);
+        if( ImGui::Begin("Carga de Modelos")) { // La ventana está desplegada
+
+            ImGui::SetWindowFontScale(1.0f);   // Escalamos el texto si fuera necesario
+
+            if (ImGui::Button("open file dialog")) {
+            fileDialog.Open();
             }
+
+            fileDialog.Display();
+
+            if(fileDialog.HasSelected())
+            {
+                ControllerMensajes::getInstancia().anadirMensaje(fileDialog.GetSelected().string());
+                ruta = fileDialog.GetSelected().string();
+                fileDialog.ClearSelected();
+            }
+
+            if (ImGui::Button("Añadir modelo")) {
+                PAG::Renderer::getInstancia().creaModelo(ruta);
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Eliminar modelo")) {
+                //funcion para borrar no creada aun
+            }
+
+
         }
         // Si la ventana no está desplegada, Begin devuelve false
         ImGui::End ();

@@ -219,4 +219,9 @@ namespace PAG {
     void Renderer::setCamara(const Camara &camara) {
         Renderer::camara = camara;
     }
+
+    const std::vector<std::unique_ptr<Modelo>> &Renderer::getModelos() const {
+        return modelos;
+    }
+
 }

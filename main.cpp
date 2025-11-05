@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>
+#include "imfilebrowser.h"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
@@ -26,6 +27,7 @@
  *
  * todo hay que hacer un metodo para borrar los modelos y para listar los que hay cargados y luego en la interfaz un selector y un boton para borrarlos
  *
+ * todo hay que crear el shader program nuevo para que reciba las cordenadas de las normales y no los colores.
  */
 
 
@@ -181,6 +183,14 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
     PAG::Renderer::getInstancia().inicializaOpenGL();
 
     std::string ruta="pag03";
+    std::string rutaModelo = "ModelosPruebas/vaca.obj";
+
+    // create a file browser instance
+    ImGui::FileBrowser fileDialog;
+
+    // (optional) set browser properties
+    fileDialog.SetTitle("Selector Modello");
+
 /*
     //Llamamos a crear y cargar los shaders y al modelo
     try {
@@ -222,7 +232,7 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
         GUI::ControllerImgui::getInstancia().ventanaMovimientosCamara();
 
         //Dibujamos la gestion de los modelos
-        GUI::ControllerImgui::getInstancia().ventanaCargaModelo();
+        GUI::ControllerImgui::getInstancia().ventanaCargaModelo(fileDialog,rutaModelo);
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

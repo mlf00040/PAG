@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>
+#include "imfilebrowser.h"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
@@ -30,6 +31,8 @@ namespace GUI {
         double lastx =0;
         double lasty =0;
         float sensibilidad = 0.3;
+
+        int indiceModeloActual=0;
 
 
         ControllerImgui();
@@ -59,7 +62,7 @@ namespace GUI {
 
         void procesaMovimiento(double x, double y);
 
-        void ventanaCargaModelo();
+        void ventanaCargaModelo(ImGui::FileBrowser &fileDialog, std::string &ruta);
     };
 }
 

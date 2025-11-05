@@ -77,6 +77,8 @@ namespace PAG {
 
         void setProgramIdActivo(GLuint programIdActivo);
 
+        const std::vector<std::unique_ptr<Modelo>> &getModelos() const;
+
         void obtenerDatosContexto ();
     };
 
