@@ -63,6 +63,8 @@ namespace GUI {
         void procesaMovimiento(double x, double y);
 
         void ventanaCargaModelo(ImGui::FileBrowser &fileDialog, std::string &ruta);
+
+        void ventanaModificaModelo();
     };
 }
 

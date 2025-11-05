@@ -25,7 +25,7 @@
  *
  * todo tener en cuenta que el modelo se crea en elmetodo del renderer crear modelo y se dibuja en el refrescar
  *
- * todo hay que hacer un metodo para borrar los modelos y para listar los que hay cargados y luego en la interfaz un selector y un boton para borrarlos
+ * todo poner que el coso del modelo pase bien su nombre para que salga bien en la interfaz
  *
  * todo hay que crear el shader program nuevo para que reciba las cordenadas de las normales y no los colores.
  */

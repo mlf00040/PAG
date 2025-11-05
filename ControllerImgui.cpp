@@ -309,4 +309,44 @@ namespace GUI {
         }
         ImGui::End ();
     }
+
+    void ControllerImgui::ventanaModificaModelo() {
+        ImGui::SetNextWindowPos ( ImVec2 (600, 200), ImGuiCond_Once );
+
+        if( ImGui::Begin("Modifica Modelo")) { // La ventana está desplegada
+
+            ImGui::SetWindowFontScale(1.0f);   // Escalamos el texto si fuera necesario
+
+            const auto& modelos = PAG::Renderer::getInstancia().getModelos();
+            if (modelos.empty()) {
+                ImGui::TextDisabled("No hay modelos cargados");
+            } else {
+
+                //generar los nombres para el selector
+                std::vector<std::string> nombres;
+                for (size_t i = 0; i < modelos.size(); ++i) {
+                    nombres.push_back("Modelo " + std::to_string(i));
+                }
+
+                //convertir a array de C-string
+                std::vector<const char*> items;
+                for (const auto& nombre : nombres) {
+                    items.push_back(nombre.c_str());
+                }
+
+                ImGui::Combo("Selecciona modelo", &indiceModeloActual, items.data(), (int)items.size());
+
+                ImGui::Text("Translacion:");
+
+                ImGui::Text("Rotacion:");
+
+                ImGui::Text("Escalado:");
+
+            }
+
+
+        }
+        ImGui::End ();
+
+    }
 }
