@@ -149,13 +149,6 @@ void Modelo::cargarModelo(const std::string &ruta) {
     ControllerMensajes::getInstancia().anadirMensaje("Modelo cargado correctamente");
 }
 
-void Modelo::dibuja() {
-    if (!idVAO) return;
-    glBindVertexArray(idVAO);
-    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
-    glBindVertexArray(0);
-}
-
 const glm::mat4 &Modelo::getMatrizModelado() {
     return matrizModelado;
 }

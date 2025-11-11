@@ -24,19 +24,6 @@ namespace PAG {
      */
     PAG::Renderer::~Renderer() {
 
-/*
-        if ( idVBO != 0 )
-        {  glDeleteBuffers ( 1, &idVBO );
-        }
-
-        if ( idIBO != 0 )
-        {  glDeleteBuffers ( 1, &idIBO );
-        }
-
-        if ( idVAO != 0 )
-        {  glDeleteVertexArrays ( 1, &idVAO );
-        }
-        */
     }
 
     /**
@@ -60,29 +47,32 @@ namespace PAG {
         glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
         //glUseProgram ( idSP );
 
+        //Obtenemos los uniforms
+        GLint mVision = glGetUniformLocation(programIDActivo, "mVision");
+        GLint mProjeccion = glGetUniformLocation(programIDActivo, "mProjeccion");
+        GLint mModelado = glGetUniformLocation(programIDActivo,"mModelado");
+        GLint mMVP = glGetUniformLocation(programIDActivo,"mMVP");
+
+        // Enviar matrices al shader
+        glUniformMatrix4fv(mVision, 1, GL_FALSE, glm::value_ptr(camara.matrizVision()));
+        glUniformMatrix4fv(mProjeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
+
         //Pinta todos los modelos que haya cargados en el vector en el momento de la escena
         for (const auto& modelo : modelos) {
             if (modelo && modelo->getIdVao()) {
                 glBindVertexArray(modelo->getIdVao());
                 glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, modelo->getIdIbo() );
+
+                //enviamos la matriz de modelado y la mvp al shader para cada modelo
+                glUniformMatrix4fv(mModelado, 1, GL_FALSE, glm::value_ptr(modelo->getMatrizModelado()));
+
+                glm::mat4 mvp = camara.matrizProyeccion() * camara.matrizVision() * modelo->getMatrizModelado();
+                glUniformMatrix4fv(mMVP, 1, GL_FALSE, glm::value_ptr(mvp));
+
                 glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(modelo->getIndices().size()), GL_UNSIGNED_INT, nullptr);
                 glBindVertexArray(0);
             }
         }
-
-        /*
-        glBindVertexArray ( idVAO );
-        glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, idIBO );
-        glDrawElements ( GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr );
-        */
-
-        //Obtenemos los uniforms
-        GLint mVision = glGetUniformLocation(programIDActivo, "mVision");
-        GLint mProjeccion = glGetUniformLocation(programIDActivo, "mProjeccion");
-
-        // Enviar matrices al shader
-        glUniformMatrix4fv(mVision, 1, GL_FALSE, glm::value_ptr(camara.matrizVision()));
-        glUniformMatrix4fv(mProjeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
     }
 
     /**
@@ -166,8 +156,6 @@ namespace PAG {
             modelos.erase(modelos.begin() + indice);
         }
     }
-
-
 
     /**
     * Getters and setters de los colores

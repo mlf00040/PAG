@@ -42,8 +42,6 @@ public:
 
     void cargarModelo(const std::string& ruta);
 
-    void dibuja();
-
     const glm::mat4& getMatrizModelado();
     void setMatrizModelado(glm::mat4& mModelado);
 

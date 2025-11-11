@@ -334,17 +334,38 @@ namespace GUI {
                     items.push_back(nombre.c_str());
                 }
 
-                ImGui::Combo("Selecciona modelo", &indiceModeloActual, items.data(), (int)items.size());
+                // Obtener el modelo actual
+                if (indiceModeloActual >= 0 && indiceModeloActual < (int)modelos.size()) {
+                    auto& modelo = modelos[indiceModeloActual];
 
-                ImGui::Text("Translacion:");
+                    ImGui::Text("Traslación:");
+                    ImGui::PushID("traslacion");
+                    if (ImGui::DragFloat3("##traslacion", &translacion.x, 0.1f, -10.0f, 10.0f)) {
+                        modelo->trasladar(translacion);
+                        translacion = glm::vec3(0.0f);
+                    }
+                    ImGui::PopID();
 
-                ImGui::Text("Rotacion:");
+                    ImGui::Text("Rotación:");
+                    ImGui::PushID("rotacion");
+                    ImGui::DragFloat("Ángulo (grados)", &anguloRotacion, 1.0f, -360.0f, 360.0f);
+                    ImGui::DragFloat3("Eje", &rotacionEjes.x, 0.1f, -1.0f, 1.0f);
+                    if (ImGui::Button("Aplicar rotación")) {
+                        if (glm::length(rotacionEjes) > 0.0f) {
+                            modelo->rotar(anguloRotacion, rotacionEjes);
+                        }
+                    }
+                    ImGui::PopID();
 
-                ImGui::Text("Escalado:");
-
+                    ImGui::Text("Escalado:");
+                    ImGui::PushID("escala");
+                    if (ImGui::DragFloat3("##escala", &escala.x, 0.05f, 0.1f, 10.0f)) {
+                        modelo->escalar(escala);
+                        escala = glm::vec3(1.0f);
+                    }
+                    ImGui::PopID();
+                }
             }
-
-
         }
         ImGui::End ();
 

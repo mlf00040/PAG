@@ -55,3 +55,6 @@ Para empezar el Assimp no me funciona con el conan y me esta dando muchos proble
 Vamos a tener en la clase del renderer un vector con punteros unicos a cada modelo cargado, de manera que podamos tener varios a la vez
 
 He usado un unordered map para almacenar los vertices al importarlos del modelo para asi evitar los duplicados 
+
+Nuevo archivo de shaders en esta practica la pag06 y ya se les pasan las 3 matrices Modelado, vision y proyeccion y la matriz conjunta mvp para ahorrar calculos
+

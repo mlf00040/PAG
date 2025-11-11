@@ -34,6 +34,11 @@ namespace GUI {
 
         int indiceModeloActual=0;
 
+        glm::vec3 translacion = glm::vec3(0.0f);
+        glm::vec3 rotacionEjes = glm::vec3(0.0f, 1.0f, 0.0f);  // Eje de rotación
+        float anguloRotacion = 0.0f;
+        glm::vec3 escala = glm::vec3(1.0f);
+
 
         ControllerImgui();
 

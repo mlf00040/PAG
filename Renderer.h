@@ -37,15 +37,7 @@ namespace PAG {
 
         std::vector<std::unique_ptr<Modelo>> modelos;
 
-        //GLuint idVAO = 0;   // Identificador del vertex array object
-        //GLuint idVBO = 0;   // Identificador del vertex buffer object
-        //GLuint idIBO = 0;   // Identificador del index buffer object
-
         GLuint programIDActivo =0;
-
-
-
-
 
     public:
         static Renderer& getInstancia ();

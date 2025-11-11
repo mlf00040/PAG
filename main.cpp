@@ -20,14 +20,12 @@
 
 
 /**
+ * Aspectos a pulir:
+ * Lo de los nombres del modelo a la hora de seleccionarlos
+ * Lo de que se le asigne un shader program a cada modelo, por ahora el mismo a todos.
+ * Limpieza masiva de comentarios y codigo archivo por archivo
+ * Agrupar todos los archivos glsl en una carpeta
  *
- * todo quitar todo lo de la clase modelo del renderer, los atributos, el destructor y demas :D
- *
- * todo tener en cuenta que el modelo se crea en elmetodo del renderer crear modelo y se dibuja en el refrescar
- *
- * todo poner que el coso del modelo pase bien su nombre para que salga bien en la interfaz
- *
- * todo hay que crear el shader program nuevo para que reciba las cordenadas de las normales y no los colores.
  */
 
 
@@ -233,6 +231,8 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
         //Dibujamos la gestion de los modelos
         GUI::ControllerImgui::getInstancia().ventanaCargaModelo(fileDialog,rutaModelo);
+
+        GUI::ControllerImgui::getInstancia().ventanaModificaModelo();
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL
