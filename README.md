@@ -58,3 +58,6 @@ He usado un unordered map para almacenar los vertices al importarlos del modelo 
 
 Nuevo archivo de shaders en esta practica la pag06 y ya se les pasan las 3 matrices Modelado, vision y proyeccion y la matriz conjunta mvp para ahorrar calculos
 
+# Sesion 7
+
+Para introducir los materiales, el renderer va a tener un mapa con los materiales que se creen y la clase modelo va a tener un campo que va a almacenar el nombre de ese material. Asi varios modelos pueden usar el mismo material

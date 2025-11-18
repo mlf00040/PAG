@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "Material.h"
+
 
 
 //Clase auxiliar con cada componente de un vertice.
@@ -35,6 +37,9 @@ private:
     glm::mat4 matrizModelado = glm::mat4(1.0f);
 
     std::string nombre="";
+
+    std::string nombreMaterial="";
+
 public:
     Modelo();
 
@@ -68,6 +73,10 @@ public:
     const std::string &getNombre() const;
 
     void setNombre(const std::string &nombre);
+
+    const std::string &getNombreMaterial() const;
+
+    void setNombreMaterial(const std::string &nombreMaterial);
 };
 
 

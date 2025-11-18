@@ -39,6 +39,7 @@ namespace GUI {
         float anguloRotacion = 0.0f;
         glm::vec3 escala = glm::vec3(1.0f);
 
+        std::string nombreMaterialActual="";
 
         ControllerImgui();
 
@@ -70,6 +71,8 @@ namespace GUI {
         void ventanaCargaModelo(ImGui::FileBrowser &fileDialog, std::string &ruta);
 
         void ventanaModificaModelo();
+
+        void ventanaGestionMateriales();
     };
 }
 

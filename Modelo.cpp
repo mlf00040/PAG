@@ -208,3 +208,11 @@ const std::string &Modelo::getNombre() const {
 void Modelo::setNombre(const std::string &nombre) {
     Modelo::nombre = nombre;
 }
+
+const std::string &Modelo::getNombreMaterial() const {
+    return nombreMaterial;
+}
+
+void Modelo::setNombreMaterial(const std::string &nombreMaterial) {
+    Modelo::nombreMaterial = nombreMaterial;
+}

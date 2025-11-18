@@ -91,7 +91,7 @@ namespace GUI {
 
         if( ImGui::Begin("Mensajes"))
         { // La ventana está desplegada
-            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            ImGui::SetWindowFontScale ( 1.0f );
             // Pintamos los controles
             ImGui::Text("Aplicación PAG");
 
@@ -113,7 +113,7 @@ namespace GUI {
 
         if( ImGui::Begin("Selector Color"))
         { // La ventana está desplegada
-            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            ImGui::SetWindowFontScale ( 1.0f );
             //selector de color
             static ImVec4 clear_color = ImVec4(PAG::Renderer::getInstancia().getRed(), PAG::Renderer::getInstancia().getGreen(), PAG::Renderer::getInstancia().getBlue(), 1.0f);
             ImGui::ColorPicker3("Color de fondo", (float*)&clear_color);
@@ -134,7 +134,7 @@ namespace GUI {
 
         if( ImGui::Begin("GestorShaders"))
         { // La ventana está desplegada
-            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            ImGui::SetWindowFontScale ( 1.0f );
             //selector de color
             ImGui::InputText ("##", &shaderProgramName, ImGuiInputTextFlags_AutoSelectAll );
 
@@ -177,7 +177,7 @@ namespace GUI {
 
         if( ImGui::Begin("Movimientos Camara"))
         { // La ventana está desplegada
-            ImGui::SetWindowFontScale ( 1.0f );   // Escalamos el texto si fuera necesario
+            ImGui::SetWindowFontScale ( 1.0f );
             //selector de color
             const char* items[] = {
                         "NO", "PAN", "TILT", "DOLLY", "CRANE", "ORBIT", "ZOOM"
@@ -251,9 +251,9 @@ namespace GUI {
     void ControllerImgui::ventanaCargaModelo(ImGui::FileBrowser &fileDialog, std::string &ruta) {
         ImGui::SetNextWindowPos ( ImVec2 (500, 100), ImGuiCond_Once );
 
-        if( ImGui::Begin("Carga de Modelos")) { // La ventana está desplegada
+        if( ImGui::Begin("Carga de Modelos")) {
 
-            ImGui::SetWindowFontScale(1.0f);   // Escalamos el texto si fuera necesario
+            ImGui::SetWindowFontScale(1.0f);
 
             if (ImGui::Button("open file dialog")) {
             fileDialog.Open();
@@ -313,9 +313,9 @@ namespace GUI {
     void ControllerImgui::ventanaModificaModelo() {
         ImGui::SetNextWindowPos ( ImVec2 (600, 200), ImGuiCond_Once );
 
-        if( ImGui::Begin("Modifica Modelo")) { // La ventana está desplegada
+        if( ImGui::Begin("Modifica Modelo")) {
 
-            ImGui::SetWindowFontScale(1.0f);   // Escalamos el texto si fuera necesario
+            ImGui::SetWindowFontScale(1.0f);
 
             const auto& modelos = PAG::Renderer::getInstancia().getModelos();
             if (modelos.empty()) {
@@ -334,9 +334,41 @@ namespace GUI {
                     items.push_back(nombre.c_str());
                 }
 
-                // Obtener el modelo actual
+                //Obtener el modelo actual
                 if (indiceModeloActual >= 0 && indiceModeloActual < (int)modelos.size()) {
                     auto& modelo = modelos[indiceModeloActual];
+                    ImGui::Text("Asignacion Material");
+
+                    if (PAG::Renderer::getInstancia().getMateriales().empty()) {
+                        ImGui::TextDisabled("No hay materiales cargados");
+                    } else {
+                        //Obtenemos la lista de materiales disponibles
+                        std::vector<std::string> nombresMateriales;
+                        for (const auto &[nombre, _]: PAG::Renderer::getInstancia().getMateriales()) {
+                            nombresMateriales.push_back(nombre);
+                        }
+
+                        std::vector<const char *> itemsMats;
+                        for (const auto &nombreMaterial: nombresMateriales) {
+                            itemsMats.push_back(nombreMaterial.c_str());
+                        }
+
+                        static int indiceMaterial = 0;
+                        ImGui::Combo("##material", &indiceMaterial, itemsMats.data(), (int) itemsMats.size());
+
+                        //boton para aplicar el material al modelo
+                        if (ImGui::Button("Asignar material")) {
+                            std::string nombreMat = nombresMateriales[indiceMaterial];
+                            modelo->setNombreMaterial(nombreMat);
+                            ControllerMensajes::getInstancia().anadirMensaje(
+                                    "Modelo " + std::to_string(indiceModeloActual) +
+                                    "Material asignado: " + nombreMat);
+                        }
+
+                    }
+                    ImGui::Text("");
+                    ImGui::Text("Transformaciones del modelo");
+                    ImGui::Text("");
 
                     ImGui::Text("Traslación:");
                     ImGui::PushID("traslacion");
@@ -345,6 +377,7 @@ namespace GUI {
                         translacion = glm::vec3(0.0f);
                     }
                     ImGui::PopID();
+                    ImGui::Text("");
 
                     ImGui::Text("Rotación:");
                     ImGui::PushID("rotacion");
@@ -356,6 +389,7 @@ namespace GUI {
                         }
                     }
                     ImGui::PopID();
+                    ImGui::Text("");
 
                     ImGui::Text("Escalado:");
                     ImGui::PushID("escala");
@@ -366,6 +400,115 @@ namespace GUI {
                     ImGui::PopID();
                 }
             }
+        }
+        ImGui::End ();
+
+    }
+
+    void ControllerImgui::ventanaGestionMateriales() {
+        ImGui::SetNextWindowPos ( ImVec2 (700, 400), ImGuiCond_Once );
+
+        if( ImGui::Begin("Gestion MAteriales")) {
+
+            ImGui::SetWindowFontScale(1.0f);
+
+            ImGui::InputText ("##", &nombreMaterialActual, ImGuiInputTextFlags_AutoSelectAll );
+
+            if (ImGui::Button("Crear material")) {
+                if (nombreMaterialActual.empty()) {
+                    ControllerMensajes::getInstancia().anadirMensaje("Nombre vacío. No se puede cargar.");
+                } else {
+                    const auto &mats = PAG::Renderer::getInstancia().getMateriales();
+                    if (mats.find(nombreMaterialActual) != mats.end()) {
+                        ControllerMensajes::getInstancia().anadirMensaje(
+                                "Ya existe un material llamado '" + nombreMaterialActual);
+                    } else {
+                        Material nuevoMat;
+                        PAG::Renderer::getInstancia().addMaterial(nombreMaterialActual, nuevoMat);
+                        ControllerMensajes::getInstancia().anadirMensaje("Material creado: " + nombreMaterialActual);
+                        nombreMaterialActual.clear();
+                    }
+                }
+            }
+
+            ImGui::Text("");
+
+            if (PAG::Renderer::getInstancia().getMateriales().empty()) {
+                ImGui::TextDisabled("No hay materiales creados");
+            } else {
+                //selector de materiales
+                std::vector<std::string> nombresMateriales;
+                for (const auto &[nombre, _]: PAG::Renderer::getInstancia().getMateriales()) {
+                    nombresMateriales.push_back(nombre);
+                }
+
+                std::vector<const char *> itemsMats;
+                for (const auto &nombre: nombresMateriales) {
+                    itemsMats.push_back(nombre.c_str());
+                }
+
+                //Un indice para facilitar las cosas a la hora de mostrar todos los materiales
+                static int indiceMaterial = 0;
+                if (indiceMaterial >= (int) nombresMateriales.size()) {
+                    indiceMaterial = 0;
+                }
+
+                ImGui::Text("Editar material:");
+                ImGui::SameLine();
+                ImGui::Combo("##material", &indiceMaterial, itemsMats.data(), (int) itemsMats.size());
+
+                std::string nombreSeleccionado = nombresMateriales[indiceMaterial];
+                //se castea para que se pueda meter bien en el mapa
+                Material &material = const_cast<Material &>(PAG::Renderer::getInstancia().getMateriales().at(nombreSeleccionado));
+
+                ImGui::Text("");
+
+                ImGui::Text("Propiedades del material '%s':", nombreSeleccionado.c_str());
+
+                //Color ambiente
+                ImGui::ColorEdit3("Ambiente", (float*)&material.getColorAmbiente());
+
+                //Color difuso
+                ImGui::ColorEdit3("Difuso", (float*)&material.getColorDifuso());
+
+                //Color especular
+                ImGui::ColorEdit3("Especular", (float*)&material.getColorEspecular());
+
+                //Exponente especular
+                float exponente = material.getExponente();
+                if (ImGui::SliderFloat("Exponente especular", &exponente, 1.0f, 200.0f, "%.1f")) {
+                    const_cast<Material &>(PAG::Renderer::getInstancia().getMateriales().at(nombreSeleccionado)).setExponente(exponente);
+                }
+
+                //boton para borrar el material
+                if (ImGui::Button("Borrar material")) {
+                    //Verificamos si el material está en uso en algun modelo
+                    bool uso = false;
+                    const auto& modelos = PAG::Renderer::getInstancia().getModelos();
+                    for (const auto& modelo : modelos) {
+                        if (modelo->getNombreMaterial() == nombreSeleccionado) {
+                            uso = true;
+                            break;
+                        }
+                    }
+
+                    if (uso) {
+                        ControllerMensajes::getInstancia().anadirMensaje("No se puede borrar. El material en uso: " + nombreSeleccionado);
+                    } else {
+
+                        //borramos el material
+                        PAG::Renderer::getInstancia().borrarMaterial(nombreSeleccionado);
+                        ControllerMensajes::getInstancia().anadirMensaje("Material borrado: " + nombreSeleccionado);
+
+                        // Opcional: resetear índice
+                        if (!PAG::Renderer::getInstancia().getMateriales().empty()) {
+                            indiceMaterial = std::min(indiceMaterial, (int)PAG::Renderer::getInstancia().getMateriales().size() - 1);
+                        }
+                    }
+
+                }
+            }
+
         }
         ImGui::End ();
 

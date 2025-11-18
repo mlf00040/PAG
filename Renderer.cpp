@@ -217,4 +217,18 @@ namespace PAG {
         return modelos;
     }
 
+    const std::map<std::string, Material>& Renderer::getMateriales() const {
+        return materiales;
+    }
+
+    void Renderer::addMaterial(const std::string &nombre, Material &mat) {
+        materiales[nombre] = mat;
+    }
+
+    void Renderer::borrarMaterial(std::string& nombre){
+        auto it = materiales.find(nombre);
+        if (it != materiales.end()) {
+            materiales.erase(it);
+        }
+    }
 }

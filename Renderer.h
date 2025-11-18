@@ -18,6 +18,9 @@
 
 #include "Modelo.h"
 
+#include <map>
+#include "Material.h"
+
 #define GLM_ENABLE_EXPERIMENTAL
 
 /**
@@ -38,6 +41,8 @@ namespace PAG {
         std::vector<std::unique_ptr<Modelo>> modelos;
 
         GLuint programIDActivo =0;
+
+        std::map<std::string, Material> materiales;
 
     public:
         static Renderer& getInstancia ();
@@ -72,6 +77,12 @@ namespace PAG {
         void setProgramIdActivo(GLuint programIdActivo);
 
         const std::vector<std::unique_ptr<Modelo>> &getModelos() const;
+
+        const std::map<std::string, Material> &getMateriales() const;
+
+        void addMaterial(const std::string &nombre, Material &mat);
+
+        void borrarMaterial(std::string& nombre );
 
         void obtenerDatosContexto ();
     };

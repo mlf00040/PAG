@@ -234,6 +234,8 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
         GUI::ControllerImgui::getInstancia().ventanaModificaModelo();
 
+        GUI::ControllerImgui::getInstancia().ventanaGestionMateriales();
+
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL
         GUI::ControllerImgui::getInstancia().dibujaControladores();
