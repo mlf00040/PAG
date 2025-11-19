@@ -272,8 +272,6 @@ namespace GUI {
                 PAG::Renderer::getInstancia().creaModelo(ruta);
             }
 
-            ImGui::SameLine();
-
             const auto& modelos = PAG::Renderer::getInstancia().getModelos();
             if (modelos.empty()) {
                 ImGui::TextDisabled("No hay modelos cargados");
@@ -291,7 +289,7 @@ namespace GUI {
                     items.push_back(nombre.c_str());
                 }
 
-                ImGui::Combo("Selecciona modelo", &indiceModeloActual, items.data(), (int)items.size());
+                ImGui::Combo(" ", &indiceModeloActual, items.data(), (int)items.size());
 
                 if (ImGui::Button("Borrar modelo seleccionado")) {
                     if (indiceModeloActual >= 0 && indiceModeloActual < (int)modelos.size()) {
@@ -334,9 +332,26 @@ namespace GUI {
                     items.push_back(nombre.c_str());
                 }
 
+
                 //Obtener el modelo actual
                 if (indiceModeloActual >= 0 && indiceModeloActual < (int)modelos.size()) {
                     auto& modelo = modelos[indiceModeloActual];
+
+                    ImGui::Text("Seleccion Modelo");
+                    ImGui::Combo(" ", &indiceModeloActual, items.data(), (int)items.size());
+                    ImGui::Text("");
+
+                    //Modo de visualizacion
+                    ImGui::Text("Modo visualizacion");
+                    const char* modos[] = { "ALAMBRE", "SOLIDO" };
+                    int modoActual = static_cast<int>(modelo->getMRenderizado());
+
+                    if (ImGui::Combo("##modo_visualizacion", &modoActual, modos, IM_ARRAYSIZE(modos))) {
+                        modelo->setMRenderizado(static_cast<MetodoRenderizado>(modoActual));
+                    }
+
+                    ImGui::Text("");
+
                     ImGui::Text("Asignacion Material");
 
                     if (PAG::Renderer::getInstancia().getMateriales().empty()) {
@@ -366,6 +381,7 @@ namespace GUI {
                         }
 
                     }
+
                     ImGui::Text("");
                     ImGui::Text("Transformaciones del modelo");
                     ImGui::Text("");
@@ -500,7 +516,7 @@ namespace GUI {
                         PAG::Renderer::getInstancia().borrarMaterial(nombreSeleccionado);
                         ControllerMensajes::getInstancia().anadirMensaje("Material borrado: " + nombreSeleccionado);
 
-                        // Opcional: resetear índice
+                        //Opcional resetear el índice
                         if (!PAG::Renderer::getInstancia().getMateriales().empty()) {
                             indiceMaterial = std::min(indiceMaterial, (int)PAG::Renderer::getInstancia().getMateriales().size() - 1);
                         }

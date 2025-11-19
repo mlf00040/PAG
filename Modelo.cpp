@@ -216,3 +216,11 @@ const std::string &Modelo::getNombreMaterial() const {
 void Modelo::setNombreMaterial(const std::string &nombreMaterial) {
     Modelo::nombreMaterial = nombreMaterial;
 }
+
+MetodoRenderizado Modelo::getMRenderizado() const {
+    return mRenderizado;
+}
+
+void Modelo::setMRenderizado(MetodoRenderizado mRenderizado) {
+    Modelo::mRenderizado = mRenderizado;
+}

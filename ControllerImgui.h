@@ -41,6 +41,8 @@ namespace GUI {
 
         std::string nombreMaterialActual="";
 
+        MetodoRenderizado mActual=MetodoRenderizado::ALAMBRE;
+
         ControllerImgui();
 
     public:

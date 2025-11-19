@@ -25,6 +25,11 @@ struct Vertice {
     glm::vec3 normal;
 };
 
+enum class MetodoRenderizado {
+    ALAMBRE,
+    SOLIDO
+};
+
 class Modelo {
 private:
     GLuint idVAO = 0;   // Identificador del vertex array object
@@ -39,6 +44,8 @@ private:
     std::string nombre="";
 
     std::string nombreMaterial="";
+
+    MetodoRenderizado mRenderizado=MetodoRenderizado::SOLIDO;
 
 public:
     Modelo();
@@ -77,6 +84,10 @@ public:
     const std::string &getNombreMaterial() const;
 
     void setNombreMaterial(const std::string &nombreMaterial);
+
+    MetodoRenderizado getMRenderizado() const;
+
+    void setMRenderizado(MetodoRenderizado mRenderizado);
 };
 
 

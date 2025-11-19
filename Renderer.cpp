@@ -44,18 +44,23 @@ namespace PAG {
     void Renderer::refrescar ()
     {  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
-        glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
+        //glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
         //glUseProgram ( idSP );
+
+        glUseProgram(programIDActivo);
 
         //Obtenemos los uniforms
         GLint mVision = glGetUniformLocation(programIDActivo, "mVision");
         GLint mProjeccion = glGetUniformLocation(programIDActivo, "mProjeccion");
         GLint mModelado = glGetUniformLocation(programIDActivo,"mModelado");
         GLint mMVP = glGetUniformLocation(programIDActivo,"mMVP");
+        GLint uColorDifuso = glGetUniformLocation(programIDActivo,"uColorDifuso");
 
         // Enviar matrices al shader
         glUniformMatrix4fv(mVision, 1, GL_FALSE, glm::value_ptr(camara.matrizVision()));
         glUniformMatrix4fv(mProjeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
+
+
 
         //Pinta todos los modelos que haya cargados en el vector en el momento de la escena
         for (const auto& modelo : modelos) {
@@ -68,6 +73,23 @@ namespace PAG {
 
                 glm::mat4 mvp = camara.matrizProyeccion() * camara.matrizVision() * modelo->getMatrizModelado();
                 glUniformMatrix4fv(mMVP, 1, GL_FALSE, glm::value_ptr(mvp));
+
+                if(modelo->getMRenderizado()==MetodoRenderizado::ALAMBRE){
+                    glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
+                    GLuint aux = glGetSubroutineIndex ( programIDActivo, GL_VERTEX_SHADER
+                            , "colorRGB");
+                    glUniformSubroutinesuiv ( GL_VERTEX_SHADER, 1, &aux );
+                }
+                if(modelo->getMRenderizado()==MetodoRenderizado::SOLIDO){
+                    glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
+
+                    glm::vec3 colores = materiales.find(modelo->getNombreMaterial())->second.getColorDifuso();
+                    glUniform3f(uColorDifuso,colores.x,colores.y,colores.z);
+
+                    GLuint aux = glGetSubroutineIndex ( programIDActivo, GL_VERTEX_SHADER
+                            ,"colorMaterial");
+                    glUniformSubroutinesuiv ( GL_VERTEX_SHADER, 1, &aux );
+                }
 
                 glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(modelo->getIndices().size()), GL_UNSIGNED_INT, nullptr);
                 glBindVertexArray(0);
