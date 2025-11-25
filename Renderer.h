@@ -21,6 +21,8 @@
 #include <map>
 #include "Material.h"
 
+#include "Luz.h"
+
 #define GLM_ENABLE_EXPERIMENTAL
 
 /**
@@ -43,6 +45,8 @@ namespace PAG {
         GLuint programIDActivo =0;
 
         std::map<std::string, Material> materiales;
+
+        std::vector<std::unique_ptr<Luz>> luces;
 
     public:
         static Renderer& getInstancia ();
