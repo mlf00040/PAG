@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "ControllerShaders.h"
+#include "ControllerMensajes.h"
 
 ControllerShaders *ControllerShaders::instancia = nullptr;
 
@@ -95,6 +96,7 @@ GLuint ControllerShaders::cargaShader(const std::string &ruta, GLenum tiposhader
             // En "mensaje" tenemos la información del error.
             throw std::runtime_error(mensaje);
         }else{
+            ControllerMensajes::getInstancia().anadirMensaje("Error: A petado la compilacion del "+tipoShaderString+" shader y OPENGL no sabe porque ha sido.  :(  ");
             throw std::runtime_error("Error: A petado la compilacion del "+tipoShaderString+" shader y OPENGL no sabe porque ha sido.  :(  ");
         }
 
@@ -112,6 +114,7 @@ std::string ControllerShaders::crearPrograma(const std::string &nombre, const st
         GLuint idSP = glCreateProgram ();
         //comprobamos que se haya creado el programa de shaders.
         if (idSP == 0) {
+            ControllerMensajes::getInstancia().anadirMensaje("Error: No se pudo crear el programa de shaders (glCreateProgram devolvió 0)  :(  ");
             throw std::runtime_error("Error: No se pudo crear el programa de shaders (glCreateProgram devolvió 0)  :(  ");
         }
 
@@ -137,6 +140,7 @@ std::string ControllerShaders::crearPrograma(const std::string &nombre, const st
                 // En "mensaje" tenemos la información del error. Comunicarla de alguna forma
                 throw std::runtime_error(mensaje);
             }else{
+                ControllerMensajes::getInstancia().anadirMensaje("Error: A petado el enlazado de los shaders y OPENGL no sabe porque ha sido.  :(  ");
                 throw std::runtime_error("Error: A petado el enlazado de los shaders y OPENGL no sabe porque ha sido.  :(  ");
             }
         }else{

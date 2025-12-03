@@ -13,6 +13,8 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_stdlib.h>
 
+#include <filesystem>
+
 namespace GUI {
 
     ControllerImgui *GUI::ControllerImgui::instancia = nullptr;
@@ -152,6 +154,7 @@ namespace GUI {
                         // creamos el modelo
                         //std::string Prueba = "sfsssfs";
                         //PAG::Renderer::getInstancia().creaModelo(Prueba);
+                        ControllerMensajes::getInstancia().anadirMensaje("Programa cargado con exito");
                     }catch (const std::exception& e) {
                         ControllerMensajes::getInstancia().anadirMensaje(e.what());
                     }
@@ -267,6 +270,13 @@ namespace GUI {
                 ruta = fileDialog.GetSelected().string();
                 fileDialog.ClearSelected();
             }
+
+            ImGui::Text("Modelo cargado: ");
+            //uso del filysystem unicamente para que muestre el nombre dle objeto y no la ruta completa (estetica :D )
+            std::filesystem::path p(ruta);
+            std::filesystem::path nombre_archivo_path = p.filename();
+            const std::string nombre_archivo_str = nombre_archivo_path.string();
+            ImGui::Text("%s", nombre_archivo_str.c_str());
 
             if (ImGui::Button("Añadir modelo")) {
                 PAG::Renderer::getInstancia().creaModelo(ruta);
@@ -430,6 +440,8 @@ namespace GUI {
 
             ImGui::InputText ("##", &nombreMaterialActual, ImGuiInputTextFlags_AutoSelectAll );
 
+            ImGui::TextWrapped("Cuando se cree un material se tiene que aplicar al modelo en la ventana de los modelos");
+
             if (ImGui::Button("Crear material")) {
                 if (nombreMaterialActual.empty()) {
                     ControllerMensajes::getInstancia().anadirMensaje("Nombre vacío. No se puede cargar.");
@@ -527,6 +539,139 @@ namespace GUI {
 
         }
         ImGui::End ();
+
+    }
+
+    void ControllerImgui::ventanaGestionLuces() {
+        ImGui::SetNextWindowPos ( ImVec2 (800, 500), ImGuiCond_Once );
+
+        if( ImGui::Begin("Gestion Luces")) {
+
+            ImGui::SetWindowFontScale(1.0f);
+
+            ImGui::Text("Crear nueva luz:");
+            ImGui::InputText("##nombreLuz", &nombreLuz, ImGuiInputTextFlags_AutoSelectAll);
+
+            const char *tipos[] = {"AMBIENTE", "PUNTUAL", "DIRECCIONAL", "FOCO"};
+            static int tipoLuzSeleccionado = 0;
+
+            ImGui::Combo("Tipo", &tipoLuzSeleccionado, tipos, IM_ARRAYSIZE(tipos));
+
+            if (ImGui::Button("Crear luz")) {
+                if (nombreLuz.empty()) {
+                    ControllerMensajes::getInstancia().anadirMensaje("Nombre vacío. No se puede crear.");
+                } else {
+
+                    //comprobar que no haya otra luz con ese nombre
+                    bool existe = false;
+
+                    for (size_t i = 0; i < PAG::Renderer::getInstancia().getLuces().size(); i++) {
+                        if (PAG::Renderer::getInstancia().getLuces()[i]->getNombreLuz() == nombreLuz) {
+                            existe = true;
+                        }
+                    }
+                    if (!existe) {
+                        //crear una nueva luz
+                        std::unique_ptr<Luz> nuevaLuz(new Luz(static_cast<tipoLuz>(tipoLuzSeleccionado)));
+                        PAG::Renderer::getInstancia().addLuz(nombreLuz, std::move(nuevaLuz));
+                        nombreLuz.clear();
+                    }else{
+                        ControllerMensajes::getInstancia().anadirMensaje("Ya existe una luz con ese nombre, no se puede crear.");
+                    }
+
+                }
+            }
+            ImGui::Text("");
+
+            const auto &luces= PAG::Renderer::getInstancia().getLuces();
+            if(luces.empty()){
+                ImGui::Text("No hay luces");
+            }else{
+                //el combo
+                std::vector<std::string> nombres;
+                for (const auto& luz : luces) {
+                    nombres.push_back(luz->getNombreLuz());
+                }
+
+                std::vector<const char*> items;
+                for (const auto& n : nombres) {
+                    items.push_back(n.c_str());
+                }
+
+                // Selector de luz
+                static int indiceLuz = 0;
+                if (indiceLuz >= (int)nombres.size()) {
+                    indiceLuz = 0;
+                }
+
+                ImGui::Text("Editar luz:");
+                ImGui::SameLine();
+                ImGui::Combo("##luz_seleccionada", &indiceLuz, items.data(), (int)items.size());
+
+                std::string nombreSeleccionado = nombres[indiceLuz];
+                Luz& luz = *luces[indiceLuz]; // Acceso directo al objeto
+
+                ImGui::Text("");
+                ImGui::Text("Propiedades de la luz '%s':", nombreSeleccionado.c_str());
+
+                //Color ambiente que es comun a todas las luces
+                glm::vec3 amb = luz.getIAmbiente();
+                if (ImGui::ColorEdit3("Color Ambiente", &amb.x)) {
+                    luz.setIAmbiente(amb);
+                }
+
+                //Color difuso y especular para todas las qu eno son ambiente
+                if (luz.getTLuz() != tipoLuz::AMBIENTE) {
+                    glm::vec3 dif = luz.getIDifusa();
+                    if (ImGui::ColorEdit3("Color Difuso", &dif.x)) {
+                        luz.setIDifusa(dif);
+                    }
+
+                    glm::vec3 esp = luz.getIEspecular();
+                    if (ImGui::ColorEdit3("Color Especular", &esp.x)) {
+                        luz.setIEspecular(esp);
+                    }
+                }
+
+                if (luz.getTLuz() == tipoLuz::PUNTUAL || luz.getTLuz() == tipoLuz::FOCO) {
+                    glm::vec3 pos = luz.getPos();
+                    if (ImGui::DragFloat3("Posición", &pos.x, 0.1f)) {
+                        luz.setPos(pos);
+                    }
+                }
+
+                if (luz.getTLuz() == tipoLuz::DIRECCIONAL || luz.getTLuz() == tipoLuz::FOCO) {
+                    glm::vec3 dir = luz.getDireccion();
+                    if (ImGui::DragFloat3("Dirección", &dir.x, 0.1f)) {
+                        luz.setDireccion(dir);
+                    }
+                }
+
+                if (luz.getTLuz() == tipoLuz::FOCO) {
+                    float ang = luz.getAngulo();
+                    if (ImGui::SliderFloat("Ángulo apertura", &ang, 5.0f, 90.0f)) {
+                        luz.setAngulo(ang);
+                    }
+                    float expo = luz.getExpoSuavizado();
+                    if (ImGui::SliderFloat("Exponente suavizado", &expo, 1.0f, 10.0f)) {
+                        luz.setExpoSuavizado(expo);
+                    }
+                }
+
+                //boton para borrar la luz
+                if (ImGui::Button("Borrar luz")) {
+
+                    PAG::Renderer::getInstancia().borrarLuz(nombreSeleccionado);
+
+                    if (!PAG::Renderer::getInstancia().getLuces().empty()) {
+                        indiceLuz = std::min(indiceLuz, (int)PAG::Renderer::getInstancia().getLuces().size() - 1);
+                    }
+
+                }
+            }
+
+            ImGui::End();
+        }
 
     }
 }

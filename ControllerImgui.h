@@ -43,6 +43,17 @@ namespace GUI {
 
         MetodoRenderizado mActual=MetodoRenderizado::ALAMBRE;
 
+        //Para una luz auxiliar y asi poder pasar los parametros
+        glm::vec3 cAmbienteAux = {0.0f,0.0f,0.0f};
+        //Para puntual y foco
+        glm::vec3 posLuzAux = {0.0f,0.0f,0.0f};
+        //para direccional
+        glm::vec3 direccionLuzAux = {1.0f,0.0f,0.0f};
+        //para foco
+        float anguloLuzAux=45;
+        float expoSuavizadoLuzAux=2;
+        std::string nombreLuz="";
+
         ControllerImgui();
 
     public:
@@ -75,6 +86,8 @@ namespace GUI {
         void ventanaModificaModelo();
 
         void ventanaGestionMateriales();
+
+        void ventanaGestionLuces();
     };
 }
 

@@ -1,40 +1,31 @@
 #version 410
+
+//atributos
 layout (location = 0) in vec3 vPosicion;
 layout (location = 1) in vec3 vNormal;
-//  layout (location = 1) in vec3 vColor;
 
-
-uniform mat4 mVision;
-uniform mat4 mProjeccion;
+//matrices
 uniform mat4 mModelado;
-uniform mat4 mMVP;
+uniform mat4 mVision;
+uniform mat4 mProyeccion;
 
-//  uniform vec3 uColorDifuso;
-
-/*
-subroutine vec4 fCalcularColor();
-subroutine uniform fCalcularColor uMetodoColorElegido;
-
-subroutine ( fCalcularColor )
-vec4 colorRGB ()
-{  return vec4 ( vColor, 1 );
-}
-
-subroutine ( fCalcularColor )
-vec4 colorMaterial ()
-{  return vec4 ( uColorDifuso, 1 );
-}
-*/
-
-//  out vec3 color;
+//salidas
 out vec3 posicion;
 out vec3 normal;
+out vec3 vColor;
 
 void main ()
 {
-   mat3 mNormal = transpose(inverse(mat3(mModelado)));
-   normal = vec3(mNormal * vec4(vNormal,0.0));
-   posicion = vec3( mModelado * vec4(vPosicion,1.0));
-   gl_Position = mMVP * vec4(vPosicion, 1.0);
-   //  color =  uMetodoColorElegido().rgb;
-};
+   //transformacion a posicion del mundo
+   vec4 posicionW = mModelado * vec4(vPosicion, 1.0);
+   posicion = posicionW.xyz;
+
+   vColor=vNormal;
+
+   //transformacion de las normales
+   mat3 normalMatrix = transpose(inverse(mat3(mModelado)));
+   normal = normalize(normalMatrix * vNormal);
+
+   gl_Position = mProyeccion * mVision * posicionW;
+
+}

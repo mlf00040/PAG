@@ -43,52 +43,136 @@ namespace PAG {
     */
     void Renderer::refrescar ()
     {  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
-        //glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
-        //glUseProgram ( idSP );
 
         glUseProgram(programIDActivo);
 
-        //Obtenemos los uniforms
+        //Obtenemos los uniforms comunes
         GLint mVision = glGetUniformLocation(programIDActivo, "mVision");
-        GLint mProjeccion = glGetUniformLocation(programIDActivo, "mProjeccion");
-        GLint mModelado = glGetUniformLocation(programIDActivo,"mModelado");
-        GLint mMVP = glGetUniformLocation(programIDActivo,"mMVP");
-        GLint uColorDifuso = glGetUniformLocation(programIDActivo,"uColorDifuso");
+        GLint mProyeccion = glGetUniformLocation(programIDActivo, "mProyeccion");
+        //la de modelado la paso a la hora de dibujar los modelos abajo
 
-        // Enviar matrices al shader
+        //Enviamos matrices al shader
         glUniformMatrix4fv(mVision, 1, GL_FALSE, glm::value_ptr(camara.matrizVision()));
-        glUniformMatrix4fv(mProjeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
+        glUniformMatrix4fv(mProyeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
+
+        if(!luces.empty()){
+            //activamos el blending
+            glEnable(GL_BLEND);
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+
+            //bucle para las luces
+            for(size_t i = 0;i< luces.size();++i) {
+                const auto &luz = *luces[i];
+
+                //dependiendo de si es la primera luz o no
+                if (i == 0) {
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                } else {
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                }
+
+                //seleccionamos subrutina segun el tipo de luz y enviamos los datos relativos a las luces
+                GLuint idSubrutina = 0;
+                if (luz.getTLuz() == tipoLuz::AMBIENTE) {
+                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzAmbiente");
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadAmbiente"),
+                                luz.getIAmbiente().x, luz.getIAmbiente().y, luz.getIAmbiente().z);
+
+                }else if (luz.getTLuz() == tipoLuz::PUNTUAL) {
+                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzPuntual");
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uPosLuz"),
+                                luz.getPos().x, luz.getPos().y, luz.getPos().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadDifusa"),
+                                luz.getIDifusa().x, luz.getIDifusa().y, luz.getIDifusa().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadEspecular"),
+                                luz.getIEspecular().x, luz.getIEspecular().y, luz.getIEspecular().z);
 
 
+                }else if (luz.getTLuz() == tipoLuz::DIRECCIONAL) {
+                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzDireccional");
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uDireccionLuz"),
+                                luz.getDireccion().x, luz.getDireccion().y, luz.getDireccion().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadDifusa"),
+                                luz.getIDifusa().x, luz.getIDifusa().y, luz.getIDifusa().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadEspecular"),
+                                luz.getIEspecular().x, luz.getIEspecular().y, luz.getIEspecular().z);
 
-        //Pinta todos los modelos que haya cargados en el vector en el momento de la escena
+                }else if (luz.getTLuz() == tipoLuz::FOCO) {
+                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzFoco");
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uPosLuz"),
+                                luz.getPos().x, luz.getPos().y, luz.getPos().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uDireccionLuz"),
+                                luz.getDireccion().x, luz.getDireccion().y, luz.getDireccion().z);
+                    glUniform1f(glGetUniformLocation(programIDActivo, "uAnguloApertura"), luz.getAngulo());
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadDifusa"),
+                                luz.getIDifusa().x, luz.getIDifusa().y, luz.getIDifusa().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadEspecular"),
+                                luz.getIEspecular().x, luz.getIEspecular().y, luz.getIEspecular().z);
+                }
+
+                //activamos la subrutina
+                if (idSubrutina != GL_INVALID_INDEX) {
+                    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &idSubrutina);
+                }
+                //dibujamos todos los modelos
+                dibujaTodosModelos();
+
+            }
+
+            glDisable(GL_BLEND);
+
+        }else{
+            glDisable(GL_BLEND);
+
+            GLuint idColor = glGetSubroutineIndex ( programIDActivo, GL_FRAGMENT_SHADER
+                    , "colorRGB");
+            if (idColor != GL_INVALID_INDEX) {
+                glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &idColor);
+            }
+            //dibujamos todos los modelos
+            dibujaTodosModelos();
+
+        }
+
+    }
+
+    void Renderer::dibujaTodosModelos(){
+        //Pinta todos los modelos que haya cargados en el vector en el momento de la escena para cada pasada de la luz
         for (const auto& modelo : modelos) {
             if (modelo && modelo->getIdVao()) {
                 glBindVertexArray(modelo->getIdVao());
                 glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, modelo->getIdIbo() );
 
                 //enviamos la matriz de modelado y la mvp al shader para cada modelo
+                GLint mModelado = glGetUniformLocation(programIDActivo,"mModelado");
+                GLint mMVP = glGetUniformLocation(programIDActivo,"mMVP");
+
                 glUniformMatrix4fv(mModelado, 1, GL_FALSE, glm::value_ptr(modelo->getMatrizModelado()));
 
                 glm::mat4 mvp = camara.matrizProyeccion() * camara.matrizVision() * modelo->getMatrizModelado();
                 glUniformMatrix4fv(mMVP, 1, GL_FALSE, glm::value_ptr(mvp));
 
+                //seleccionamos modo del modelo
                 if(modelo->getMRenderizado()==MetodoRenderizado::ALAMBRE){
                     glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
-                    GLuint aux = glGetSubroutineIndex ( programIDActivo, GL_VERTEX_SHADER
-                            , "colorRGB");
-                    glUniformSubroutinesuiv ( GL_VERTEX_SHADER, 1, &aux );
+
                 }
+
                 if(modelo->getMRenderizado()==MetodoRenderizado::SOLIDO){
                     glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
 
-                    glm::vec3 colores = materiales.find(modelo->getNombreMaterial())->second.getColorDifuso();
-                    glUniform3f(uColorDifuso,colores.x,colores.y,colores.z);
+                    //enviamos las propiedades del material
+                    Material *mat = &materiales.find(modelo->getNombreMaterial())->second;
 
-                    GLuint aux = glGetSubroutineIndex ( programIDActivo, GL_VERTEX_SHADER
-                            ,"colorMaterial");
-                    glUniformSubroutinesuiv ( GL_VERTEX_SHADER, 1, &aux );
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uColorAmbiente"),
+                                mat->getColorAmbiente().x, mat->getColorAmbiente().y, mat->getColorAmbiente().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uColorDifuso"),
+                                mat->getColorDifuso().x, mat->getColorDifuso().y, mat->getColorDifuso().z);
+                    glUniform3f(glGetUniformLocation(programIDActivo, "uColorEspecular"),
+                                mat->getColorEspecular().x, mat->getColorEspecular().y, mat->getColorEspecular().z);
+                    glUniform1f(glGetUniformLocation(programIDActivo, "uExponenteEspecular"), mat->getExponente());
+
                 }
 
                 glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(modelo->getIndices().size()), GL_UNSIGNED_INT, nullptr);
@@ -252,5 +336,27 @@ namespace PAG {
         if (it != materiales.end()) {
             materiales.erase(it);
         }
+    }
+
+    const std::vector<std::unique_ptr<Luz>> &Renderer::getLuces() const {
+        return luces;
+    }
+
+    void Renderer::addLuz(std::string nombre, std::unique_ptr<Luz> nuevaLuz){
+
+        nuevaLuz->setNombreLuz(nombre);
+        luces.push_back(std::move(nuevaLuz));
+        ControllerMensajes::getInstancia().anadirMensaje("Nueva luz creada: " + nombre);
+    }
+
+    void Renderer::borrarLuz(std::string nombre ){
+        for(size_t i=0;i< luces.size();i++){
+            if(luces[i]->getNombreLuz()==nombre){
+                ControllerMensajes::getInstancia().anadirMensaje("Luz eliminada: "+nombre);
+                luces.erase(luces.begin()+i);
+                return;
+            }
+        }
+        ControllerMensajes::getInstancia().anadirMensaje("Luz no encontrada:  "+nombre);
     }
 }

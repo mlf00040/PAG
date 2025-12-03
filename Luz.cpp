@@ -19,12 +19,12 @@ void Luz::setTLuz(tipoLuz tLuz) {
     Luz::tLuz = tLuz;
 }
 
-const glm::vec3 &Luz::getCAmbiente() const {
-    return cAmbiente;
+const glm::vec3 &Luz::getIAmbiente() const {
+    return IAmbiente;
 }
 
-void Luz::setCAmbiente(const glm::vec3 &cAmbiente) {
-    Luz::cAmbiente = cAmbiente;
+void Luz::setIAmbiente(const glm::vec3 &IAmbiente) {
+    Luz::IAmbiente = IAmbiente;
 }
 
 const glm::vec3 &Luz::getPos() const {
@@ -57,4 +57,28 @@ float Luz::getExpoSuavizado() const {
 
 void Luz::setExpoSuavizado(float expoSuavizado) {
     Luz::expoSuavizado = expoSuavizado;
+}
+
+const std::string &Luz::getNombreLuz() const {
+    return nombreLuz;
+}
+
+void Luz::setNombreLuz(const std::string &nombreLuz) {
+    Luz::nombreLuz = nombreLuz;
+}
+
+const glm::vec3 &Luz::getIDifusa() const {
+    return IDifusa;
+}
+
+void Luz::setIDifusa(const glm::vec3 &iDifusa) {
+    IDifusa = iDifusa;
+}
+
+const glm::vec3 &Luz::getIEspecular() const {
+    return IEspecular;
+}
+
+void Luz::setIEspecular(const glm::vec3 &iEspecular) {
+    IEspecular = iEspecular;
 }

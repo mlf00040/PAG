@@ -21,10 +21,13 @@
 
 /**
  * Aspectos a pulir:
- * Lo de los nombres del modelo a la hora de seleccionarlos
+ * Lo de los nombres del modelo a la hora de seleccionarlos, ya muestra el nombre a la hora de cargarlo, falta cuando ya estan creados en el combo
  * Lo de que se le asigne un shader program a cada modelo, por ahora el mismo a todos.
  * Limpieza masiva de comentarios y codigo archivo por archivo
  * Agrupar todos los archivos glsl en una carpeta
+ * Cambiar el valor de la camara por defecto al del reset
+ * Elaborar las instrucciones completas
+ *
  *
  */
 
@@ -235,6 +238,8 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
         GUI::ControllerImgui::getInstancia().ventanaModificaModelo();
 
         GUI::ControllerImgui::getInstancia().ventanaGestionMateriales();
+
+        GUI::ControllerImgui::getInstancia().ventanaGestionLuces();
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

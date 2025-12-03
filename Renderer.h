@@ -52,6 +52,7 @@ namespace PAG {
         static Renderer& getInstancia ();
         virtual ~Renderer ();
         void refrescar ();
+        void dibujaTodosModelos();
         void pintarColores();
         void inicializaOpenGL ();
         void resizeViewPort(int w,int h);
@@ -87,6 +88,12 @@ namespace PAG {
         void addMaterial(const std::string &nombre, Material &mat);
 
         void borrarMaterial(std::string& nombre );
+
+        const std::vector<std::unique_ptr<Luz>> &getLuces() const;
+
+        void addLuz(std::string nombre, std::unique_ptr<Luz> nuevaLuz);
+
+        void borrarLuz(std::string nombre );
 
         void obtenerDatosContexto ();
     };
