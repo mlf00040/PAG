@@ -151,6 +151,11 @@ namespace GUI {
                         ControllerShaders::getInstancia().usarPrograma(shaderProgramName);
                         // mandamos al renderer cual es el id del programa que estamos usando
                         PAG::Renderer::getInstancia().setProgramIdActivo(ControllerShaders::getInstancia().getProgramId(shaderProgramName));
+
+                        //hacemos la carga de los indices de las subrutinas
+                        PAG::Renderer::getInstancia().cargarIndicesSubrutinas();
+
+
                         // creamos el modelo
                         //std::string Prueba = "sfsssfs";
                         //PAG::Renderer::getInstancia().creaModelo(Prueba);
@@ -353,7 +358,7 @@ namespace GUI {
 
                     //Modo de visualizacion
                     ImGui::Text("Modo visualizacion");
-                    const char* modos[] = { "ALAMBRE", "SOLIDO" };
+                    const char* modos[] = { "ALAMBRE", "SOLIDO","TEXTURA" };
                     int modoActual = static_cast<int>(modelo->getMRenderizado());
 
                     if (ImGui::Combo("##modo_visualizacion", &modoActual, modos, IM_ARRAYSIZE(modos))) {
@@ -364,6 +369,7 @@ namespace GUI {
 
                     ImGui::Text("Asignacion Material");
 
+                    //selecciona material
                     if (PAG::Renderer::getInstancia().getMateriales().empty()) {
                         ImGui::TextDisabled("No hay materiales cargados");
                     } else {
@@ -673,5 +679,108 @@ namespace GUI {
             ImGui::End();
         }
 
+    }
+
+    void ControllerImgui::ventanaGestionTexturas(ImGui::FileBrowser& fileDialog) {
+        ImGui::SetNextWindowPos(ImVec2(900, 500), ImGuiCond_Once);
+
+        if (ImGui::Begin("Gestión Texturas")) {
+            ImGui::SetWindowFontScale(1.0f);
+
+            //cargar una nueva textura
+            if (ImGui::Button("Cargar PNG")) {
+                fileDialog.Open();
+            }
+            fileDialog.Display();
+
+            if (fileDialog.HasSelected()) {
+                std::filesystem::path path = fileDialog.GetSelected();
+                std::string nombre = path.filename().stem().string();
+                std::string ruta = path.string();
+
+                auto nuevaTextura = std::make_unique<Textura>(nombre);
+                nuevaTextura->cargar(ruta);
+                PAG::Renderer::getInstancia().addTextura(std::move(nuevaTextura));
+
+                fileDialog.ClearSelected();
+            }
+
+            ImGui::Separator();
+
+            // --- Lista de texturas cargadas ---
+            const auto& texturas = PAG::Renderer::getInstancia().getTexturas();
+            if (texturas.empty()) {
+                ImGui::TextDisabled("No hay texturas cargadas");
+            } else {
+                for (size_t i = 0; i < texturas.size(); ++i) {
+                    ImGui::PushID(static_cast<int>(i));
+                    auto& tex = *texturas[i];
+
+                    ImGui::BulletText("%s", tex.getNombre().c_str());
+                    ImGui::SameLine();
+                    if (ImGui::Button("Borrar")) {
+                        PAG::Renderer::getInstancia().borrarTextura(i);
+                        ImGui::PopID();
+                        continue;
+                    }
+
+                    ImGui::PopID();
+                }
+            }
+
+            ImGui::Separator();
+
+            // --- Asignar textura a modelo ---
+            const auto& modelos = PAG::Renderer::getInstancia().getModelos();
+            if (modelos.empty()) {
+                ImGui::TextDisabled("No hay modelos");
+            } else {
+                ImGui::Text("Asignar a modelo:");
+
+                // Selector de modelo
+                std::vector<std::string> nombresModelos;
+                for (size_t i = 0; i < modelos.size(); ++i) {
+                    nombresModelos.push_back("Modelo " + std::to_string(i));
+                }
+                std::vector<const char*> items;
+                for (const auto& n : nombresModelos) items.push_back(n.c_str());
+
+                static int idxModelo = 0;
+                ImGui::Combo("Modelo", &idxModelo, items.data(), (int)items.size());
+
+                if (idxModelo >= 0 && idxModelo < (int)modelos.size()) {
+                    auto& modelo = modelos[idxModelo];
+
+                    // Selector de textura
+                    std::vector<std::string> nombresTexturas;
+                    for (const auto& t : texturas) {
+                        nombresTexturas.push_back(t->getNombre());
+                    }
+
+                    if (nombresTexturas.empty()) {
+                        ImGui::TextDisabled("No hay texturas para asignar");
+                    } else {
+                        std::vector<const char*> texItems;
+                        for (const auto& n : nombresTexturas) texItems.push_back(n.c_str());
+
+                        static int idxTex = 0;
+                        ImGui::Combo("Textura", &idxTex, texItems.data(), (int)texItems.size());
+
+                        if (ImGui::Button("Asignar textura")) {
+                            if(!modelo.get()->getTextura()) {
+                                std::string nombreTex = nombresTexturas[idxTex];
+                                auto tex = std::make_unique<Textura>(
+                                        *PAG::Renderer::getInstancia().getTexturaPorNombre(nombreTex));
+                                modelo->setTextura(std::move(tex));
+                                ControllerMensajes::getInstancia().anadirMensaje("Textura asignada a Modelo " + std::to_string(idxModelo) + ": " + nombreTex);
+                            }else{
+                                ControllerMensajes::getInstancia().anadirMensaje("Ese modelo ya cuenta con una textura");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ImGui::End();
     }
 }

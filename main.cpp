@@ -27,6 +27,7 @@
  * Agrupar todos los archivos glsl en una carpeta
  * Cambiar el valor de la camara por defecto al del reset
  * Elaborar las instrucciones completas
+ * En el ultimo shader, optimizar el paso de matrices en el vertex y evitar recalcular cada una en cada vertice.
  *
  *
  */
@@ -185,12 +186,17 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
     std::string ruta="pag03";
     std::string rutaModelo = "ModelosPruebas/vaca.obj";
+    std::string rutaTextura = "Texturas/Textura-Vaca.png";
 
     // create a file browser instance
     ImGui::FileBrowser fileDialog;
 
     // (optional) set browser properties
-    fileDialog.SetTitle("Selector Modello");
+    fileDialog.SetTitle("Selector Modelo");
+
+    ImGui::FileBrowser fileDialogTextura;
+
+    fileDialogTextura.SetTitle("Selector TExtura");
 
 /*
     //Llamamos a crear y cargar los shaders y al modelo
@@ -240,6 +246,8 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
         GUI::ControllerImgui::getInstancia().ventanaGestionMateriales();
 
         GUI::ControllerImgui::getInstancia().ventanaGestionLuces();
+
+        GUI::ControllerImgui::getInstancia().ventanaGestionTexturas(fileDialogTextura);
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

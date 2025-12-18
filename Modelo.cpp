@@ -36,39 +36,7 @@ Modelo::~Modelo() {
 }
 
 void Modelo::cargarModelo(const std::string &ruta) {
-    //es una prueba con el triangulo por ahora, en este caso las normales actuarian como los colores al no modificar el shader program todavia
-/*
-    vertices={
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-            {{ 0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-            {{ 0.0f,  0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}
-    };
-    indices = { 0, 1, 2 };
 
-    //crear el vao
-    glGenVertexArrays ( 1, &idVAO );
-    glBindVertexArray ( idVAO );
-
-    //crear el vbo
-    glGenBuffers ( 1, &idVBO );
-    glBindBuffer ( GL_ARRAY_BUFFER, idVBO );
-    glBufferData ( GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertice), vertices.data(), GL_STATIC_DRAW );
-
-    //Posicion
-    glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)offsetof(Vertice, posicion) );
-    glEnableVertexAttribArray ( 0 );
-
-    //Normales
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)offsetof(Vertice, normal));
-    glEnableVertexAttribArray(1);
-
-    //craer el ibo
-    glGenBuffers ( 1, &idIBO );
-    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, idIBO );
-    glBufferData ( GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW );
-
-    ControllerMensajes::getInstancia().anadirMensaje(("    Modelo cargado correctamente, con vertices: "+vertices.size()));
-*/
     tinyobj::ObjReaderConfig config;
 
     tinyobj::ObjReader reader;
@@ -113,6 +81,13 @@ void Modelo::cargarModelo(const std::string &ruta) {
                     v.normal=glm::vec3(0.0f);
                 }
 
+                //Coordenadas de textura y si no tiene las ponemos a 0
+                if(indice.texcoord_index >= 0){
+                    v.texturaCords = glm::vec2(atributos.texcoords[2 * indice.texcoord_index + 0], atributos.texcoords[2 * indice.texcoord_index + 1]);
+                } else {
+                    v.texturaCords = glm::vec2(0.0f);
+                }
+
                 //añadimos el vertice al vector y lo guardamos en el mapa
                 unsigned int vertexIndex = static_cast<unsigned int>(vertices.size());
                 vertices.push_back(v);
@@ -138,6 +113,10 @@ void Modelo::cargarModelo(const std::string &ruta) {
     //Normales
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)offsetof(Vertice, normal));
     glEnableVertexAttribArray(1);
+
+    //Coordenadas Textura
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)offsetof(Vertice, texturaCords));
+    glEnableVertexAttribArray(2);
 
     //craer el ibo
     glGenBuffers ( 1, &idIBO );
@@ -223,4 +202,16 @@ MetodoRenderizado Modelo::getMRenderizado() const {
 
 void Modelo::setMRenderizado(MetodoRenderizado mRenderizado) {
     Modelo::mRenderizado = mRenderizado;
+}
+
+void Modelo::setTextura(std::unique_ptr<Textura> texturaNueva) {
+    if (texturaNueva){
+        this->textura = std::move(texturaNueva);
+    } else {
+        ControllerMensajes::getInstancia().anadirMensaje("Fallo al asignar la textura al modelo");
+    }
+}
+
+const Textura* Modelo::getTextura() const {
+    return textura.get();
 }

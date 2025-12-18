@@ -22,6 +22,7 @@
 #include "Material.h"
 
 #include "Luz.h"
+#include "Textura.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -44,15 +45,32 @@ namespace PAG {
 
         GLuint programIDActivo =0;
 
+        //Indices de subrutina para la subrutina del color: fObtenerColorBase
+        GLuint indiceColorDesdeVertice = 0;
+        GLuint indiceColorDesdeTextura = 0;
+
+        //Indices de subrutina para la subrutina de la luz: fProcesaLuz
+        GLuint indiceColorRGB = 0;
+        GLuint indiceLuzAmbiente = 0;
+        GLuint indiceLuzPuntual = 0;
+        GLuint indiceLuzDireccional = 0;
+        GLuint indiceLuzFoco = 0;
+
+        //Posiciones de los uniforms de subrutina (para saber dónde poner cada indice)
+        GLint locFuenteColorBase = -1;
+        GLint locMetodoLuzElegido = -1;
+
         std::map<std::string, Material> materiales;
 
         std::vector<std::unique_ptr<Luz>> luces;
+
+        std::vector<std::unique_ptr<Textura>> texturas;
 
     public:
         static Renderer& getInstancia ();
         virtual ~Renderer ();
         void refrescar ();
-        void dibujaTodosModelos();
+        void dibujaTodosModelos(GLuint &luzActual);
         void pintarColores();
         void inicializaOpenGL ();
         void resizeViewPort(int w,int h);
@@ -96,6 +114,17 @@ namespace PAG {
         void borrarLuz(std::string nombre );
 
         void obtenerDatosContexto ();
+
+        void cargarIndicesSubrutinas();
+
+        const std::vector<std::unique_ptr<Textura>> &getTexturas() const;
+
+        void addTextura(std::unique_ptr<Textura> textura);
+
+        void borrarTextura(size_t index);
+
+        Textura* getTexturaPorNombre(const std::string& nombre);
+
     };
 
 } // PAG

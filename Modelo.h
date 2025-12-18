@@ -15,6 +15,9 @@
 #include <string>
 #include <vector>
 
+#include <memory>
+#include "Textura.h"
+
 #include "Material.h"
 
 
@@ -23,11 +26,13 @@
 struct Vertice {
     glm::vec3 posicion;
     glm::vec3 normal;
+    glm::vec2 texturaCords;
 };
 
 enum class MetodoRenderizado {
     ALAMBRE,
-    SOLIDO
+    SOLIDO,
+    TEXTURA
 };
 
 class Modelo {
@@ -46,6 +51,8 @@ private:
     std::string nombreMaterial="";
 
     MetodoRenderizado mRenderizado=MetodoRenderizado::SOLIDO;
+
+    std::unique_ptr<Textura> textura = nullptr;
 
 public:
     Modelo();
@@ -88,6 +95,11 @@ public:
     MetodoRenderizado getMRenderizado() const;
 
     void setMRenderizado(MetodoRenderizado mRenderizado);
+
+    void setTextura(std::unique_ptr<Textura> texturaNueva);
+
+    const Textura* getTextura() const;
+
 };
 
 

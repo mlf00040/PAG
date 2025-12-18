@@ -55,6 +55,7 @@ namespace PAG {
         glUniformMatrix4fv(mVision, 1, GL_FALSE, glm::value_ptr(camara.matrizVision()));
         glUniformMatrix4fv(mProyeccion, 1, GL_FALSE, glm::value_ptr(camara.matrizProyeccion()));
 
+        //rendering multipasada si hay luces
         if(!luces.empty()){
             //activamos el blending
             glEnable(GL_BLEND);
@@ -72,15 +73,17 @@ namespace PAG {
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                 }
 
+                //seleccionamos subrutina
+                GLuint indices[2] = {0};
+
+
+
                 //seleccionamos subrutina segun el tipo de luz y enviamos los datos relativos a las luces
                 GLuint idSubrutina = 0;
                 if (luz.getTLuz() == tipoLuz::AMBIENTE) {
-                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzAmbiente");
-                    glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadAmbiente"),
-                                luz.getIAmbiente().x, luz.getIAmbiente().y, luz.getIAmbiente().z);
-
+                    indices[locMetodoLuzElegido] = indiceLuzAmbiente;
                 }else if (luz.getTLuz() == tipoLuz::PUNTUAL) {
-                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzPuntual");
+                    indices[locMetodoLuzElegido] = indiceLuzPuntual;
                     glUniform3f(glGetUniformLocation(programIDActivo, "uPosLuz"),
                                 luz.getPos().x, luz.getPos().y, luz.getPos().z);
                     glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadDifusa"),
@@ -90,7 +93,7 @@ namespace PAG {
 
 
                 }else if (luz.getTLuz() == tipoLuz::DIRECCIONAL) {
-                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzDireccional");
+                    indices[locMetodoLuzElegido] = indiceLuzDireccional;
                     glUniform3f(glGetUniformLocation(programIDActivo, "uDireccionLuz"),
                                 luz.getDireccion().x, luz.getDireccion().y, luz.getDireccion().z);
                     glUniform3f(glGetUniformLocation(programIDActivo, "uIntensidadDifusa"),
@@ -99,7 +102,7 @@ namespace PAG {
                                 luz.getIEspecular().x, luz.getIEspecular().y, luz.getIEspecular().z);
 
                 }else if (luz.getTLuz() == tipoLuz::FOCO) {
-                    idSubrutina = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzFoco");
+                    indices[locMetodoLuzElegido] = indiceLuzFoco;
                     glUniform3f(glGetUniformLocation(programIDActivo, "uPosLuz"),
                                 luz.getPos().x, luz.getPos().y, luz.getPos().z);
                     glUniform3f(glGetUniformLocation(programIDActivo, "uDireccionLuz"),
@@ -111,12 +114,11 @@ namespace PAG {
                                 luz.getIEspecular().x, luz.getIEspecular().y, luz.getIEspecular().z);
                 }
 
-                //activamos la subrutina
-                if (idSubrutina != GL_INVALID_INDEX) {
-                    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &idSubrutina);
-                }
+                //activamos la subrutina de iluminacion
+                glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &indices[locMetodoLuzElegido]);
+
                 //dibujamos todos los modelos
-                dibujaTodosModelos();
+                dibujaTodosModelos(indices[locMetodoLuzElegido]);
 
             }
 
@@ -125,19 +127,20 @@ namespace PAG {
         }else{
             glDisable(GL_BLEND);
 
-            GLuint idColor = glGetSubroutineIndex ( programIDActivo, GL_FRAGMENT_SHADER
-                    , "colorRGB");
-            if (idColor != GL_INVALID_INDEX) {
-                glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &idColor);
-            }
+            GLuint indices[2] = {0};
+            indices[locFuenteColorBase] = indiceColorDesdeVertice;
+            indices[locMetodoLuzElegido] = indiceColorRGB;
+
+            glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 2, indices);
+
             //dibujamos todos los modelos
-            dibujaTodosModelos();
+            dibujaTodosModelos(indiceColorRGB);
 
         }
 
     }
 
-    void Renderer::dibujaTodosModelos(){
+    void Renderer::dibujaTodosModelos(GLuint &LuzActual){
         //Pinta todos los modelos que haya cargados en el vector en el momento de la escena para cada pasada de la luz
         for (const auto& modelo : modelos) {
             if (modelo && modelo->getIdVao()) {
@@ -157,11 +160,37 @@ namespace PAG {
                 if(modelo->getMRenderizado()==MetodoRenderizado::ALAMBRE){
                     glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
 
+                }else {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
 
-                if(modelo->getMRenderizado()==MetodoRenderizado::SOLIDO){
-                    glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
+                //seleccion de subrutinas por modelo
+                GLuint indices[2] = {0};
 
+                //seleccion de color
+                if (modelo->getMRenderizado() == MetodoRenderizado::TEXTURA && modelo->getTextura()) {
+                    indices[locFuenteColorBase] = indiceColorDesdeTextura;
+                } else {
+                    indices[locFuenteColorBase] = indiceColorDesdeVertice;
+                }
+
+                //Seleccion de luz
+                if (modelo->getMRenderizado() == MetodoRenderizado::ALAMBRE) {
+                    indices[locMetodoLuzElegido] = indiceColorRGB;
+                } else {
+                    indices[locMetodoLuzElegido] = LuzActual;
+                }
+
+                glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 2, indices);
+
+                // Activar textura si existe
+                const Textura* textura = modelo->getTextura();
+                if (textura && modelo->getMRenderizado() == MetodoRenderizado::TEXTURA) {
+                    textura->enlazar(0);
+                    glUniform1i(glGetUniformLocation(programIDActivo, "muestreador"), 0);
+                }
+
+                if (modelo->getMRenderizado() != MetodoRenderizado::ALAMBRE &&modelo->getMRenderizado() != MetodoRenderizado::TEXTURA) {
                     //enviamos las propiedades del material
                     Material *mat = &materiales.find(modelo->getNombreMaterial())->second;
 
@@ -359,4 +388,70 @@ namespace PAG {
         }
         ControllerMensajes::getInstancia().anadirMensaje("Luz no encontrada:  "+nombre);
     }
+
+    void Renderer::cargarIndicesSubrutinas() {
+        if (!programIDActivo) return;
+
+        glUseProgram(programIDActivo);
+
+        //Obtenemos las ubicaciones de los uniforms de las subrutinas
+        locFuenteColorBase = glGetSubroutineUniformLocation(programIDActivo, GL_FRAGMENT_SHADER, "uFuenteColorBase");
+        locMetodoLuzElegido = glGetSubroutineUniformLocation(programIDActivo, GL_FRAGMENT_SHADER, "uMetodoLuzElegido");
+
+        if (locFuenteColorBase == -1 || locMetodoLuzElegido == -1) {
+            ControllerMensajes::getInstancia().anadirMensaje("No hay uniforms de subrutinas");
+        }
+
+        //Cargamos indices de la subrutina fObtenerColorBase
+        indiceColorDesdeVertice = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorDesdeVertice");
+        indiceColorDesdeTextura = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorDesdeTextura");
+
+        //Cargamos los indices de la subrutine fProcesaLuz
+        indiceColorRGB = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorRGB");
+        indiceLuzAmbiente = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzAmbiente");
+        indiceLuzPuntual = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzPuntual");
+        indiceLuzDireccional = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzDireccional");
+        indiceLuzFoco = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzFoco");
+
+        //Verificar que todos los índices son válidos
+        if (indiceColorDesdeVertice == GL_INVALID_INDEX ||
+                indiceColorDesdeTextura == GL_INVALID_INDEX ||
+                indiceColorRGB == GL_INVALID_INDEX ||
+                indiceLuzAmbiente == GL_INVALID_INDEX ||
+                indiceLuzPuntual == GL_INVALID_INDEX ||
+                indiceLuzDireccional == GL_INVALID_INDEX ||
+                indiceLuzFoco == GL_INVALID_INDEX) {
+            ControllerMensajes::getInstancia().anadirMensaje("Los putos indices de subrutina han petado :,(");
+        }
+
+        ControllerMensajes::getInstancia().anadirMensaje("Indices de subrutinas cargados correctamente.");
+
+    }
+
+    const std::vector<std::unique_ptr<Textura>> &Renderer::getTexturas() const {
+        return texturas;
+    }
+
+    void Renderer::addTextura(std::unique_ptr<Textura> textura) {
+            texturas.push_back(std::move(textura));
+            ControllerMensajes::getInstancia().anadirMensaje("Textura añadida.");
+    }
+
+    void Renderer::borrarTextura(size_t index) {
+        if (index < texturas.size()) {
+            std::string nombre = texturas[index]->getNombre();
+            texturas.erase(texturas.begin() + index);
+            ControllerMensajes::getInstancia().anadirMensaje("Textura eliminada: " + nombre);
+        }
+    }
+
+    Textura* Renderer::getTexturaPorNombre(const std::string& nombre) {
+        for (const auto& textura : texturas) {
+            if (textura && textura->getNombre() == nombre) {
+                return textura.get();
+            }
+        }
+        return nullptr;
+    }
+
 }

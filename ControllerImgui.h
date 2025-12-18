@@ -18,6 +18,7 @@
 #include "Renderer.h"
 #include "ControllerMensajes.h"
 #include "Camara.h"
+#include "Textura.h"
 
 namespace GUI {
     class ControllerImgui {
@@ -54,6 +55,9 @@ namespace GUI {
         float expoSuavizadoLuzAux=2;
         std::string nombreLuz="";
 
+        std::string nombreTextura = "";
+        int indiceTexturaActual = 0;
+
         ControllerImgui();
 
     public:
@@ -88,6 +92,8 @@ namespace GUI {
         void ventanaGestionMateriales();
 
         void ventanaGestionLuces();
+
+        void ventanaGestionTexturas(ImGui::FileBrowser& fileDialog);
     };
 }
 
