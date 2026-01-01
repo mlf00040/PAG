@@ -5,7 +5,7 @@
 #include "Camara.h"
 
 
-Camara::Camara() : posicion(0.0f,0.0f,1.0f), punto(0.0f,0.0f,0.0f),y(0.0f,1.0f,0.0f), fov(45.0f), zNear(1.0f), zFar(100.0f), width(16.0f),
+Camara::Camara() : posicion(0.0f,0.0f,3.0f), punto(0.0f,0.0f,0.0f),y(0.0f,1.0f,0.0f), fov(45.0f), zNear(1.0f), zFar(100.0f), width(16.0f),
                                height(9.0f) {};
 
 /**

@@ -769,9 +769,8 @@ namespace GUI {
                         if (ImGui::Button("Asignar textura")) {
                             if(!modelo.get()->getTextura()) {
                                 std::string nombreTex = nombresTexturas[idxTex];
-                                auto tex = std::make_unique<Textura>(
-                                        *PAG::Renderer::getInstancia().getTexturaPorNombre(nombreTex));
-                                modelo->setTextura(std::move(tex));
+                                Textura *tex = PAG::Renderer::getInstancia().getTexturaPorNombre(nombreTex);
+                                modelo->setTextura(tex);
                                 ControllerMensajes::getInstancia().anadirMensaje("Textura asignada a Modelo " + std::to_string(idxModelo) + ": " + nombreTex);
                             }else{
                                 ControllerMensajes::getInstancia().anadirMensaje("Ese modelo ya cuenta con una textura");

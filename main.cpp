@@ -25,7 +25,6 @@
  * Lo de que se le asigne un shader program a cada modelo, por ahora el mismo a todos.
  * Limpieza masiva de comentarios y codigo archivo por archivo
  * Agrupar todos los archivos glsl en una carpeta
- * Cambiar el valor de la camara por defecto al del reset
  * Elaborar las instrucciones completas
  * En el ultimo shader, optimizar el paso de matrices en el vertex y evitar recalcular cada una en cada vertice.
  *

@@ -52,7 +52,7 @@ private:
 
     MetodoRenderizado mRenderizado=MetodoRenderizado::SOLIDO;
 
-    std::unique_ptr<Textura> textura = nullptr;
+    Textura *textura = nullptr;
 
 public:
     Modelo();
@@ -96,7 +96,7 @@ public:
 
     void setMRenderizado(MetodoRenderizado mRenderizado);
 
-    void setTextura(std::unique_ptr<Textura> texturaNueva);
+    void setTextura(Textura *texturaNueva);
 
     const Textura* getTextura() const;
 

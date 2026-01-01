@@ -204,14 +204,14 @@ void Modelo::setMRenderizado(MetodoRenderizado mRenderizado) {
     Modelo::mRenderizado = mRenderizado;
 }
 
-void Modelo::setTextura(std::unique_ptr<Textura> texturaNueva) {
+void Modelo::setTextura(Textura *texturaNueva) {
     if (texturaNueva){
-        this->textura = std::move(texturaNueva);
+        this->textura = texturaNueva;
     } else {
         ControllerMensajes::getInstancia().anadirMensaje("Fallo al asignar la textura al modelo");
     }
 }
 
 const Textura* Modelo::getTextura() const {
-    return textura.get();
+    return textura;
 }
