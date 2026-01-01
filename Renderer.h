@@ -48,6 +48,7 @@ namespace PAG {
         //Indices de subrutina para la subrutina del color: fObtenerColorBase
         GLuint indiceColorDesdeVertice = 0;
         GLuint indiceColorDesdeTextura = 0;
+        GLuint indiceColorDesdeMaterial = 0;
 
         //Indices de subrutina para la subrutina de la luz: fProcesaLuz
         GLuint indiceColorRGB = 0;

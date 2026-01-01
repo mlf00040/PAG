@@ -170,7 +170,9 @@ namespace PAG {
                 //seleccion de color
                 if (modelo->getMRenderizado() == MetodoRenderizado::TEXTURA && modelo->getTextura()) {
                     indices[locFuenteColorBase] = indiceColorDesdeTextura;
-                } else {
+                } else if(modelo->getNombreMaterial()!= ""){
+                    indices[locFuenteColorBase] = indiceColorDesdeMaterial;
+                }else {
                     indices[locFuenteColorBase] = indiceColorDesdeVertice;
                 }
 
@@ -405,6 +407,7 @@ namespace PAG {
         //Cargamos indices de la subrutina fObtenerColorBase
         indiceColorDesdeVertice = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorDesdeVertice");
         indiceColorDesdeTextura = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorDesdeTextura");
+        indiceColorDesdeMaterial = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorDesdeMaterial");
 
         //Cargamos los indices de la subrutine fProcesaLuz
         indiceColorRGB = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "colorRGB");
@@ -413,9 +416,10 @@ namespace PAG {
         indiceLuzDireccional = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzDireccional");
         indiceLuzFoco = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzFoco");
 
-        //Verificar que todos los índices son válidos
+        //Verifica que todos los índices son válidos
         if (indiceColorDesdeVertice == GL_INVALID_INDEX ||
                 indiceColorDesdeTextura == GL_INVALID_INDEX ||
+                indiceColorDesdeMaterial == GL_INVALID_INDEX ||
                 indiceColorRGB == GL_INVALID_INDEX ||
                 indiceLuzAmbiente == GL_INVALID_INDEX ||
                 indiceLuzPuntual == GL_INVALID_INDEX ||

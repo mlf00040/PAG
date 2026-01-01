@@ -46,6 +46,11 @@ vec3 colorDesdeTextura() {
 return texture(muestreador, cTextura).rgb;
 }
 
+subroutine(fObtenerColorBase)
+vec3 colorDesdeMaterial() {
+return uColorDifuso;
+}
+
 
 
 //subrutina procesar luz
