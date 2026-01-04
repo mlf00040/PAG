@@ -61,3 +61,7 @@ Nuevo archivo de shaders en esta practica la pag06 y ya se les pasan las 3 matri
 # Sesion 7
 
 Para introducir los materiales, el renderer va a tener un mapa con los materiales que se creen y la clase modelo va a tener un campo que va a almacenar el nombre de ese material. Asi varios modelos pueden usar el mismo material
+
+# Sesion 10
+
+Como estoy usando el tinyOBJLoader en vez de el Assimp no me autogestiona las tangentes ni las bitangentes, por tanto en modelo he creado un método para calcularlas y al que se llamara cuando se cargue el modelo.

@@ -27,6 +27,8 @@ struct Vertice {
     glm::vec3 posicion;
     glm::vec3 normal;
     glm::vec2 texturaCords;
+    glm::vec3 tangente;
+    glm::vec3 bitangente;
 };
 
 enum class MetodoRenderizado {
@@ -99,6 +101,10 @@ public:
     void setTextura(Textura *texturaNueva);
 
     const Textura* getTextura() const;
+
+    void calcularTangBitang(const glm::vec3 &pos1, const glm::vec3 &pos2, const glm::vec3 &pos3,
+                                    const glm::vec2 &uv1, const glm::vec2 &uv2, const glm::vec2 &uv3,
+                                    glm::vec3 &tangente, glm::vec3 &bitangente);
 
 };
 
