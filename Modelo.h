@@ -34,7 +34,8 @@ struct Vertice {
 enum class MetodoRenderizado {
     ALAMBRE,
     SOLIDO,
-    TEXTURA
+    TEXTURA,
+    NORMALMAPPING
 };
 
 class Modelo {
@@ -55,6 +56,8 @@ private:
     MetodoRenderizado mRenderizado=MetodoRenderizado::SOLIDO;
 
     Textura *textura = nullptr;
+
+    Textura *texturaMapaNormal = nullptr;
 
 public:
     Modelo();
@@ -101,6 +104,10 @@ public:
     void setTextura(Textura *texturaNueva);
 
     const Textura* getTextura() const;
+
+    const Textura *getTexturaMapaNormal() const;
+
+    void setTexturaMapaNormal(Textura *texturaNuevaMapaNormal);
 
     void calcularTangBitang(const glm::vec3 &pos1, const glm::vec3 &pos2, const glm::vec3 &pos3,
                                     const glm::vec2 &uv1, const glm::vec2 &uv2, const glm::vec2 &uv3,

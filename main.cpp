@@ -27,6 +27,7 @@
  * Agrupar todos los archivos glsl en una carpeta
  * Elaborar las instrucciones completas
  * En el ultimo shader, optimizar el paso de matrices en el vertex y evitar recalcular cada una en cada vertice.
+ * Arregalr el borrado de material en los modelos o cambiar la condicion en el renderer para que al borrar el material se pinte rgb
  *
  *
  */

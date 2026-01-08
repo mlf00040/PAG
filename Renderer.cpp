@@ -165,31 +165,57 @@ namespace PAG {
                 }
 
                 //seleccion de subrutinas por modelo
-                GLuint indices[2] = {0};
+                GLuint indiceColorModelo = 0;
+                GLuint indiceIluminacionModelo = 0;
 
                 //seleccion de color
-                if (modelo->getMRenderizado() == MetodoRenderizado::TEXTURA && modelo->getTextura()) {
-                    indices[locFuenteColorBase] = indiceColorDesdeTextura;
+                if ((modelo->getMRenderizado() == MetodoRenderizado::TEXTURA || modelo->getMRenderizado() == MetodoRenderizado::NORMALMAPPING) && modelo->getTextura()) {
+                    indiceColorModelo = indiceColorDesdeTextura;
                 } else if(modelo->getNombreMaterial()!= ""){
-                    indices[locFuenteColorBase] = indiceColorDesdeMaterial;
+                    indiceColorModelo = indiceColorDesdeMaterial;
                 }else {
-                    indices[locFuenteColorBase] = indiceColorDesdeVertice;
+                    indiceColorModelo = indiceColorDesdeVertice;
                 }
+
 
                 //Seleccion de luz
                 if (modelo->getMRenderizado() == MetodoRenderizado::ALAMBRE) {
-                    indices[locMetodoLuzElegido] = indiceColorRGB;
-                } else {
-                    indices[locMetodoLuzElegido] = LuzActual;
+                    indiceIluminacionModelo = indiceColorRGB;
+                }
+                else if (modelo->getMRenderizado() == MetodoRenderizado::NORMALMAPPING &&
+                         modelo->getTexturaMapaNormal()) {
+                    //Usar normal mapping
+                    if (LuzActual == indiceLuzPuntual) {
+                        indiceIluminacionModelo = indiceLuzPuntualNormalMapping;
+                    } else if (LuzActual == indiceLuzDireccional) {
+                        indiceIluminacionModelo = indiceLuzDireccionalNormalMapping;
+                    } else if (LuzActual == indiceLuzFoco) {
+                        indiceIluminacionModelo = indiceLuzFocoNormalMapping;
+                    } else {
+                        indiceIluminacionModelo = indiceLuzPuntual;
+                    }
+                }
+                else {
+                    indiceIluminacionModelo = LuzActual;
                 }
 
+                //activar ambas subrutinas JUNTAS
+                GLuint indices[2] = {indiceColorModelo, indiceIluminacionModelo};
                 glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 2, indices);
 
-                // Activar textura si existe
+                //activar textura si existe
                 const Textura* textura = modelo->getTextura();
-                if (textura && modelo->getMRenderizado() == MetodoRenderizado::TEXTURA) {
+                if (textura && (modelo->getMRenderizado() == MetodoRenderizado::TEXTURA || modelo->getMRenderizado() == MetodoRenderizado::NORMALMAPPING)) {
                     textura->enlazar(0);
                     glUniform1i(glGetUniformLocation(programIDActivo, "muestreador"), 0);
+                }
+
+                //activar TexturaMapaNormales si existe
+                const Textura* texturaNormalMap = modelo->getTexturaMapaNormal();
+
+                if(texturaNormalMap && modelo->getMRenderizado() == MetodoRenderizado::NORMALMAPPING){
+                    texturaNormalMap->enlazar(1);
+                    glUniform1i(glGetUniformLocation(programIDActivo, "muestreadorNormal"), 1);
                 }
 
                 if (modelo->getMRenderizado() != MetodoRenderizado::ALAMBRE &&modelo->getMRenderizado() != MetodoRenderizado::TEXTURA) {
@@ -415,6 +441,9 @@ namespace PAG {
         indiceLuzPuntual = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzPuntual");
         indiceLuzDireccional = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzDireccional");
         indiceLuzFoco = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzFoco");
+        indiceLuzPuntualNormalMapping = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzPuntualNormalMapping");
+        indiceLuzDireccionalNormalMapping = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzDireccionalNormalMapping");
+        indiceLuzFocoNormalMapping = glGetSubroutineIndex(programIDActivo, GL_FRAGMENT_SHADER, "luzFocoNormalMapping");
 
         //Verifica que todos los índices son válidos
         if (indiceColorDesdeVertice == GL_INVALID_INDEX ||
@@ -424,7 +453,10 @@ namespace PAG {
                 indiceLuzAmbiente == GL_INVALID_INDEX ||
                 indiceLuzPuntual == GL_INVALID_INDEX ||
                 indiceLuzDireccional == GL_INVALID_INDEX ||
-                indiceLuzFoco == GL_INVALID_INDEX) {
+                indiceLuzFoco == GL_INVALID_INDEX ||
+                indiceLuzPuntualNormalMapping == GL_INVALID_INDEX ||
+                indiceLuzDireccionalNormalMapping == GL_INVALID_INDEX ||
+                indiceLuzFocoNormalMapping == GL_INVALID_INDEX) {
             ControllerMensajes::getInstancia().anadirMensaje("Los putos indices de subrutina han petado :,(");
         }
 

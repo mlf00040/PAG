@@ -269,3 +269,16 @@ void Modelo::calcularTangBitang(const glm::vec3 &pos1, const glm::vec3 &pos2, co
 
 }
 
+void Modelo::setTexturaMapaNormal(Textura *texturaNuevaMapaNormal) {
+    if (texturaNuevaMapaNormal){
+        this->texturaMapaNormal = texturaNuevaMapaNormal;
+    } else {
+        ControllerMensajes::getInstancia().anadirMensaje("Fallo al asignar la textura del mapa de normales al modelo");
+    }
+}
+
+const Textura* Modelo::getTexturaMapaNormal() const {
+    return texturaMapaNormal;
+}
+
+

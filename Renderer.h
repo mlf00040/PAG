@@ -57,6 +57,10 @@ namespace PAG {
         GLuint indiceLuzDireccional = 0;
         GLuint indiceLuzFoco = 0;
 
+        GLuint indiceLuzPuntualNormalMapping = 0;
+        GLuint indiceLuzDireccionalNormalMapping = 0;
+        GLuint indiceLuzFocoNormalMapping = 0;
+
         //Posiciones de los uniforms de subrutina (para saber dónde poner cada indice)
         GLint locFuenteColorBase = -1;
         GLint locMetodoLuzElegido = -1;
