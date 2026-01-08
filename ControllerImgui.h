@@ -58,6 +58,9 @@ namespace GUI {
         std::string nombreTextura = "";
         int indiceTexturaActual = 0;
 
+        std::string nombreTexturaNormal = "";
+        int indiceTexturaActualNormal = 0;
+
         ControllerImgui();
 
     public:
@@ -94,6 +97,8 @@ namespace GUI {
         void ventanaGestionLuces();
 
         void ventanaGestionTexturas(ImGui::FileBrowser& fileDialog);
+
+        void ventanaGestionTexturasNormal(ImGui::FileBrowser& fileDialog);
     };
 }
 

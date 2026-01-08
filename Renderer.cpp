@@ -490,4 +490,30 @@ namespace PAG {
         return nullptr;
     }
 
+    const std::vector<std::unique_ptr<Textura>> &Renderer::getTexturasNormal() const {
+        return texturasNormales;
+    }
+
+    void Renderer::addTexturaNormal(std::unique_ptr<Textura> textura) {
+        texturasNormales.push_back(std::move(textura));
+        ControllerMensajes::getInstancia().anadirMensaje("Textura Normal Mapping añadida.");
+    }
+
+    void Renderer::borrarTexturaNormal(size_t index) {
+        if (index < texturasNormales.size()) {
+            std::string nombre = texturasNormales[index]->getNombre();
+            texturasNormales.erase(texturasNormales.begin() + index);
+            ControllerMensajes::getInstancia().anadirMensaje("Textura Normal Mapping eliminada: " + nombre);
+        }
+    }
+
+    Textura* Renderer::getTexturaPorNombreNormal(const std::string &nombre) {
+        for (const auto& textura : texturasNormales) {
+            if (textura && textura->getNombre() == nombre) {
+                return textura.get();
+            }
+        }
+        return nullptr;
+    }
+
 }

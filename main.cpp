@@ -196,7 +196,11 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
     ImGui::FileBrowser fileDialogTextura;
 
-    fileDialogTextura.SetTitle("Selector TExtura");
+    fileDialogTextura.SetTitle("Selector Textura");
+
+    ImGui::FileBrowser fileDialogTexturaNormal;
+
+    fileDialogTexturaNormal.SetTitle("Selector Textura Normal Mapping");
 
 /*
     //Llamamos a crear y cargar los shaders y al modelo
@@ -248,6 +252,8 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
         GUI::ControllerImgui::getInstancia().ventanaGestionLuces();
 
         GUI::ControllerImgui::getInstancia().ventanaGestionTexturas(fileDialogTextura);
+
+        GUI::ControllerImgui::getInstancia().ventanaGestionTexturasNormal(fileDialogTexturaNormal);
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

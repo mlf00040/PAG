@@ -6,7 +6,7 @@ in vec3 normal;
 in vec3 vColor;
 in vec2 cTextura;
 in vec3 posLuzTg;
-
+in vec3 dirLuzTg;
 
 //salidas
 out vec4 colorFragmento;
@@ -55,8 +55,6 @@ vec3 colorDesdeMaterial() {
 return uColorDifuso;
 }
 
-
-
 //subrutina procesar luz
 subroutine vec3 fProcesaLuz();
 
@@ -86,7 +84,6 @@ vec3 luzPuntual ()
     vec3 r = reflect(-l,n);
 
     vec3 colorBase = uFuenteColorBase();
-    //vec3 colorBase = texture(muestreador, cTextura).rgb;
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
     return difusa + especular;
@@ -119,7 +116,6 @@ vec3 luzDireccional ()
     vec3 r = reflect(-l,n);
 
     vec3 colorBase = uFuenteColorBase();
-    //vec3 colorBase = texture(muestreador, cTextura).rgb;
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
     return difusa + especular;
@@ -131,7 +127,7 @@ vec3 luzDireccionalNormalMapping ()
 {
     vec3 n = normalize(texture(muestreadorNormal, cTextura).rgb * 2.0 - 1.0);
 
-    vec3 l = -uDireccionLuz;
+    vec3 l = -dirLuzTg;
     vec3 v = normalize(-posicionTg);
     vec3 r = reflect(-l,n);
 
@@ -157,7 +153,6 @@ vec3 luzFoco ()
     vec3 r = reflect(-l,n);
 
     vec3 colorBase = uFuenteColorBase();
-    //vec3 colorBase = texture(muestreador, cTextura).rgb;
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
     return factorApertura * (difusa + especular);
@@ -168,7 +163,7 @@ subroutine(fProcesaLuz)
 vec3 luzFocoNormalMapping ()
 {
     vec3 l = normalize (posLuzTg - posicionTg);
-    vec3 d = uDireccionLuz; //esto puede fallar, creo que tengo que convertirlo a espacio dela tangente
+    vec3 d = dirLuzTg;
     float cosGamma = cos(radians(uAnguloApertura));
     float factorApertura = 1.0;
 

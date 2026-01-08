@@ -14,6 +14,7 @@ uniform mat4 mProyeccion;
 
 //datos de la luz
 uniform vec3 uPosLuz;
+uniform vec3 uDireccionLuz;
 
 //salidas
 out vec3 posicion;
@@ -22,6 +23,7 @@ out vec3 normal;
 out vec3 vColor;
 out vec2 cTextura;
 out vec3 posLuzTg;
+out vec3 dirLuzTg;
 
 void main ()
 {
@@ -30,14 +32,15 @@ void main ()
 
    mat4 matrizMVP = mProyeccion * mVision * mModelado; // Matriz de modelado, visión y proyección
    mat4 matrizMV = mVision * mModelado; // Matriz de modelado y visión
-   mat4 matrizMVit = transpose(matrizMV); // Traspuesta de la inversa de matrizMV
+   mat4 matrizMVit = transpose(inverse((matrizMV)));; // Traspuesta de la inversa de matrizMV
 
    vec3 normalMV = normalize ( vec3 ( matrizMVit * vec4 ( vNormal, 0 ) ) );
    vec3 tangenteMV = normalize ( vec3 ( matrizMVit * vec4 ( vTangente, 0 ) ) );
-   vec3 bitangenteMV = normalize ( cross ( normalMV, tangenteMV ) );
+   vec3 bitangenteMV = normalize ( cross ( normalMV , tangenteMV  ) );
    mat3 TBN = transpose ( mat3 ( tangenteMV, bitangenteMV, normalMV ) );
    posicionTg = TBN * vec3 ( matrizMV * vec4 ( vPosicion, 1 ) );
-   posLuzTg = TBN * uPosLuz;
+   posLuzTg = TBN * vec3 ( mVision * vec4 ( uPosLuz, 1.0 ) );
+   dirLuzTg = TBN * normalize ( mat3 ( mVision ) * uDireccionLuz );
 
    //transformacion a posicion del mundo
    vec4 posicionW = mModelado * vec4(vPosicion, 1.0);

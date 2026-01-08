@@ -358,7 +358,7 @@ namespace GUI {
 
                     //Modo de visualizacion
                     ImGui::Text("Modo visualizacion");
-                    const char* modos[] = { "ALAMBRE", "SOLIDO","TEXTURA" };
+                    const char* modos[] = { "ALAMBRE", "SOLIDO","TEXTURA","NORMALMAPPING" };
                     int modoActual = static_cast<int>(modelo->getMRenderizado());
 
                     if (ImGui::Combo("##modo_visualizacion", &modoActual, modos, IM_ARRAYSIZE(modos))) {
@@ -774,6 +774,108 @@ namespace GUI {
                                 ControllerMensajes::getInstancia().anadirMensaje("Textura asignada a Modelo " + std::to_string(idxModelo) + ": " + nombreTex);
                             }else{
                                 ControllerMensajes::getInstancia().anadirMensaje("Ese modelo ya cuenta con una textura");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ImGui::End();
+    }
+
+    void ControllerImgui::ventanaGestionTexturasNormal(ImGui::FileBrowser& fileDialog) {
+        ImGui::SetNextWindowPos(ImVec2(900, 500), ImGuiCond_Once);
+
+        if (ImGui::Begin("Gestión Texturas Normal Mapping")) {
+            ImGui::SetWindowFontScale(1.0f);
+
+            //cargar una nueva textura
+            if (ImGui::Button("Cargar textura PNG")) {
+                fileDialog.Open();
+            }
+            fileDialog.Display();
+
+            if (fileDialog.HasSelected()) {
+                std::filesystem::path path = fileDialog.GetSelected();
+                std::string nombre = path.filename().stem().string();
+                std::string ruta = path.string();
+
+                auto nuevaTexturaNormal = std::make_unique<Textura>(nombre);
+                nuevaTexturaNormal->cargar(ruta);
+                PAG::Renderer::getInstancia().addTexturaNormal(std::move(nuevaTexturaNormal));
+
+                fileDialog.ClearSelected();
+            }
+
+            ImGui::Separator();
+
+            // --- Lista de texturasNormales cargadas ---
+            const auto& texturasNormales = PAG::Renderer::getInstancia().getTexturasNormal();
+            if (texturasNormales.empty()) {
+                ImGui::TextDisabled("No hay texturas de Normal Mapping cargadas");
+            } else {
+                for (size_t i = 0; i < texturasNormales.size(); ++i) {
+                    ImGui::PushID(static_cast<int>(i));
+                    auto& tex = *texturasNormales[i];
+
+                    ImGui::BulletText("%s", tex.getNombre().c_str());
+                    ImGui::SameLine();
+                    if (ImGui::Button("Borrar")) {
+                        PAG::Renderer::getInstancia().borrarTexturaNormal(i);
+                        ImGui::PopID();
+                        continue;
+                    }
+
+                    ImGui::PopID();
+                }
+            }
+
+            ImGui::Separator();
+
+            // --- Asignar textura a modelo ---
+            const auto& modelos = PAG::Renderer::getInstancia().getModelos();
+            if (modelos.empty()) {
+                ImGui::TextDisabled("No hay modelos");
+            } else {
+                ImGui::Text("Asignar a modelo:");
+
+                // Selector de modelo
+                std::vector<std::string> nombresModelos;
+                for (size_t i = 0; i < modelos.size(); ++i) {
+                    nombresModelos.push_back("Modelo " + std::to_string(i));
+                }
+                std::vector<const char*> items;
+                for (const auto& n : nombresModelos) items.push_back(n.c_str());
+
+                static int idxModelo = 0;
+                ImGui::Combo("Modelo", &idxModelo, items.data(), (int)items.size());
+
+                if (idxModelo >= 0 && idxModelo < (int)modelos.size()) {
+                    auto& modelo = modelos[idxModelo];
+
+                    // Selector de textura
+                    std::vector<std::string> nombresTexturas;
+                    for (const auto& t : texturasNormales) {
+                        nombresTexturas.push_back(t->getNombre());
+                    }
+
+                    if (nombresTexturas.empty()) {
+                        ImGui::TextDisabled("No hay texturasNormales para asignar");
+                    } else {
+                        std::vector<const char*> texItems;
+                        for (const auto& n : nombresTexturas) texItems.push_back(n.c_str());
+
+                        static int idxTex = 0;
+                        ImGui::Combo("Textura", &idxTex, texItems.data(), (int)texItems.size());
+
+                        if (ImGui::Button("Asignar textura Normal Mapping")) {
+                            if(!modelo.get()->getTexturaMapaNormal()) {
+                                std::string nombreTex = nombresTexturas[idxTex];
+                                Textura *tex = PAG::Renderer::getInstancia().getTexturaPorNombreNormal(nombreTex);
+                                modelo->setTexturaMapaNormal(tex);
+                                ControllerMensajes::getInstancia().anadirMensaje("Textura Normal Mapping asignada a Modelo " + std::to_string(idxModelo) + ": " + nombreTex);
+                            }else{
+                                ControllerMensajes::getInstancia().anadirMensaje("Ese modelo ya cuenta con una textura de Normal Mapping");
                             }
                         }
                     }

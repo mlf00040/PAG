@@ -71,6 +71,8 @@ namespace PAG {
 
         std::vector<std::unique_ptr<Textura>> texturas;
 
+        std::vector<std::unique_ptr<Textura>> texturasNormales;
+
     public:
         static Renderer& getInstancia ();
         virtual ~Renderer ();
@@ -129,6 +131,14 @@ namespace PAG {
         void borrarTextura(size_t index);
 
         Textura* getTexturaPorNombre(const std::string& nombre);
+
+        const std::vector<std::unique_ptr<Textura>> &getTexturasNormal() const;
+
+        void addTexturaNormal(std::unique_ptr<Textura> textura);
+
+        void borrarTexturaNormal(size_t index);
+
+        Textura* getTexturaPorNombreNormal(const std::string& nombre);
 
     };
 

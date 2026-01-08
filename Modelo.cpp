@@ -113,6 +113,11 @@ void Modelo::cargarModelo(const std::string &ruta) {
 
         v1.tangente = tang;
         v2.tangente = tang;
+        v3.tangente += tang;
+
+        v1.bitangente += bitang;
+        v2.bitangente += bitang;
+        v3.bitangente += bitang;
     }
 
     //crear el vao
