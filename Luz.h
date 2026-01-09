@@ -36,6 +36,13 @@ private:
 
     //identificador de la luz
     std::string nombreLuz="";
+
+    //Para los mapas de sombras
+    GLuint fbo = 0;
+    GLuint mapaSombras = 0;
+    int anchoMS = 1024;
+    int altoMS = 1024;
+
 public:
     Luz();
 
@@ -76,6 +83,8 @@ public:
     const std::string &getNombreLuz() const;
 
     void setNombreLuz(const std::string &nombreLuz);
+
+    glm::mat4 getMatrizMVLuz();
 
 };
 

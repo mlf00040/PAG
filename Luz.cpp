@@ -2,6 +2,8 @@
 // Created by Suspr on 23/11/2025.
 //
 
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 #include "Luz.h"
 
 Luz::Luz()=default;
@@ -81,4 +83,30 @@ const glm::vec3 &Luz::getIEspecular() const {
 
 void Luz::setIEspecular(const glm::vec3 &iEspecular) {
     IEspecular = iEspecular;
+}
+
+glm::mat4 Luz::getMatrizMVLuz() {
+    glm::mat4 mV;
+    glm::mat4 mP;
+
+    if(tLuz== tipoLuz::DIRECCIONAL){
+
+        glm::vec3 centro = {0.0,0.0,0.0};
+        glm::vec3 posicion = centro - direccion * 5.0f;
+        mV = glm::lookAt ( posicion, centro, glm::vec3(0, 1, 0) );
+        mP = glm::ortho ( -3.0, 3.0, -3.0, 3.0, 0.1, 10.0 );
+
+    }else if(tLuz == tipoLuz::FOCO){
+
+        mV = glm::lookAt ( pos, pos + direccion, glm::vec3(0, 1, 0) );
+        mP =  glm::perspective ( 2 * glm::radians(angulo), static_cast<float>(anchoMS) / altoMS, 0.1f, 10.0f );
+
+    }else{
+
+        return glm::mat4(1.0f);
+
+    }
+
+    return mP * mV;
+
 }
