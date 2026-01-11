@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include "ControllerMensajes.h"
+#include "ControllerShaders.h"
 #include "Camara.h"
 
 #include <glm/glm.hpp>
@@ -73,11 +74,17 @@ namespace PAG {
 
         std::vector<std::unique_ptr<Textura>> texturasNormales;
 
+        //para el mapa de sombras
+        bool sombras = false;
+
     public:
         static Renderer& getInstancia ();
         virtual ~Renderer ();
         void refrescar ();
         void dibujaTodosModelos(GLuint &luzActual);
+
+        void pasadaSombras();
+
         void pintarColores();
         void inicializaOpenGL ();
         void resizeViewPort(int w,int h);

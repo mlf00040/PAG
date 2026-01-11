@@ -42,7 +42,13 @@ namespace PAG {
     * Método para hacer el refresco de la escena
     */
     void Renderer::refrescar ()
-    {  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    {  
+        // Primer pase: generar mapas de sombras para luces compatibles
+        if(sombras) {
+            pasadaSombras();
+        }
+        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(programIDActivo);
 
@@ -236,6 +242,93 @@ namespace PAG {
                 glBindVertexArray(0);
             }
         }
+    }
+
+    /**
+     * Hace todos los calculos de las sombras y lo deja ya preparado unicamente para que se rendericen.
+     */
+    void Renderer::pasadaSombras() {
+
+        if(!ControllerShaders::getInstancia().existePrograma("mapaSombras")){
+            ControllerMensajes::getInstancia().anadirMensaje("mapaSombras no cargado, por tanto no se puede hacer las sombras");
+            sombras=false;
+            return;
+        }
+
+        //guardamos el viewport actual para restaurarlo después
+        GLint viewportActual[4];
+        glGetIntegerv(GL_VIEWPORT, viewportActual);
+
+        //ponemos que vamos a usar el programa del mapa de sombras
+        GLuint mapaSombrasProgramID = ControllerShaders::getInstancia().getProgramId("mapaSombras");
+        glUseProgram(mapaSombrasProgramID);
+
+        //configuración para evitar shadow acne
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        //para cada luz compatible:
+        for(size_t i = 0; i < luces.size(); ++i) {
+            auto &luz = *luces[i];
+
+            if(!luz.compatibleSombra()){
+                continue;
+            }
+
+            //si no tiene FBO ya activo se crea la primera vez
+            if(!luz.mapaSombrasActivo()){
+                luz.iniciaMapaSombras();
+            }
+
+            //activamos la unidad de textura y la asociamos con la textura del FBO
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, luz.getMapaSombrasTextura());
+
+            //enlazamos con el FBO de esta luz actual y establecemos el viewport
+            glBindFramebuffer(GL_FRAMEBUFFER, luz.getFboSombras());
+            glViewport(0, 0, luz.getAnchoMs(), luz.getAltoMs());
+
+            //solo borramos profundidad, ignoramos color
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            //tomamos la matriz de visión y proyección de la cámara asociada a la luz (mVP
+            glm::mat4 matrizVPLuz = luz.getMatrizMVLuz();
+
+            //para cada modelo calculamos su matriz de modelado
+            for (const auto& modelo : modelos) {
+                if (modelo && modelo->getIdVao()) {
+
+                    glBindVertexArray(modelo->getIdVao());
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, modelo->getIdIbo());
+
+                    //calculamos la matriz MVP con la luz y el modelo
+                    glm::mat4 mM = modelo->getMatrizModelado();
+                    glm::mat4 matrizMVP = matrizVPLuz * mM;
+
+                    //aplicamos esta matrizMVP como uniform para el shader program de cálculo de mapas de sombra
+                    GLint mMVP = glGetUniformLocation(mapaSombrasProgramID, "mMVP");
+                    glUniformMatrix4fv(mMVP, 1, GL_FALSE, glm::value_ptr(matrizMVP));
+
+                    //Renderizamos los triángulos del modelo actual
+                    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(modelo->getIndices().size()), GL_UNSIGNED_INT, nullptr);
+                    glBindVertexArray(0);
+                }
+            }
+        }
+
+        // IMPORTANTE: Vuelve a activar el frame buffer del sistema de ventanas
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // IMPORTANTE 2: Volver a cambiar la función del Z-buffer, poniéndola en GL_LEQUAL
+        glDepthFunc(GL_LEQUAL);
+
+        // IMPORTANTE 3: Volver a activar el dibujado de las caras delanteras
+        glCullFace(GL_BACK);
+
+        // IMPORTANTE 4: Cambiar las dimensiones del viewport al tamaño real de la ventana
+        glViewport(viewportActual[0], viewportActual[1], viewportActual[2], viewportActual[3]);
     }
 
     /**

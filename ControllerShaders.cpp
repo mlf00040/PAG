@@ -179,7 +179,7 @@ std::string ControllerShaders::usarPrograma(const std::string &nombre) {
         }
         ++it;
     }
-    return ("No se ha encontrado ese shaderProgram ");
+    return ("No se ha encontrado ese shaderProgram para usarlo");
 }
 
 /**
@@ -197,7 +197,7 @@ std::string ControllerShaders::eliminarPrograma(const std::string &nombre) {
         }
         ++it;
     }
-    return ("No se ha encontrado ese shaderProgram ");
+    return ("No se ha encontrado ese shaderProgram para eliminarlo ");
 }
 
 GLuint ControllerShaders::getProgramId(const std::string& nombre) {
@@ -231,4 +231,15 @@ void ControllerShaders::limpiar() {
         glDeleteProgram(it->id);
         ++it;
     }
+}
+
+bool ControllerShaders::existePrograma(const std::string &nombre) {
+    std::vector<shaderProgram>::iterator it = Programas.begin();
+    while(it != Programas.end()){
+        if (it->nombre == nombre) {
+            return true;
+        }
+        ++it;
+    }
+    return false;
 }

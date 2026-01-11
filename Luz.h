@@ -7,6 +7,8 @@
 
 #include <glm/glm.hpp>
 #include <string>
+#include "glad/glad.h"
+#include "ControllerMensajes.h"
 
 enum class tipoLuz {
     AMBIENTE,
@@ -38,8 +40,8 @@ private:
     std::string nombreLuz="";
 
     //Para los mapas de sombras
-    GLuint fbo = 0;
-    GLuint mapaSombras = 0;
+    GLuint fboSombras = 0;
+    GLuint mapaSombrasTextura = 0;
     int anchoMS = 1024;
     int altoMS = 1024;
 
@@ -85,6 +87,20 @@ public:
     void setNombreLuz(const std::string &nombreLuz);
 
     glm::mat4 getMatrizMVLuz();
+
+    void iniciaMapaSombras();
+
+    bool compatibleSombra();
+
+    bool mapaSombrasActivo();
+
+    GLuint getFboSombras() const;
+
+    GLuint getMapaSombrasTextura() const;
+
+    int getAnchoMs() const;
+
+    int getAltoMs() const;
 
 };
 

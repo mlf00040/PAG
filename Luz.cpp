@@ -110,3 +110,78 @@ glm::mat4 Luz::getMatrizMVLuz() {
     return mP * mV;
 
 }
+
+void Luz::iniciaMapaSombras() {
+
+    if(tLuz == tipoLuz::FOCO || tLuz == tipoLuz::DIRECCIONAL){
+
+        //creamos el FBO para el mapa de sombras
+        fboSombras = 0;
+        glGenFramebuffers( 1, & fboSombras);
+
+        //creamos la textura y la configuramos
+        mapaSombrasTextura = 0;
+        glGenTextures( 1, &mapaSombrasTextura);
+
+        GLfloat borde[] = {1.0,1.0,1.0,1.0};
+
+        glBindTexture(GL_TEXTURE_2D, mapaSombrasTextura);
+        glTexImage2D ( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, anchoMS, altoMS, 0
+                , GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borde);
+        glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE
+                , GL_COMPARE_REF_TO_TEXTURE );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
+
+        //activamos y adjuntamos el FBO
+        glBindFramebuffer(GL_FRAMEBUFFER, fboSombras);
+        glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D
+                , mapaSombrasTextura, 0);
+
+        //no se necesita info del color, solo la profundidad
+        glReadBuffer (GL_NONE);
+        glDrawBuffer (GL_NONE);
+
+        GLenum estado = glCheckFramebufferStatus (GL_FRAMEBUFFER);
+        if ( estado != GL_FRAMEBUFFER_COMPLETE)
+        {
+            ControllerMensajes::getInstancia().anadirMensaje("Error al hacer el inicio del mapa de sombras, el FBO no esta listo para generar el mapa de sombras");
+        }
+
+    }
+
+}
+
+bool Luz::compatibleSombra() {
+    if(tLuz == tipoLuz::FOCO || tLuz == tipoLuz::DIRECCIONAL){
+        return true;
+    }
+    return false;
+}
+
+bool Luz::mapaSombrasActivo() {
+    if(fboSombras != 0 && mapaSombrasTextura != 0){
+        return true;
+    }
+    return false;
+}
+
+GLuint Luz::getFboSombras() const {
+    return fboSombras;
+}
+
+GLuint Luz::getMapaSombrasTextura() const {
+    return mapaSombrasTextura;
+}
+
+int Luz::getAnchoMs() const {
+    return anchoMS;
+}
+
+int Luz::getAltoMs() const {
+    return altoMS;
+}

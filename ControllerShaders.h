@@ -46,6 +46,8 @@ public:
 
     void limpiar();
 
+    bool existePrograma(const std::string &nombre);
+
 };
 
 
