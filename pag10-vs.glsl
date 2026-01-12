@@ -16,6 +16,9 @@ uniform mat4 mProyeccion;
 uniform vec3 uPosLuz;
 uniform vec3 uDireccionLuz;
 
+//datos de las sombras
+uniform mat4 mSombras;
+
 //salidas
 out vec3 posicion;
 out vec3 posicionTg;
@@ -24,6 +27,7 @@ out vec3 vColor;
 out vec2 cTextura;
 out vec3 posLuzTg;
 out vec3 dirLuzTg;
+out vec4 posicionSombra;
 
 void main ()
 {
@@ -49,6 +53,8 @@ void main ()
    vColor=vNormal;
 
    cTextura = vcTextura;
+
+   posicionSombra= mSombras * vec4( posicion,1);
 
    //transformacion de las normales
    mat3 normalMatrix = transpose(inverse(mat3(mModelado)));

@@ -7,6 +7,7 @@ in vec3 vColor;
 in vec2 cTextura;
 in vec3 posLuzTg;
 in vec3 dirLuzTg;
+in vec4 posicionSombra;
 
 //salidas
 out vec4 colorFragmento;
@@ -14,6 +15,8 @@ out vec4 colorFragmento;
 //Textura
 uniform sampler2D muestreador;
 uniform sampler2D muestreadorNormal;
+//TexturaSombras
+uniform sampler2DShadow muestreadorSombra;
 
 //Material
 uniform vec3 uColorAmbiente; //Ka
@@ -115,10 +118,12 @@ vec3 luzDireccional ()
     vec3 v = normalize(-posicion);
     vec3 r = reflect(-l,n);
 
+    float sombra = textureProj(muestreadorSombra, posicionSombra);
+
     vec3 colorBase = uFuenteColorBase();
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
-    return difusa + especular;
+    return sombra * (difusa + especular);
 }
 
 //luz direccional con normal mapping
@@ -131,10 +136,12 @@ vec3 luzDireccionalNormalMapping ()
     vec3 v = normalize(-posicionTg);
     vec3 r = reflect(-l,n);
 
+    float sombra = textureProj(muestreadorSombra, posicionSombra);
+
     vec3 colorBase = uFuenteColorBase();
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
-    return difusa + especular;
+    return sombra * (difusa + especular);
 }
 
 //luz foco
@@ -148,6 +155,8 @@ vec3 luzFoco ()
 
     if(dot(-l, d) < cosGamma) {factorApertura = 0.0;}
 
+    float sombra = textureProj(muestreadorSombra, posicionSombra);
+
     vec3 n = normalize(normal);
     vec3 v = normalize(-posicion);
     vec3 r = reflect(-l,n);
@@ -155,7 +164,7 @@ vec3 luzFoco ()
     vec3 colorBase = uFuenteColorBase();
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
-    return factorApertura * (difusa + especular);
+    return sombra * factorApertura * (difusa + especular);
 }
 
 //luz foco con normal mapping
@@ -169,6 +178,8 @@ vec3 luzFocoNormalMapping ()
 
     if(dot(-l, d) < cosGamma) {factorApertura = 0.0;}
 
+    float sombra = textureProj(muestreadorSombra, posicionSombra);
+
     vec3 n = normalize(texture(muestreadorNormal, cTextura).rgb * 2.0 - 1.0);
     vec3 v = normalize(-posicionTg);
     vec3 r = reflect(-l,n);
@@ -176,7 +187,7 @@ vec3 luzFocoNormalMapping ()
     vec3 colorBase = uFuenteColorBase();
     vec3 difusa = uIntensidadDifusa * colorBase * max(dot(l, n), 0.0);
     vec3 especular = uIntensidadEspecular * uColorEspecular * pow(max(dot(r, v), 0.0), uExponenteEspecular);
-    return factorApertura * (difusa + especular);
+    return sombra * factorApertura * (difusa + especular);
 }
 
 void main ()

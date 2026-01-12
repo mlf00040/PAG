@@ -202,6 +202,8 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
     fileDialogTexturaNormal.SetTitle("Selector Textura Normal Mapping");
 
+    PAG::Renderer::getInstancia().inicializaTexturaSombraDefault();
+
 /*
     //Llamamos a crear y cargar los shaders y al modelo
     try {
@@ -254,6 +256,10 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
         GUI::ControllerImgui::getInstancia().ventanaGestionTexturas(fileDialogTextura);
 
         GUI::ControllerImgui::getInstancia().ventanaGestionTexturasNormal(fileDialogTexturaNormal);
+
+        GUI::ControllerImgui::getInstancia().ventanaSombras();
+
+        GUI::ControllerImgui::getInstancia().ventanaDebugSombras();
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL

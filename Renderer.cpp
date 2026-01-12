@@ -82,8 +82,6 @@ namespace PAG {
                 //seleccionamos subrutina
                 GLuint indices[2] = {0};
 
-
-
                 //seleccionamos subrutina segun el tipo de luz y enviamos los datos relativos a las luces
                 GLuint idSubrutina = 0;
                 if (luz.getTLuz() == tipoLuz::AMBIENTE) {
@@ -124,7 +122,7 @@ namespace PAG {
                 glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &indices[locMetodoLuzElegido]);
 
                 //dibujamos todos los modelos
-                dibujaTodosModelos(indices[locMetodoLuzElegido]);
+                dibujaTodosModelos(indices[locMetodoLuzElegido], i);
 
             }
 
@@ -146,7 +144,7 @@ namespace PAG {
 
     }
 
-    void Renderer::dibujaTodosModelos(GLuint &LuzActual){
+    void Renderer::dibujaTodosModelos(GLuint &LuzActual, int indiceLuz){
         //Pinta todos los modelos que haya cargados en el vector en el momento de la escena para cada pasada de la luz
         for (const auto& modelo : modelos) {
             if (modelo && modelo->getIdVao()) {
@@ -161,6 +159,45 @@ namespace PAG {
 
                 glm::mat4 mvp = camara.matrizProyeccion() * camara.matrizVision() * modelo->getMatrizModelado();
                 glUniformMatrix4fv(mMVP, 1, GL_FALSE, glm::value_ptr(mvp));
+
+                //calcular y enviar matriz de sombras si hay sombras activas y el indice es valido
+                if (sombras && indiceLuz >= 0 && indiceLuz < luces.size()) {
+                    
+                    auto& luz = *luces[indiceLuz];
+
+                    if (luz.compatibleSombra() && luz.mapaSombrasActivo()) {
+
+                        //Matriz para convertir de [-1,1] a [0,1]
+                        glm::mat4 mConvertir = glm::mat4(
+                                0.5f, 0.0f, 0.0f, 0.0f,
+                                0.0f, 0.5f, 0.0f, 0.0f,
+                                0.0f, 0.0f, 0.5f, 0.0f,
+                                0.5f, 0.5f, 0.5f, 1.0f
+                        );
+
+                        glm::mat4 matrizSombras = mConvertir * luz.getMatrizMVLuz();
+
+                        GLint locMatrizSombras = glGetUniformLocation(programIDActivo, "mSombras");
+                        glUniformMatrix4fv(locMatrizSombras, 1, GL_FALSE, glm::value_ptr(matrizSombras));
+
+
+                        //enlazamos la textura del mapa de sombras
+                        glActiveTexture(GL_TEXTURE2);
+                        glBindTexture(GL_TEXTURE_2D, luz.getMapaSombrasTextura());
+                        glUniform1i(glGetUniformLocation(programIDActivo, "muestreadorSombra"), 2);
+
+                    }
+                    
+
+                }else{  //creamos una textura vacia si no hay sombra para evitar joder todo el shader program
+
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, texturaSombraDefault);
+                    glUniform1i(glGetUniformLocation(programIDActivo, "muestreadorSombra"), 2);
+
+                    glm::mat4 identity = glm::mat4(1.0f);
+                    glUniformMatrix4fv(glGetUniformLocation(programIDActivo, "matrizSombras"), 1, GL_FALSE, glm::value_ptr(identity));
+                }
 
                 //seleccionamos modo del modelo
                 if(modelo->getMRenderizado()==MetodoRenderizado::ALAMBRE){
@@ -308,7 +345,7 @@ namespace PAG {
                     glm::mat4 matrizMVP = matrizVPLuz * mM;
 
                     //aplicamos esta matrizMVP como uniform para el shader program de cálculo de mapas de sombra
-                    GLint mMVP = glGetUniformLocation(mapaSombrasProgramID, "mMVP");
+                    GLint mMVP = glGetUniformLocation(mapaSombrasProgramID, "matrizModVisProy");
                     glUniformMatrix4fv(mMVP, 1, GL_FALSE, glm::value_ptr(matrizMVP));
 
                     //Renderizamos los triángulos del modelo actual
@@ -607,6 +644,37 @@ namespace PAG {
             }
         }
         return nullptr;
+    }
+
+    void Renderer::inicializaTexturaSombraDefault() {
+
+        if(texturaSombraDefault != 0){
+            return;
+        }
+
+        glGenTextures(1, &texturaSombraDefault);
+        glBindTexture(GL_TEXTURE_2D, texturaSombraDefault);
+
+        float white = 1.0f;
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1, 1, 0, GL_DEPTH_COMPONENT, GL_FLOAT, &white);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+    }
+
+    bool Renderer::isSombras() const{
+        return sombras;
+    }
+
+    void Renderer::setSombras(bool sombras) {
+        Renderer::sombras = sombras;
     }
 
 }

@@ -91,15 +91,25 @@ glm::mat4 Luz::getMatrizMVLuz() {
 
     if(tLuz== tipoLuz::DIRECCIONAL){
 
-        glm::vec3 centro = {0.0,0.0,0.0};
-        glm::vec3 posicion = centro - direccion * 5.0f;
-        mV = glm::lookAt ( posicion, centro, glm::vec3(0, 1, 0) );
-        mP = glm::ortho ( -3.0, 3.0, -3.0, 3.0, 0.1, 10.0 );
+        glm::vec3 centro = {0.0, 0.0, 0.0};
+        glm::vec3 posicion = centro - direccion * 20.0f;
+
+        mV = glm::lookAt(posicion, centro, glm::vec3(0, 1, 0));
+        mP = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.1f, 150.0f);
 
     }else if(tLuz == tipoLuz::FOCO){
 
-        mV = glm::lookAt ( pos, pos + direccion, glm::vec3(0, 1, 0) );
-        mP =  glm::perspective ( 2 * glm::radians(angulo), static_cast<float>(anchoMS) / altoMS, 0.1f, 10.0f );
+        //normalizar la direcciom
+        glm::vec3 dirNorm = glm::normalize(direccion);
+
+        //ajustar el up para evitar problemas con el lookAt
+        glm::vec3 up = glm::vec3(0, 1, 0);
+        if (glm::abs(glm::dot(dirNorm, up)) > 0.99f) {
+            up = glm::vec3(0, 0, 1);
+        }
+
+        mV = glm::lookAt ( pos, pos + dirNorm, up );
+        mP = glm::perspective( 2 * glm::radians(angulo),static_cast<float>(anchoMS) / altoMS,0.1f,100.0f);
 
     }else{
 

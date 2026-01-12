@@ -99,6 +99,8 @@ namespace GUI {
         void ventanaGestionTexturas(ImGui::FileBrowser& fileDialog);
 
         void ventanaGestionTexturasNormal(ImGui::FileBrowser& fileDialog);
+
+        void ventanaSombras();
     };
 }
 

@@ -76,12 +76,13 @@ namespace PAG {
 
         //para el mapa de sombras
         bool sombras = false;
+        GLuint texturaSombraDefault = 0;
 
     public:
         static Renderer& getInstancia ();
         virtual ~Renderer ();
         void refrescar ();
-        void dibujaTodosModelos(GLuint &luzActual);
+        void dibujaTodosModelos(GLuint &luzActual, int indiceLuz = -1);
 
         void pasadaSombras();
 
@@ -146,6 +147,12 @@ namespace PAG {
         void borrarTexturaNormal(size_t index);
 
         Textura* getTexturaPorNombreNormal(const std::string& nombre);
+
+        void inicializaTexturaSombraDefault();
+
+        bool isSombras() const;
+
+        void setSombras(bool sombras);
 
     };
 

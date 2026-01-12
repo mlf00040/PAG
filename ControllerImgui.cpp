@@ -884,4 +884,39 @@ namespace GUI {
         }
         ImGui::End();
     }
+
+    void ControllerImgui::ventanaSombras() {
+
+        ImGui::SetNextWindowPos(ImVec2(1000, 600), ImGuiCond_Once);
+
+        if (ImGui::Begin("Control de Sombras")) {
+            ImGui::SetWindowFontScale(1.0f);
+
+            bool sombrasActivo = PAG::Renderer::getInstancia().isSombras();
+
+            if (ImGui::Checkbox("Activar Sombras", &sombrasActivo)) {
+
+                PAG::Renderer::getInstancia().setSombras(sombrasActivo);
+
+                if(sombrasActivo){
+                    ControllerMensajes::getInstancia().anadirMensaje("Sombras ACTIVADAS");
+                }else{
+                    ControllerMensajes::getInstancia().anadirMensaje("Sombras DESACTIVADAS");
+                }
+
+            }
+            ImGui::TextWrapped("Cuando está activado, se generan los mapas de sombra "
+                               "para luces direccionales y focos.");
+
+            //estadoActual
+            if(PAG::Renderer::getInstancia().isSombras()){
+                ImGui::Text("Estado actual: %s","Activado");
+            }else{
+                ImGui::Text("Estado actual: %s","Desactivado");
+            }
+        }
+        ImGui::End();
+        
+    }
+
 }
