@@ -286,7 +286,7 @@ namespace PAG {
      */
     void Renderer::pasadaSombras() {
 
-        if(!ControllerShaders::getInstancia().existePrograma("mapaSombras")){
+        if(!ControllerShaders::getInstancia().existePrograma("Shaders/mapaSombras")){
             ControllerMensajes::getInstancia().anadirMensaje("mapaSombras no cargado, por tanto no se puede hacer las sombras");
             sombras=false;
             return;
@@ -297,7 +297,7 @@ namespace PAG {
         glGetIntegerv(GL_VIEWPORT, viewportActual);
 
         //ponemos que vamos a usar el programa del mapa de sombras
-        GLuint mapaSombrasProgramID = ControllerShaders::getInstancia().getProgramId("mapaSombras");
+        GLuint mapaSombrasProgramID = ControllerShaders::getInstancia().getProgramId("Shaders/mapaSombras");
         glUseProgram(mapaSombrasProgramID);
 
         //configuración para evitar shadow acne
@@ -438,9 +438,10 @@ namespace PAG {
   * Método que añade un modelo al vector de modelos y lo carga
   * @note No se incluye ninguna comprobación de errores
   */
-    void PAG::Renderer::creaModelo (std::string& ruta){
+    void PAG::Renderer::creaModelo (std::string& ruta, std::string &nombreModelo){
         Modelo* modelo = new Modelo();
         modelo->cargarModelo(ruta);
+        modelo->setNombre(nombreModelo);
         modelos.push_back(std::unique_ptr<Modelo>(modelo));
     }
 
@@ -521,6 +522,13 @@ namespace PAG {
     void Renderer::borrarMaterial(std::string& nombre){
         auto it = materiales.find(nombre);
         if (it != materiales.end()) {
+
+            for (size_t i = 0; i < modelos.size(); ++i) {
+                if(modelos[i]->getNombreMaterial()==nombre){
+                    modelos[i]->setNombreMaterial("");
+                }
+            }
+
             materiales.erase(it);
         }
     }

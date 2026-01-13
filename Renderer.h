@@ -90,7 +90,7 @@ namespace PAG {
         void inicializaOpenGL ();
         void resizeViewPort(int w,int h);
 
-        void creaModelo(std::string& ruta);
+        void creaModelo(std::string& ruta, std::string &nombreModelo);
 
         void borrarModelo(size_t indice);
 

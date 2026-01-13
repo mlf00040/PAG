@@ -23,7 +23,7 @@ namespace GUI {
     * Constructor por defecto
     */
     ControllerImgui::ControllerImgui()
-            : shaderProgramName("pag03"){}
+            : shaderProgramName("Shaders/mapaSombras"){}
 
     /**
      * Destructor
@@ -118,7 +118,7 @@ namespace GUI {
             ImGui::SetWindowFontScale ( 1.0f );
             //selector de color
             static ImVec4 clear_color = ImVec4(PAG::Renderer::getInstancia().getRed(), PAG::Renderer::getInstancia().getGreen(), PAG::Renderer::getInstancia().getBlue(), 1.0f);
-            ImGui::ColorPicker3("Color de fondo", (float*)&clear_color);
+            ImGui::ColorPicker3("Fondo", (float*)&clear_color);
 
             PAG::Renderer::getInstancia().setRed(clear_color.x);
             PAG::Renderer::getInstancia().setGreen(clear_color.y);
@@ -135,30 +135,47 @@ namespace GUI {
         ImGui::SetNextWindowPos ( ImVec2 (300, 100), ImGuiCond_Once );
 
         if( ImGui::Begin("GestorShaders"))
-        { // La ventana está desplegada
+        { //La ventana está desplegada
             ImGui::SetWindowFontScale ( 1.0f );
-            //selector de color
+
+            ImGui::Text("Nombre del shader para cargarlo: ");
+
             ImGui::InputText ("##", &shaderProgramName, ImGuiInputTextFlags_AutoSelectAll );
 
-            if (ImGui::Button("Load")) {
+            if (ImGui::Button("Cargar Shader")) {
                 if (shaderProgramName.empty()) {
                     ControllerMensajes::getInstancia().anadirMensaje("Nombre vacío. No se puede cargar.");
                 } else {
-                    // Usamos ControllerShaders para cargar el programa
+
+                    //Usamos ControllerShaders para cargar el programa
                     try {
                         //Creamos el programa y lo usamos
                         ControllerShaders::getInstancia().crearPrograma(shaderProgramName,shaderProgramName,shaderProgramName);
                         ControllerShaders::getInstancia().usarPrograma(shaderProgramName);
-                        // mandamos al renderer cual es el id del programa que estamos usando
+
+                        //mandamos al renderer cual es el id del programa que estamos usando
                         PAG::Renderer::getInstancia().setProgramIdActivo(ControllerShaders::getInstancia().getProgramId(shaderProgramName));
 
                         //hacemos la carga de los indices de las subrutinas
                         PAG::Renderer::getInstancia().cargarIndicesSubrutinas();
 
+                        ControllerMensajes::getInstancia().anadirMensaje("Programa cargado con exito");
+                    }catch (const std::exception& e) {
+                        ControllerMensajes::getInstancia().anadirMensaje(e.what());
+                    }
 
-                        // creamos el modelo
-                        //std::string Prueba = "sfsssfs";
-                        //PAG::Renderer::getInstancia().creaModelo(Prueba);
+                }
+            }
+
+            if (ImGui::Button("Cargar Shader Sombras")) {
+                if (shaderProgramName.empty()) {
+                    ControllerMensajes::getInstancia().anadirMensaje("Nombre vacío. No se puede cargar.");
+                } else {
+                    //Usamos ControllerShaders para cargar el programa
+                    try {
+                        //Creamos el programa
+                        ControllerShaders::getInstancia().crearPrograma(shaderProgramName,shaderProgramName,shaderProgramName);
+
                         ControllerMensajes::getInstancia().anadirMensaje("Programa cargado con exito");
                     }catch (const std::exception& e) {
                         ControllerMensajes::getInstancia().anadirMensaje(e.what());
@@ -167,7 +184,7 @@ namespace GUI {
                 }
             }
         }
-        // Si la ventana no está desplegada, Begin devuelve false
+
         ImGui::End ();
     };
 
@@ -206,6 +223,9 @@ namespace GUI {
             if (ImGui::Button("+ 0.1")) {
                 sensibilidad+=0.1;
             }
+
+            ImGui::SameLine();
+
             if (ImGui::Button("- 0.1")) {
                 sensibilidad-=0.1;
             }
@@ -278,13 +298,14 @@ namespace GUI {
 
             ImGui::Text("Modelo cargado: ");
             //uso del filysystem unicamente para que muestre el nombre dle objeto y no la ruta completa (estetica :D )
+
             std::filesystem::path p(ruta);
             std::filesystem::path nombre_archivo_path = p.filename();
             const std::string nombre_archivo_str = nombre_archivo_path.string();
             ImGui::Text("%s", nombre_archivo_str.c_str());
 
             if (ImGui::Button("Añadir modelo")) {
-                PAG::Renderer::getInstancia().creaModelo(ruta);
+                PAG::Renderer::getInstancia().creaModelo(ruta, const_cast<std::string &>(nombre_archivo_str));
             }
 
             const auto& modelos = PAG::Renderer::getInstancia().getModelos();
@@ -295,7 +316,7 @@ namespace GUI {
                 //generar los nombres para el selector
                 std::vector<std::string> nombres;
                 for (size_t i = 0; i < modelos.size(); ++i) {
-                    nombres.push_back("Modelo " + std::to_string(i));
+                    nombres.push_back(std::to_string(i) + " " + modelos[i]->getNombre());
                 }
 
                 //convertir a array de C-string
@@ -308,12 +329,13 @@ namespace GUI {
 
                 if (ImGui::Button("Borrar modelo seleccionado")) {
                     if (indiceModeloActual >= 0 && indiceModeloActual < (int)modelos.size()) {
+                        ControllerMensajes::getInstancia().anadirMensaje("Modelo eliminado: " + indiceModeloActual + modelos[indiceModeloActual]->getNombre());
                         PAG::Renderer::getInstancia().borrarModelo(indiceModeloActual);
                         //reiniciar el indice en caso de que se borre el ultimo
                         if (indiceModeloActual >= (int)PAG::Renderer::getInstancia().getModelos().size()) {
                             indiceModeloActual = (int)PAG::Renderer::getInstancia().getModelos().size() - 1;
                         }
-                        ControllerMensajes::getInstancia().anadirMensaje("Modelo eliminado: " + std::to_string(indiceModeloActual));
+
                     }
                 }
             }
@@ -338,7 +360,7 @@ namespace GUI {
                 //generar los nombres para el selector
                 std::vector<std::string> nombres;
                 for (size_t i = 0; i < modelos.size(); ++i) {
-                    nombres.push_back("Modelo " + std::to_string(i));
+                    nombres.push_back(std::to_string(i) + " " + modelos[i]->getNombre());
                 }
 
                 //convertir a array de C-string
@@ -440,7 +462,7 @@ namespace GUI {
     void ControllerImgui::ventanaGestionMateriales() {
         ImGui::SetNextWindowPos ( ImVec2 (700, 400), ImGuiCond_Once );
 
-        if( ImGui::Begin("Gestion MAteriales")) {
+        if( ImGui::Begin("Gestion Materiales")) {
 
             ImGui::SetWindowFontScale(1.0f);
 
@@ -740,7 +762,7 @@ namespace GUI {
                 // Selector de modelo
                 std::vector<std::string> nombresModelos;
                 for (size_t i = 0; i < modelos.size(); ++i) {
-                    nombresModelos.push_back("Modelo " + std::to_string(i));
+                    nombresModelos.push_back(std::to_string(i) + " " + modelos[i]->getNombre());
                 }
                 std::vector<const char*> items;
                 for (const auto& n : nombresModelos) items.push_back(n.c_str());

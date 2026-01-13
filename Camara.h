@@ -12,9 +12,6 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtx/transform.hpp>
 
-
-
-
 enum class MovCamara {
     NO,
     PAN,
@@ -49,10 +46,6 @@ public:
     void orbit(float longitud, float latitud);
     void zoom(float nuevofov);
     void reset();
-
-
-    void mover();
-
 };
 
 

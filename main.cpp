@@ -17,23 +17,6 @@
 #include "ControllerShaders.h"
 #include "ControllerMensajes.h"
 
-
-
-/**
- * Aspectos a pulir:
- * Lo de los nombres del modelo a la hora de seleccionarlos, ya muestra el nombre a la hora de cargarlo, falta cuando ya estan creados en el combo
- * Lo de que se le asigne un shader program a cada modelo, por ahora el mismo a todos.
- * Limpieza masiva de comentarios y codigo archivo por archivo
- * Agrupar todos los archivos glsl en una carpeta
- * Elaborar las instrucciones completas
- * En el ultimo shader, optimizar el paso de matrices en el vertex y evitar recalcular cada una en cada vertice.
- * Arregalr el borrado de material en los modelos o cambiar la condicion en el renderer para que al borrar el material se pinte rgb
- *
- *
- */
-
-
-
 // - Esta función callback será llamada cuando GLFW produzca algún error
 void error_callback ( int errno, const char* desc )
 { std::string aux (desc);
@@ -184,9 +167,7 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
     //Llamamamos al iniciador de opgengl del renderer
     PAG::Renderer::getInstancia().inicializaOpenGL();
 
-    std::string ruta="pag03";
     std::string rutaModelo = "ModelosPruebas/vaca.obj";
-    std::string rutaTextura = "Texturas/Textura-Vaca.png";
 
     // create a file browser instance
     ImGui::FileBrowser fileDialog;
@@ -204,17 +185,6 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
     PAG::Renderer::getInstancia().inicializaTexturaSombraDefault();
 
-/*
-    //Llamamos a crear y cargar los shaders y al modelo
-    try {
-        anadirMensaje(ControllerShaders::getInstancia().crearPrograma("PAG03",ruta,ruta));
-        anadirMensaje(ControllerShaders::getInstancia().usarPrograma("PAG03"));
-        PAG::Renderer::getInstancia().creaModelo();
-    }catch (const std::exception& e) {
-        std::cout << e.what() << std::endl;
-        anadirMensaje(std::string(e.what()));
-    }
-*/
     // - Ciclo de eventos de la aplicación. La condición de parada es que la
     // ventana principal deba cerrarse. Por ejemplo, si el usuario pulsa el
     // botón de cerrar la ventana (la X).
@@ -259,7 +229,6 @@ void mouse_pos_callback (GLFWwindow *window, double posx, double posy){
 
         GUI::ControllerImgui::getInstancia().ventanaSombras();
 
-        GUI::ControllerImgui::getInstancia().ventanaDebugSombras();
 
         // Se dibujan los controles de Dear ImGui
         // Aquí va el dibujado de la escena con instrucciones OpenGL
