@@ -155,7 +155,7 @@ Empezará mostrando el nombre de la aplicacion asi como las características de 
 
 Pues es un selector de color de fondo sin mas, seleccionas con el ratón y cambias el color del fondo.
 
-![SelectorColor](ImagenesReadme/Manual/Selector Color Fondo.png)
+![SelectorColor](ImagenesReadme/Manual/SelectorColorFondo.png)
 
 ### Gestor Shaders
 
@@ -213,7 +213,7 @@ En esta ventana podremos seleccionar el modelo y cargarlo dandole a añadir mode
 
 Si le damos al open file dialog, se abrirá la siguiente pestaña que nos permitirá navegar y seleccionar un modelo de nuestro sistema de archivos.
 
-![SistemaArchivos](ImagenesReadme/Manual/SistemaArchivos.png)
+![SistemaArchivos](ImagenesReadme/Manual/sistemaArchivos.png)
 
 Si pulsamos cancel se cirra.
 Una vez que lo tenemos selecionado le damos a ok y vemos como cambia el modelo seleccionado en al ventana.
@@ -246,37 +246,37 @@ Diferentes modos de visualizacion:
 
 ALAMBRE SIN MATERIAL 
 
-![alambreNoluzNoMaterial](ImagenesReadme/Manual/alambreNoluzNoMaterial.png)
+![alambreNoluzNoMaterial](ImagenesReadme/Manual/AlambreNoLuzNoMaterial.png)
 
 ALAMBRE CON MATERIAL BLANCO (ejemplo)
 
-![alambreNoluzNoMaterial](ImagenesReadme/Manual/alambreNoLuzMaterial.png)
+![alambreNoluzNoMaterial](ImagenesReadme/Manual/AlambreNoLuzMaterial.png)
 
 SOLIDO SIN LUZ Y SIN MATERIAL
 
-![solidoNoluzNoMaterial](ImagenesReadme/Manual/solidoNoLuzNoMaterial.png)
+![solidoNoluzNoMaterial](ImagenesReadme/Manual/SolidoNoLuzNoMaterial.png)
 
 SOLIDO SIN LUZ CON MATERIAL BLANCO (ejemplo)
 
-![solidoNoluzMaterial](ImagenesReadme/Manual/solidoNoLuzMaterial.png)
+![solidoNoluzMaterial](ImagenesReadme/Manual/SolidoNoLuzMaterial.png)
 
 SOLIDO CON LUZ DIRECCIONAL (ejemplo) Y CON MATERIAL BLANCO (ejemplo)
 
-![solidoluzMaterial](ImagenesReadme/Manual/solidoLuzDirMaterial.png)
+![solidoluzMaterial](ImagenesReadme/Manual/SolidoLuzDirMaterial.png)
 
 **IMPORTANTE** si se va a usar una textura con luz es necesario que tenga un material asignado para los brillos.
 
 TEXTURA SIN LUZ 
 
-![texturaNoLuzNoMaterial](ImagenesReadme/Manual/texturaNoLuzNoMaterial.png)
+![texturaNoLuzNoMaterial](ImagenesReadme/Manual/TexturaNoLuzNoMaterial.png)
 
 TEXTURA CON LUZ Y MATERIAL 
 
-![texturaLuzDirMat](ImagenesReadme/Manual/texturaLuzDirMat.png)
+![texturaLuzDirMat](ImagenesReadme/Manual/TexturaLuzDirMat.png)
 
 TEXTURA CON NORMAL MAPPING CON LUZ DIRECCIONAL(ejemplo) Y CON MATERIAL (ejemplo)
 
-![texturaNormalMappingLuzDirMat](ImagenesReadme/Manual/texturaNormalMappingLuzDirMat.png)
+![texturaNormalMappingLuzDirMat](ImagenesReadme/Manual/TexturaNormalMappingLuzDirMat.png)
 
 ### Gestion Materiales
 
