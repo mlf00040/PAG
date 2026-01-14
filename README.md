@@ -175,7 +175,7 @@ La camara funciona con el ratón, haciendo click izquierdo y se configura en est
 
 Podemos hacer los siguientes movimientos:
 
-![MovimientosCamara](ImagenesReadme/Manual/Movimientos Camara.png)
+![MovimientosCamara](ImagenesReadme/Manual/MovimientosCamara.png)
 
 #### No
 
