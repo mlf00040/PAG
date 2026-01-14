@@ -149,13 +149,13 @@ En esta ventana apareceran los mensajes de error que tenga la aplicación. Tambi
 
 Empezará mostrando el nombre de la aplicacion asi como las características de nuestra gráfica.
 
-![Consola](ImagenesReadme\Manual\Consola.png)
+![Consola](ImagenesReadme/Manual/Consola.png)
 
 ### Selector de color de fondo
 
 Pues es un selector de color de fondo sin mas, seleccionas con el ratón y cambias el color del fondo.
 
-![SelectorColor](ImagenesReadme\Manual\Selector Color Fondo.png)
+![SelectorColor](ImagenesReadme/Manual/Selector Color Fondo.png)
 
 ### Gestor Shaders
 
@@ -165,17 +165,17 @@ Cuenta con dos botones uno para cargar el shader principal que automaticamente l
 
 **IMPORTANTE**: todos los shaders estan dentro de la carpeta Shaders del programa por tanto hay que poner siempre la dirección de la carpeta y no lo he podido comprobar pero creo que en linux hay que cambiar el / por el \ .
 
-![GestorShaders](ImagenesReadme\Manual\GestorShaders.png)
+![GestorShaders](ImagenesReadme/Manual/GestorShaders.png)
 
 ### Gestion de la camara
 
 La camara funciona con el ratón, haciendo click izquierdo y se configura en esta ventana.
 
-![Cámara](ImagenesReadme\Manual\Camara.png)
+![Cámara](ImagenesReadme/Manual/Camara.png)
 
 Podemos hacer los siguientes movimientos:
 
-![MovimientosCámara](ImagenesReadme\Manual\Movimientos Camara.png)
+![MovimientosCámara](ImagenesReadme/Manual/Movimientos Camara.png)
 
 #### No
 
@@ -209,26 +209,26 @@ Cambia el fov para ampliar o reducir la imagen.
 
 En esta ventana podremos seleccionar el modelo y cargarlo dandole a añadir modelo. Posteriormente cuando haya uno o varios modelos, podremos seleccionar uno y borrarlo.
 
-![CargaModelos](ImagenesReadme\Manual\CargaModelos.png)
+![CargaModelos](ImagenesReadme/Manual/CargaModelos.png)
 
 Si le damos al open file dialog, se abrirá la siguiente pestaña que nos permitirá navegar y seleccionar un modelo de nuestro sistema de archivos.
 
-![SistemaArchivos](ImagenesReadme\Manual\SistemaArchivos.png)
+![SistemaArchivos](ImagenesReadme/Manual/SistemaArchivos.png)
 
 Si pulsamos cancel se cirra.
 Una vez que lo tenemos selecionado le damos a ok y vemos como cambia el modelo seleccionado en al ventana.
 
-![CargaModelos2](ImagenesReadme\Manual\CargaModelos2.png)
+![CargaModelos2](ImagenesReadme/Manual/CargaModelos2.png)
 
 Añadimos el modelo y deberia de verse asi:
 
-![CargaModelos3](ImagenesReadme\Manual\CargaModelos3.png)
+![CargaModelos3](ImagenesReadme/Manual/CargaModelos3.png)
 
 *BUG: si por algun casual al añadir esta como en la siguiente foto se soluciona abriendo el selector y seleccionando el modelo*
 
-![CargaModelos4](ImagenesReadme\Manual\CargaModelos4.png)
+![CargaModelos4](ImagenesReadme/Manual/CargaModelos4.png)
 
-![CargaModelos5](ImagenesReadme\Manual\CargaModelos5.png)
+![CargaModelos5](ImagenesReadme/Manual/CargaModelos5.png)
 
 ### Modificar Modelo
 
@@ -236,7 +236,7 @@ En esta ventana podremos configurar casi todos los parametros del modelo, salvo 
 
 **IMPORTANTE** Las transformaciones del modelo son sliders aunque tengan valor numerico, click izquierdo en el y desplazas el ratón izquierda y derecha tanto en la translación como en el escalado. La rotación si se puede hacer introduciendo el valor exacto.
 
-![ModificaModelo](ImagenesReadme\Manual\ModificaModelo.png)
+![ModificaModelo](ImagenesReadme/Manual/ModificaModelo.png)
 
 Como podemos ver en la ventana tenemos una lista para selecionar el modelo actual, despues tenemos el metodo de visualización, la asignacion de un material seleccionado y por ultimo transfomaciones del modelo.
 
@@ -246,43 +246,43 @@ Diferentes modos de visualizacion:
 
 ALAMBRE SIN MATERIAL 
 
-![alambreNoluzNoMaterial](ImagenesReadme\Manual\alambreNoluzNoMaterial.png)
+![alambreNoluzNoMaterial](ImagenesReadme/Manual/alambreNoluzNoMaterial.png)
 
 ALAMBRE CON MATERIAL BLANCO (ejemplo)
 
-![alambreNoluzNoMaterial](ImagenesReadme\Manual\alambreNoLuzMaterial.png)
+![alambreNoluzNoMaterial](ImagenesReadme/Manual/alambreNoLuzMaterial.png)
 
 SOLIDO SIN LUZ Y SIN MATERIAL
 
-![solidoNoluzNoMaterial](ImagenesReadme\Manual\solidoNoLuzNoMaterial.png)
+![solidoNoluzNoMaterial](ImagenesReadme/Manual/solidoNoLuzNoMaterial.png)
 
 SOLIDO SIN LUZ CON MATERIAL BLANCO (ejemplo)
 
-![solidoNoluzMaterial](ImagenesReadme\Manual\solidoNoLuzMaterial.png)
+![solidoNoluzMaterial](ImagenesReadme/Manual/solidoNoLuzMaterial.png)
 
 SOLIDO CON LUZ DIRECCIONAL (ejemplo) Y CON MATERIAL BLANCO (ejemplo)
 
-![solidoluzMaterial](ImagenesReadme\Manual\solidoLuzDirMaterial.png)
+![solidoluzMaterial](ImagenesReadme/Manual/solidoLuzDirMaterial.png)
 
 **IMPORTANTE** si se va a usar una textura con luz es necesario que tenga un material asignado para los brillos.
 
 TEXTURA SIN LUZ 
 
-![texturaNoLuzNoMaterial](ImagenesReadme\Manual\texturaNoLuzNoMaterial.png)
+![texturaNoLuzNoMaterial](ImagenesReadme/Manual/texturaNoLuzNoMaterial.png)
 
 TEXTURA CON LUZ Y MATERIAL 
 
-![texturaLuzDirMat](ImagenesReadme\Manual\texturaLuzDirMat.png)
+![texturaLuzDirMat](ImagenesReadme/Manual/texturaLuzDirMat.png)
 
 TEXTURA CON NORMAL MAPPING CON LUZ DIRECCIONAL(ejemplo) Y CON MATERIAL (ejemplo)
 
-![texturaNormalMappingLuzDirMat](ImagenesReadme\Manual\texturaNormalMappingLuzDirMat.png)
+![texturaNormalMappingLuzDirMat](ImagenesReadme/Manual/texturaNormalMappingLuzDirMat.png)
 
 ### Gestion Materiales
 
 En esta ventana podremos Crear, Modificar y Borrar los materiales.
 
-![GestionMateriales](ImagenesReadme\Manual\GestionMateriales.png)
+![GestionMateriales](ImagenesReadme/Manual/GestionMateriales.png)
 
 Una vez que hemos escrito el nombre del material y lo hemos creado ahora podemos cambair sus parametros, con 3 selectores de color y un slider para el exponente especular.
 
@@ -290,57 +290,57 @@ Tenemos tambien un selector en caso de que haya varios materiales, seleccionar c
 
 Como ya existe un material tambien podemos borrar el material que esta seleccionado.
 
-![GestionMateriales2](ImagenesReadme\Manual\GestionMateriales2.png)
+![GestionMateriales2](ImagenesReadme/Manual/GestionMateriales2.png)
 
 ### Gestion Texturas
 
 En esta ventana podremos cargar las texturas con el sistema de archivos y asignarlas al modelo deseado.
 
-![GestionTexturas](ImagenesReadme\Manual\GestionTexturas.png)
+![GestionTexturas](ImagenesReadme/Manual/GestionTexturas.png)
 
 Cuando pulsamos el cargar se abre el selector de archivos que vimos anteriormente.
 
-![GestionTexturas2](ImagenesReadme\Manual\GestionTexturas2.png)
+![GestionTexturas2](ImagenesReadme/Manual/GestionTexturas2.png)
 
 Cuando le damos a ok se carga la textura directamente.
 
-![GestionTexturas3](ImagenesReadme\Manual\GestionTexturas3.png)
+![GestionTexturas3](ImagenesReadme/Manual/GestionTexturas3.png)
 
 La propia ventana nos muestra las texturas que hay.
 
-![GestionTexturas5](ImagenesReadme\Manual\GestionTexturas5.png)
+![GestionTexturas5](ImagenesReadme/Manual/GestionTexturas5.png)
 
 Cuando hay modelos cargados nos permite seleccionar que textura queremos asignar a que modelo.
 
-![GestionTexturas4](ImagenesReadme\Manual\GestionTexturas4.png)
+![GestionTexturas4](ImagenesReadme/Manual/GestionTexturas4.png)
 
 ### Gestion Texturas Normal Mapping
 
 Es una ventana exactamente igual que la de Gestion de Texturas normal.
 
-![GestionTexturasNormalMapping](ImagenesReadme\Manual\GestionTexturasNormalMapping.png)
+![GestionTexturasNormalMapping](ImagenesReadme/Manual/GestionTexturasNormalMapping.png)
 
 ### Gestion de luces
 
 Es una ventana donde se crean, modifican y borran los distintos tipos de luz.
 
-![GestionLuces](ImagenesReadme\Manual\GestionLuces.png)
+![GestionLuces](ImagenesReadme/Manual/GestionLuces.png)
 
 #### Luz Ambiente
 
-![GestionLucesAmbiente](ImagenesReadme\Manual\GestionLucesAmbiente.png)
+![GestionLucesAmbiente](ImagenesReadme/Manual/GestionLucesAmbiente.png)
 
 #### Luz Puntual
 
-![GestionLucesPuntual](ImagenesReadme\Manual\GestionLucesPuntual.png)
+![GestionLucesPuntual](ImagenesReadme/Manual/GestionLucesPuntual.png)
 
 #### Luz Direccional
 
-![GestionLucesDireccional](ImagenesReadme\Manual\GestionLucesDireccional.png)
+![GestionLucesDireccional](ImagenesReadme/Manual/GestionLucesDireccional.png)
 
 #### Luz Foco
 
-![GestionLucesFoco](ImagenesReadme\Manual\GestionLucesFoco.png)
+![GestionLucesFoco](ImagenesReadme/Manual/GestionLucesFoco.png)
 
 ### Gestion Sombras
 
@@ -348,5 +348,5 @@ Esta ventana activa la visualizacion de las sombras.
 
 **IMPORTANTE** Es necesario que se haya cargado previamente el shader del mapa de sombras para activar esta opcion  (En este caso en el texto de los shaders es Shaders/mapaSombras).
 
-![GestionSombras](ImagenesReadme\Manual\GestionSombras.png)
+![GestionSombras](ImagenesReadme/Manual/GestionSombras.png)
 
