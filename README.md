@@ -149,7 +149,7 @@ En esta ventana apareceran los mensajes de error que tenga la aplicación. Tambi
 
 Empezará mostrando el nombre de la aplicacion asi como las características de nuestra gráfica.
 
-![Consola](ImagenesReadme/Manual/Consola.png)
+![Consola](ImagenesReadme/Consola.png)
 
 ### Selector de color de fondo
 
@@ -175,7 +175,7 @@ La camara funciona con el ratón, haciendo click izquierdo y se configura en est
 
 Podemos hacer los siguientes movimientos:
 
-![MovimientosCámara](ImagenesReadme/Manual/Movimientos Camara.png)
+![MovimientosCamara](ImagenesReadme/Manual/Movimientos Camara.png)
 
 #### No
 
